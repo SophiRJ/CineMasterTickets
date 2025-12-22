@@ -11,6 +11,8 @@
         <input type="hidden" name="sessionId" value="@Model.SessionId" />
         @* Cambiamos el name a 'selectedSeats' para que coincida con el parámetro del controlador *@
         <input type="hidden" id="SelectedSeats" name="selectedSeats" />
+        <input type="hidden" id="pricePerSeatData" value="@Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+        <input type="hidden" id="TotalSeatsPrice" name="totalSeatsPrice" />
     
 
         <div class="seat-map">
@@ -35,6 +37,12 @@
             <br />
             <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDisplay"></span>
         </div>
+        
+
+        <div class="mt-2">
+            <strong>Total Butacas: </strong>
+            <span id="totalPriceDisplay" class="text-success fw-bold">0,00 €</span>
+        </div>
 
         <div class="d-flex gap-3 mt-4">
             <button type="submit" class="btn btn-primary px-4">
@@ -56,48 +64,4 @@
     <script src="~/js/seats.js"></script>
 }
 
-@* @model CinemaMasterTicketsMVC.ViewModels.SeatSelectionViewModel
 
-<div class="container mt-5">
-    <h2>@Model.Session.Movie!.Title - @Model.Session.StartTime.ToString("dd/MM/yyyy HH:mm")</h2>
-    <h4>Sala @Model.Session.Room!.RoomId</h4>
-
-    <div class="screen">PANTALLA</div>
-
-    <form asp-controller="Ticket" asp-action="Create" method="post">
-        <input type="hidden" name="SessionId" value="@Model.Session.SessionId" />
-        <input type="hidden" id="SelectedSeats" name="SelectedSeats" />
-
-        <div class="seat-map">
-            @foreach (var row in Model.SeatMap)
-            {
-                <div class="seat-row">
-                    <span class="row-label">@row.Row</span>
-                    @foreach (var seat in row.Seats)
-                    {
-                        <div class="seat @(seat.IsReserved ? "reserved" : "available")"
-                             data-seat-id="@seat.SeatId"
-                             data-seat-label="@row.Row@seat.Number">
-                            @seat.Number
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-        <div class="selected-seats-container mt-3">
-            <strong>Asientos seleccionados: </strong><span id="selectedSeatsDisplay"></span>
-            <br />
-            <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDisplay"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary mt-3">Continuar</button>
-    </form>
-</div>
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/seats.css" />
-}
-
-@section Scripts {
-    <script src="~/js/seats.js"></script>
-} *@

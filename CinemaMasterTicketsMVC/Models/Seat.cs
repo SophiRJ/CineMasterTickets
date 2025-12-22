@@ -6,7 +6,7 @@ namespace CinemaMasterTicketsMVC.Models
     {
         public int SeatId { get; set; }
         public int RowId { get; set; }
-        public string Number { get; set; } = string.Empty;
+        public string Number { get; set; } = string.Empty!;
         public bool Available { get; set; } = false;
 
         public Row Row { get; set; } = null!;
