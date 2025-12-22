@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CinemaMasterTicketsMVC.Models.AddOn
+@*Conexion a su archivo de estilos  *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/addons.css" />
+}
+<h2>Editar AddOn</h2>
+
+<form asp-action="EditAddOn" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="AddOnId" />
+
+    <div class="form-group">
+        <label asp-for="AddOnName"></label>
+        <input asp-for="AddOnName" class="form-control" />
+        <span asp-validation-for="AddOnName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" asp-items="ViewBag.AddOnTypes" class="form-control"></select>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.AddOnImage))
+    {
+        <div class="mb-2">
+            <p>Imagen actual:</p>
+            <img src="~/@Model.AddOnImage" width="120" />
+        </div>
+    }
+
+    <div class="form-group">
+        <label>Nueva imagen (opcional)</label>
+        <input asp-for="AddOnImageFile" type="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="GetAddons" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -35,6 +35,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             ViewBag.Rooms = _db.Rooms.ToList();
             return View(movies);
         }
+        //Obtener sesiones por pelicula
 
         [HttpGet]
         public async Task<IActionResult> GetSessions(int movieId)
@@ -46,6 +47,18 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return PartialView("_SessionsPartial", sessions);
         }
+        //Obtener Sesiones activas en general
+        //public async Task<IActionResult> ActiveSessions()
+        //{
+        //    var sessions = await _db.Sessions
+        //        .Where(s => s.Status == "Active")
+        //        .Include(s=>s.Movie)
+        //        .Include(s => s.Room)
+        //        .OrderBy(s => s.StartTime)
+        //        .ToListAsync();
+        //    return PartialView("_ActiveSessionsTable", sessions);
+        //}
+
 
         //modificado 19/12/2025
         //metodo controla que la sala este diponible en base a la duracion de la pelicula, si hay alguna sesion creada

@@ -1,0 +1,53 @@
+﻿@using CinemaMasterTicketsMVC.Models
+@model IEnumerable<AddOn>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/addons.css" />
+}
+
+@{
+    ViewData["Title"] = "Lista de AddOns";
+}
+
+<h2 class="text-light mb-4">Lista de AddOns</h2>
+
+<div class="mb-3 d-flex justify-content-between">
+    <a asp-action="AddAddon" class="btn btn-success">Agregar AddOn</a>
+    <a asp-action="Home" asp-controller="Admin" class="btn btn-secondary">Volver al Panel</a>
+</div>
+
+<table class="table table-bordered text-light">
+    <thead class="thead-dark">
+        <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var addon in Model)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(addon.AddOnImage))
+                    {
+                        <img src="~/@addon.AddOnImage" alt="@addon.AddOnName" style="width:100px; height:auto;" />
+                    }
+                    else
+                    {
+                        <span>No hay imagen</span>
+                    }
+                </td>
+                <td>@addon.AddOnName</td>
+                <td>@addon.Price.ToString("C")</td>
+                <td>@addon.Type.ToString()</td>
+                <td>
+                    <a asp-action="EditAddOn" asp-route-id="@addon.AddOnId" class="btn btn-primary btn-sm">Editar</a>
+                    <a asp-action="DeleteAddOn" asp-route-id="@addon.AddOnId" class="btn btn-danger btn-sm">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

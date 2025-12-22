@@ -3,6 +3,7 @@ using CinemaMasterTicketsMVC.Models;
 using CinemaMasterTicketsMVC.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using X.PagedList;
@@ -24,6 +25,11 @@ namespace CinemaMasterTicketsMVC.Controllers
             _userManager = userManager;
             _db = db;
         }
+        public IActionResult Home()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Index()
         {
             var users = _userManager!.Users.ToList();
@@ -136,9 +142,9 @@ namespace CinemaMasterTicketsMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ======================
+       
         // DELETE EMPLOYEE
-        // ======================
+        
         public async Task<IActionResult> DeleteEmployee(int id)
         {
             //Falta vista
@@ -168,9 +174,9 @@ namespace CinemaMasterTicketsMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ======================
+        
         // DELETE CUSTOMER
-        // ======================
+        
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             var customer = await _db.Customers.FindAsync(id);
@@ -317,5 +323,161 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return Ok(new { message = "Película añadida correctamente" });
         }
+        public async Task<IActionResult> GetAddons()
+        {
+            return View(_db.AddOns);
+        }
+        public async Task<IActionResult> AddAddon()
+        {
+            // Preparar dropdown de tipos
+            ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
+                                     .Cast<AddOnType>()
+                                     .Select(a => new SelectListItem
+                                     {
+                                         Value = a.ToString(),
+                                         Text = a.ToString()
+                                     }).ToList();
+
+            return View();
+        }
+
+            [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddAddon(AddOn addOn)
+        {
+            // Preparar dropdown nuevamente en caso de error
+            ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
+                                     .Cast<AddOnType>()
+                                     .Select(a => new SelectListItem
+                                     {
+                                         Value = a.ToString(),
+                                         Text = a.ToString()
+                                     }).ToList();
+
+            if (ModelState.IsValid)
+            {
+                if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
+                {
+                    // Crear ruta de la imagen
+                    var fileName = Path.GetFileName(addOn.AddOnImageFile.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
+
+                    // Guardar archivo en wwwroot/img/addons
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await addOn.AddOnImageFile.CopyToAsync(stream);
+                    }
+
+                    // Guardar la ruta relativa en la base de datos
+                    addOn.AddOnImage = $"img/addons/{fileName}";
+                }
+
+                // Guardar en la base de datos
+                _db.AddOns.Add(addOn);
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(GetAddons));
+
+            }
+
+            return View(addOn);
+        }
+
+        public async Task<IActionResult> EditAddOn(int id)
+        {
+            var addOn = await _db.AddOns.FindAsync(id);
+            if (addOn == null)
+                return NotFound();
+
+            ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
+                .Cast<AddOnType>()
+                .Select(a => new SelectListItem
+                {
+                    Value = a.ToString(),
+                    Text = a.ToString()
+                }).ToList();
+
+            return View(addOn);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAddOn(int id, AddOn addOn)
+        {
+            if (id != addOn.AddOnId)
+                return BadRequest();
+
+            ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
+                .Cast<AddOnType>()
+                .Select(a => new SelectListItem
+                {
+                    Value = a.ToString(),
+                    Text = a.ToString()
+                }).ToList();
+
+            if (!ModelState.IsValid)
+                return View(addOn);
+
+            var addOnDb = await _db.AddOns.FindAsync(id);
+            if (addOnDb == null)
+                return NotFound();
+
+            // Actualizar campos
+            addOnDb.AddOnName = addOn.AddOnName;
+            addOnDb.Price = addOn.Price;
+            addOnDb.Type = addOn.Type;
+
+            // Si se sube nueva imagen
+            if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
+            {
+                var fileName = Path.GetFileName(addOn.AddOnImageFile.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await addOn.AddOnImageFile.CopyToAsync(stream);
+
+                addOnDb.AddOnImage = $"img/addons/{fileName}";
+            }
+
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(GetAddons));
+        }
+        public async Task<IActionResult> DeleteAddOn(int id)
+        {
+            var addOn = await _db.AddOns.FindAsync(id);
+            if (addOn == null)
+                return NotFound();
+
+            return View(addOn);
+        }
+        [HttpPost, ActionName("DeleteAddOn")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var addOn = await _db.AddOns.FindAsync(id);
+            if (addOn == null)
+                return NotFound();
+
+            // (Opcional) borrar imagen física
+            if (!string.IsNullOrEmpty(addOn.AddOnImage))
+            {
+                var imagePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    addOn.AddOnImage
+                );
+
+                if (System.IO.File.Exists(imagePath))
+                    System.IO.File.Delete(imagePath);
+            }
+
+            _db.AddOns.Remove(addOn);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(GetAddons));
+        }
+
+
     }
 }
