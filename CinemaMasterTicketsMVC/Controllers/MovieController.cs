@@ -2,6 +2,7 @@
 using CinemaMasterTicketsMVC.Models;
 using CinemaMasterTicketsMVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CinemaMasterTicketsMVC.Controllers
@@ -93,18 +94,23 @@ namespace CinemaMasterTicketsMVC.Controllers
                     Row = row.Name.ToString(),
                     // 2. Ordenamos los asientos dentro de la fila (por número: 1, 2, 3...)
                     Seats = row.Seats
-                        .OrderBy(seat => Convert.ToInt32(seat.Number)) 
+                        .OrderBy(seat => Convert.ToInt32(seat.Number))
                         .Select(seat => new SeatInfo
                         {
                             SeatId = seat.SeatId,
-                            Number = seat.Number, 
+                            Number = seat.Number,
                             IsReserved = reservedSeatIds.Contains(seat.SeatId)
                         }).ToList()
-                    }).ToList()
-                })
+                }).ToList()
+            })
             .FirstOrDefaultAsync();
 
         if (vm == null) return NotFound();
+
+        // OPCIONAL: Guardar el título y precio en Session AQUÍ 
+        // para que el POST de AddOns ya no necesite recibirlos de la vista.
+        HttpContext.Session.SetString("MovieTitle", vm.MovieTitle);
+        HttpContext.Session.SetString("SessionTime", vm.StartTime.ToString("dd/MM/yyyy HH:mm"));
 
         return View(vm);
     }
@@ -123,56 +129,82 @@ namespace CinemaMasterTicketsMVC.Controllers
         return RedirectToAction("Index", "Home");
     }
 
+    //Esta es la que va desde los asientos a los addons
     [HttpPost]
-    public IActionResult AddOns(int sessionId, string selectedSeats)
+    public IActionResult AddOns(int sessionId, string selectedSeats, string totalSeatsPrice)
     {
         if (string.IsNullOrEmpty(selectedSeats))
             return RedirectToAction("SeatSelection", new { sessionId });
 
-        // Guardamos los datos en la sesión
+        decimal precioLimpio = decimal.Parse(totalSeatsPrice, System.Globalization.CultureInfo.InvariantCulture);
+        
+        // Guardamos solo lo que cambia o es nuevo en este paso
         HttpContext.Session.SetInt32("SessionId", sessionId);
         HttpContext.Session.SetString("SelectedSeatIds", selectedSeats);
 
-        return RedirectToAction("AddOns"); // Redirigimos al GET
+        // Guardamos el decimal como string de forma neutra
+        HttpContext.Session.SetString("SeatsSubtotal", precioLimpio.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        Console.WriteLine($"[DEBUG] SeatsSubtotal enviado: {HttpContext.Session.GetString("SeatsSubtotal")}");
+        return RedirectToAction("AddOns");
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddOns()
+    public IActionResult AddOns()
     {
-        // Recuperamos los datos de la sesión
         var sessionId = HttpContext.Session.GetInt32("SessionId");
-        var seatIdsRaw = HttpContext.Session.GetString("SelectedSeatIds");
+        var seatsPriceStr = HttpContext.Session.GetString("SeatsSubtotal");
+        Console.WriteLine($"[DEBUG] SeatsSubtotal recuperado:: {seatsPriceStr}");
 
-        if (sessionId == null || string.IsNullOrEmpty(seatIdsRaw))
-            return RedirectToAction("Index", "Home"); // O a la selección de películas
+        if (sessionId == null || string.IsNullOrEmpty(seatsPriceStr))
+        {
+            return RedirectToAction("Index", "Home");
+        }
 
-        var seatIds = seatIdsRaw.Split(',').Select(int.Parse).ToList();
+        // 1. Convertimos el string de la sesión a decimal (usando el punto que guardamos antes)
+        decimal seatsPrice = decimal.Parse(seatsPriceStr, System.Globalization.CultureInfo.InvariantCulture);
 
-        // Reutilizamos tu ViewModel para mostrar el resumen
-        var vm = await _db.Sessions
-            .Where(s => s.SessionId == sessionId)
-            .Select(s => new SeatSelectionViewModel
-            {
-                SessionId = s.SessionId,
-                MovieTitle = s.Movie!.Title,
-                StartTime = s.StartTime,
-                Price = s.Price,
-                RoomId = s.RoomId,
-                // Aquí cargamos solo los asientos que el usuario seleccionó
-                SeatMap = s.Room!.Rows.Select(row => new RowSeats
-                {
-                    Row = row.Name.ToString(),
-                    Seats = row.Seats
-                        .Where(st => seatIds.Contains(st.SeatId))
-                        .Select(st => new SeatInfo
-                        {
-                            SeatId = st.SeatId,
-                            Number = st.Number
-                        }).ToList()
-                }).Where(r => r.Seats.Any()).ToList()
-            }).FirstOrDefaultAsync();
+        var vm = new AddOnsViewModel
+        {
+            AddOnTypesSelectList = new SelectList(Enum.GetValues(typeof(AddOnType)).Cast<AddOnType>())
+        };
+
+        // 2. PASAR LIMPIO AL VIEWBAG:
+        // Guardamos el decimal original para mostrarlo con coma al usuario
+        ViewBag.SeatsSubtotal = seatsPrice; // Para el texto de la pantalla
+        ViewBag.SeatsSubtotalRaw = seatsPrice.ToString(System.Globalization.CultureInfo.InvariantCulture); // Para el JS
+
+        ViewBag.MovieTitle = HttpContext.Session.GetString("MovieTitle") ?? "Película";
+        ViewBag.SessionTime = HttpContext.Session.GetString("SessionTime") ?? "";
+        ViewBag.SessionId = sessionId;
 
         return View(vm);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAddOnsByType(string type)
+    {
+        // Obtenemos todos los addons activos
+        var addons = await _db.AddOns.ToListAsync();
+
+        // Filtramos por tipo si no es "All" ni vacío
+        if (!string.IsNullOrEmpty(type) && type != "All")
+        {
+            if (Enum.TryParse<AddOnType>(type, out var addonType))
+            {
+                addons = addons.Where(a => a.Type == addonType).ToList();
+            }
+        }
+
+        // Retornamos solo los campos que necesitamos para el JS
+        var result = addons.Select(a => new
+        {
+            a.AddOnId,
+            a.AddOnName,
+            a.Price,
+            a.AddOnImage
+        });
+
+        return Json(result);
     }
 }
 

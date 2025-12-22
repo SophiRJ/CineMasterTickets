@@ -1,54 +1,33 @@
-﻿@model CinemaMasterTicketsMVC.ViewModels.SeatSelectionViewModel
+﻿@model CinemaMasterTicketsMVC.ViewModels.AddOnsViewModel
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h3>Resumen de tu compra</h3>
-        </div>
-        <div class="card-body">
-            <h5>Película: <span class="text-primary">@Model.MovieTitle</span></h5>
-            <p><strong>Fecha y Hora:</strong> @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</p>
-            <p><strong>Sala:</strong> @Model.RoomId</p>
+@{
+    ViewData["Title"] = "AddOns";
+}
+<input type="hidden" id="seatsSubtotalRaw" value="@ViewBag.SeatsSubtotalRaw" />
 
-            <hr />
+<h2>@ViewBag.MovieTitle</h2>
+<p>Sesión: @ViewBag.SessionTime</p>
+<p>Subtotal asientos: @String.Format("{0:N2} €", ViewBag.SeatsSubtotal)</p>
 
-            <h5>Tus Asientos:</h5>
-            <ul class="list-group mb-3">
-                @foreach (var row in Model.SeatMap)
-                {
-                    @foreach (var seat in row.Seats)
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Fila @row.Row - Asiento @seat.Number
-                            <span class="badge bg-success rounded-pill">@Model.Price.ToString("C")</span>
-                        </li>
-                    }
-                }
-            </ul>
-
-            <div class="text-end">
-                @{
-                    var totalSeats = Model.SeatMap.Sum(r => r.Seats.Count);
-                    var totalAmount = totalSeats * Model.Price;
-                }
-                <h4>Total a pagar: <span class="text-success">@totalAmount.ToString("C")</span></h4>
-            </div>
-
-            <hr />
-
-            <h4>¿Deseas añadir complementos?</h4>
-            <div class="alert alert-info">
-                Próximamente: Lista de productos disponibles.
-            </div>
-
-            <div class="d-flex justify-content-between mt-4">
-                <a asp-action="SeatSelection" asp-route-sessionId="@Model.SessionId" class="btn btn-outline-secondary">
-                    Volver a asientos
-                </a>
-                <form asp-controller="Ticket" asp-action="ConfirmPurchase" method="post">
-                    <button type="submit" class="btn btn-primary btn-lg">Finalizar Compra</button>
-                </form>
-            </div>
-        </div>
+<form asp-action="AddOns" method="post">
+    <div class="mb-3">
+        <label asp-for="SelectedType" class="form-label">Filtrar por tipo:</label>
+        <select asp-for="SelectedType" asp-items="Model.AddOnTypesSelectList" class="form-select" id="addonTypeSelect">
+            <option value="">Todos</option>
+        </select>
     </div>
-</div>
+
+    <!-- Aquí se generará dinámicamente la tabla de addons con JS -->
+    <div id="addonsTableContainer"></div>
+
+    <p>Total general: <span id="grandTotal">@String.Format("{0:N2} €", ViewBag.SeatsSubtotal)</span></p>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary me-2">Continuar</button>
+        <a asp-action="BackToHome" class="btn btn-secondary">Volver</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/addOnsList.js"></script>
+}
