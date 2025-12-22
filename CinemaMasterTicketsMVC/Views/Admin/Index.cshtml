@@ -1,0 +1,107 @@
+﻿@model IEnumerable<CinemaMasterTicketsMVC.ViewModels.AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Panel de Administrador";
+
+    var empleados = Model.Where(u => u.IsEmployee).ToList();
+    var clientes = Model.Where(u => u.IsCustomer).ToList();
+}
+
+<h2 class="mb-4">Panel de Administrador</h2>
+
+<!-- ===================== -->
+<!-- EMPLEADOS -->
+<!-- ===================== -->
+<h3 class="mt-4 mb-3">Empleados</h3>
+
+<table class="table table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Rol</th>
+            <th style="width: 30%">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in empleados)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    <span class="badge bg-info">Empleado</span>
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a asp-action="EditEmployee"
+                           asp-route-id="@user.EmployeeId"
+                           class="btn btn-warning btn-sm">
+                            Editar
+                        </a>
+
+                        <a asp-action="DeleteEmployee"
+                           asp-route-id="@user.EmployeeId"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Seguro que deseas borrar este empleado?');">
+                            Borrar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- ===================== -->
+<!-- CLIENTES -->
+<!-- ===================== -->
+<h3 class="mt-5 mb-3">Clientes</h3>
+
+<table class="table table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Estado</th>
+            <th style="width: 30%">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in clientes)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    <span class="badge bg-success">Registrado</span>
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a asp-action="EditCustomer"
+                           asp-route-id="@user.CustomerId"
+                           class="btn btn-warning btn-sm">
+                            Editar
+                        </a>
+
+                        <a asp-action="DeleteCustomer"
+                           asp-route-id="@user.CustomerId"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Seguro que deseas borrar este cliente?');">
+                            Borrar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- ===================== -->
+<!-- ACCIONES -->
+<!-- ===================== -->
+<div class="mt-4 d-flex gap-2">
+    <a asp-action="CreateEmployee" class="btn btn-success">
+        Crear Nuevo Empleado
+    </a>
+
+    <a asp-action="Roles" class="btn btn-secondary">
+        Gestionar Roles
+    </a>
+</div>

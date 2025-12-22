@@ -1,0 +1,270 @@
+﻿/* 1. Fondo tenue a pantalla completa */
+.movie-backdrop-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.2) blur(8px);
+    z-index: -1;
+    transform: scale(1.1);
+}
+
+/* 2. Contenedor centrado */
+.movie-details-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 40px;
+}
+
+/* 3. Tarjeta estilo Cristal (Glassmorphism) */
+.movie-glass-card {
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: flex;
+    max-width: 1100px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* 4. Sección Izquierda (Póster) */
+.movie-poster-section {
+    flex: 0 0 350px;
+    padding: 30px;
+}
+
+.movie-poster-img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* 5. Sección Derecha (Info) */
+.movie-info-section {
+    flex: 1;
+    padding: 50px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #f5c518;
+}
+
+.movie-metadata {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #ccc;
+}
+
+.movie-genres-list {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.genre-item {
+    border: 1px solid rgba(245, 197, 24, 0.5);
+    padding: 5px 15px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #f5c518;
+    background: rgba(245, 197, 24, 0.05);
+}
+
+/* 7. Sinopsis y Sesiones */
+.movie-synopsis h3, .movie-sessions h3 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: #f5c518;
+    margin-bottom: 15px;
+}
+
+.movie-synopsis p {
+    line-height: 1.6;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+}
+
+.sessions-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.session-time {
+    padding: 10px 20px;
+    border: 1px solid #e50914;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+    .session-time:hover {
+        background: #e50914;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+    }
+
+
+.days-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.day-button {
+    padding: 8px 16px;
+    border: 1px solid #f5c518;
+    background: rgba(245, 197, 24, 0.05);
+    color: #f5c518;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .day-button:hover {
+        background: #f5c518;
+        color: #141414;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(245, 197, 24, 0.4);
+    }
+
+/* 9. Tablas de sesiones */
+.sessions-tables {
+    margin-top: 20px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.sessions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: none;
+    transition: all 0.3s ease;
+}
+
+    /* Cabecera */
+    .sessions-table th {
+        background: rgba(245, 197, 24, 0.2);
+        color: #f5c518;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        padding: 15px;
+        border-bottom: 1px solid rgba(245,197,24,0.3);
+    }
+
+    /* Celdas */
+    .sessions-table td {
+        position: relative; /* necesario para el ::before */
+        z-index: 1;
+    }
+
+    .sessions-table tr:hover td:first-child::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(to bottom, #e50914, #ff1a2c);
+        border-radius: 3px 0 0 3px;
+        z-index: 0;
+    }
+
+    /* Botón comprar dentro de la tabla */
+    .sessions-table a.btn {
+        padding: 6px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        background: #e50914;
+        color: #fff;
+        text-decoration: none;
+        box-shadow: 0 5px 15px rgba(229, 9, 20, 0.4);
+        transition: all 0.3s ease;
+    }
+
+        .sessions-table a.btn:hover {
+            background: #ff1a2c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+        }
+
+    /* Bordes redondeados menos exagerados */
+    .sessions-table tr:first-child th:first-child {
+        border-top-left-radius: 6px;
+    }
+
+    .sessions-table tr:first-child th:last-child {
+        border-top-right-radius: 6px;
+    }
+
+    .sessions-table tr:last-child td:first-child {
+        border-bottom-left-radius: 6px;
+    }
+
+    .sessions-table tr:last-child td:last-child {
+        border-bottom-right-radius: 6px;
+    }
+
+/* 10. Responsivo */
+@media (max-width: 900px) {
+    .movie-glass-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .movie-poster-section {
+        flex: 1;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .movie-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .sessions-table th, .sessions-table td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .sessions-table a.btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+
+    .day-button {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+}

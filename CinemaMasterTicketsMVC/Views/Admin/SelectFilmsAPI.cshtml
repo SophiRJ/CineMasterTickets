@@ -1,0 +1,117 @@
+﻿@using X.PagedList.Mvc.Core; 
+@using X.PagedList;          
+@model IPagedList<dynamic>
+
+@{
+    ViewData["Title"] = "Películas API";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/getFilms.css" />
+}
+
+<h2 class="mb-4">Listado de películas (TMDB)</h2>
+
+@* Boton para ir a la cartelera y poder asignar sesiones a las peliculas seleccionadas *@
+<div class="d-flex justify-content-end mb-3">
+    <a asp-controller="Cartelera"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Ir a Cartelera
+    </a>
+</div>
+
+@* Buscador *@
+<form asp-action="SelectFilmsAPI" method="get" class="mb-3 d-flex align-items-end gap-3 flex-wrap">
+    <div>
+        <label for="searchInput" class="form-label">Buscar película:</label>
+        <input name="searchString"
+               type="text"
+               class="form-control"
+               placeholder="Ej: Star Wars..."
+               value="@ViewBag.CurrentSearch" />
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
+
+@* Logica para mostrar el container de las pelis *@
+<div id="moviesContainer" class="movies-container">
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var movie in Model)
+        {
+            <div class="movie-card">
+                @* Hay que meter la url + el atributo del Json poster path ya que la API no manda la url completa *@ 
+                <img src="https://image.tmdb.org/t/p/w500@(movie.poster_path)" alt="@movie.title" />
+                <div class="movie-body">
+                    <div class="movie-title">@movie.title</div>
+                    <button class="btn btn-primary"
+                    @* En este OnClick es donde hacemos el AJAX con Newtonsoft para añadir la peli pulsada *@
+                            onclick='addMovie(@Newtonsoft.Json.JsonConvert.SerializeObject(movie))'>
+                        Añadir
+                    </button>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No se encontraron películas.</p>
+    }
+<div class="d-flex justify-content-center mt-4 movie-pagination">
+    @Html.PagedListPager(Model, page => Url.Action("SelectFilmsAPI", new { 
+        pageNumber = page, 
+        searchString = ViewBag.CurrentSearch
+    }), 
+    new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" },
+        UlElementClasses = new string[] { "pagination" }
+    })
+</div>
+
+@* Debido a la gran cantidad de JS que se van a generar, hemos decidido hacerlos bajo sus vistas, o en otros archivos independientes*@
+@section Scripts {
+    <script>
+        // Funcion para añadir pelis que recoje los datos de la peli necesarios para el HTMLModElement del Modelo
+        //recibido desde el controlador y se las pasa para guardarlas
+        async function addMovie(movie) {
+            const movieData = {
+                MovieAPIId: movie.id.toString(),
+                Title: movie.title,
+                DurationMinutes: movie.runtime,
+                Director: movie.director,
+                OverView: movie.overview,
+                PosterUrl: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null,
+                BackdropUrl: movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : null,
+                Genre: movie.genre_ids ? movie.genre_ids.join(", ") : ""
+            };
+            //Aqui le pasamos la peli a la ruta de addMovie delete Controller
+            try {
+                const response = await fetch("/Admin/AddMovie", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(movieData)
+                });
+
+                //AbortSignal todo ok cambia los atributos del boton para que aparezca desactivado yield muestra mensaje
+                if (response.ok) {
+                    alert("Película añadida con éxito: " + movie.title);
+                    const btn = document.getElementById(`btn-${movieId}`);
+                    if (btn) {
+                        btn.innerText = "Añadido"; 
+                        btn.classList.remove("btn-primary"); 
+                        btn.classList.add("btn-secondary"); 
+                        btn.disabled = true; 
+                    }
+                } else {
+                    alert("Error al añadir la película.");
+                }
+                //Si no manejamos errores
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+}

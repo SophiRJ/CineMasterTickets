@@ -1,0 +1,73 @@
+﻿@model IEnumerable<CinemaMasterTicketsMVC.Models.Session>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/getFilms.css" />
+}
+@* 
+    La vista parcial recibe como modelo una colección de sesiones (IEnumerable<Session>)
+    asociadas a una película específica. Cada sesión contiene información como:
+    - StartTime: hora de inicio de la sesión
+    - RoomId: ID de la sala
+    - Price: precio de la sesión
+*@
+
+@if (!Model.Any())
+{
+    @* 
+        Si no hay sesiones en la colección, mostramos un mensaje indicando que la película
+        aún no tiene sesiones programadas. 
+        Esto evita mostrar una lista vacía al usuario.
+    *@
+    <div class="text-muted">Esta película aún no tiene sesiones.</div>
+    //Opcion de eliminar pelicula de la bd si no tiene sesines activas
+    <button class="btn btn-danger btn-sm"
+            onclick="deleteMovieFromSessions()">
+        Eliminar película
+    </button>
+}
+else
+{
+    @* 
+        Si hay sesiones, las mostramos en una lista con Bootstrap.
+        Cada sesión se representa como un elemento <li> con su información.
+    *@
+    <ul class="list-group">
+        @foreach (var s in Model)
+        {
+            @* 
+                Cada elemento de la lista muestra:
+                - La hora de inicio formateada en "dd/MM HH:mm"
+                - El ID de la sala
+                - El precio de la sesión en euros
+                Se usa d-flex y justify-content-between para separar la información y el precio.
+            *@
+            <li class="list-group-item d-flex justify-content-between">
+                <span>
+                    @s.StartTime.ToString("dd/MM HH:mm")
+                    · Sala @s.RoomId
+                </span>
+
+                @* Cancelar sesion*@
+                <div class="d-flex gap-2">
+                    <strong>@s.Price €</strong>
+                    @* Boton editar sesion *@
+                    <button class="btn btn-outline-primary btn-sm"
+                            onclick="openEditSession(
+                                        @s.SessionId,
+                                        '@s.StartTime.ToString("yyyy-MM-ddTHH:mm")',
+                                        @s.RoomId,
+                                        @s.Price,
+                                        @s.MovieId
+                                    )">
+                        Editar
+                    </button>
+                    @* Boton cancelar sesion *@
+                    <button class="btn btn-warning btn-sm"
+                            onclick="cancelSession(@s.SessionId, @s.MovieId)">
+                        Cancelar
+                    </button>
+                </div>
+            </li>
+        }
+    </ul>
+}

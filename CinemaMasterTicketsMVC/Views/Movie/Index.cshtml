@@ -1,0 +1,135 @@
+﻿@model CinemaMasterTicketsMVC.Models.Movie
+
+@*Conexion a su archivo de estilos  *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/movieDetails.css" />
+}
+
+@* Aqui metemos el div con la imagen de fondo de pantalla (es el proprio Backdrop con efecto difuminado *@
+<div class="movie-backdrop-fixed" style="background-image: url('@Model.BackdropUrl');"></div>
+
+@* Div para construir los detalles de la peli *@
+<div class="movie-details-container">
+    <div class="movie-glass-card">
+        @* Imagen de la peli *@
+        <div class="movie-poster-section">
+            <img src="@Model.PosterUrl" alt="Póster @Model.Title" class="movie-poster-img" />
+        </div>
+        @* Titulo *@
+        <div class="movie-info-section">
+            <h1 class="movie-title">@Model.Title</h1>
+            @* Titulo *@
+            <div class="movie-metadata">
+                <span class="movie-duration">@Model.DurationMinutes min</span>
+                <span class="movie-director">Director: <strong>@Model.Director</strong></span>
+            </div>
+            @* Generos que posea la pelicula *@
+            <div class="movie-genres-list">
+                @if (Model.GenreList != null)
+                {
+                    foreach (var genero in Model.GenreList)
+                    {
+                        <span class="genre-item">@genero</span>
+                    }
+                }
+            </div>
+            @* Descripcion o sinopsis *@
+            <div class="movie-synopsis">
+                <h3>Sinopsis</h3>
+                <p>@Model.OverView</p>
+            </div>
+
+            @* sesiones disponibles *@
+            <div class="movie-sessions">
+                <h3>Sesiones Disponibles</h3>
+
+                @* Botones de los días en cada sesion*@
+                <div class="days-buttons">
+                    @foreach (var day in ViewBag.SessionsByDay)
+                    {
+                        @* Boton que contiene la info del dia de la sesion (solo del dia).Al pulsarse
+                            se cargará la tabla con sus sesiones (horarios) de forma dinamica.
+                        *@
+                        <button type="button" class="day-button" data-day="@day.Day.ToString("yyyy-MM-dd")">
+                            @day.Day.ToString("dddd, dd MMM")
+                        </button>
+                    }
+                </div>
+
+                @* Tablas de sesiones por día, ocultas por defecto hasta que el usuario no pulse un dia *@
+                <div class="sessions-tables">
+                    @foreach (var daysession in ViewBag.SessionsByDay)
+                    {
+                        <table class="sessions-table text-center" data-day="@daysession.Day.ToString("yyyy-MM-dd")" style="display:none;">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Sala</th>
+                                    <th>Precio</th>
+                                    <th>Comprar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @* Tabla para representar las sesiones que tenga un día determinado. *@
+                                @foreach (var session in daysession.Sessions)
+                                {
+                                    <tr>
+                                        @* Formateo de los datos necesarios en la tabla *@
+                                        <td>@session.Session.StartTime.ToString("HH:mm")</td>
+                                        <td>@session.Session.RoomId</td>
+                                        <td>@session.Session.Price.ToString("C")</td>
+                                        <td>
+                                            @* Formulario que llevará a la pagina de seleccion de butacas *@
+                                            <form asp-controller="Movie"
+                                                  asp-action="SeatSelection"
+                                                  method="post"
+                                                  class="d-inline">
+                                                @* Escodemos el id necesario para identificar la sesion de la pelicula y pasarla
+                                                    a la siguiente pagina de seleccion de silla
+                                                *@
+                                                <input type="hidden" name="SessionId" value="@session.Session.SessionId" />
+                                                @* Logica para mostrar o deshabilitar los botones de comprar tickets si la sala esta llena *@
+                                                @if (session.HasAvailableSeats)
+                                                {
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Comprar Entradas
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-secondary" disabled>
+                                                        Sala completa
+                                                    </button>
+                                                    
+                                                }
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+                <a asp-controller="Movie" asp-action="BackToHome" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver a la cartelera
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@* Script JS para activar o desactivar la tabla cuando se pulse un dia *@
+@section Scripts {
+    <script>
+        const buttons = document.querySelectorAll('.day-button');
+        const tables = document.querySelectorAll('.sessions-table');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const selectedDay = btn.dataset.day;
+                tables.forEach(table => {
+                    table.style.display = table.dataset.day === selectedDay ? 'table' : 'none';
+                });
+            });
+        });
+    </script>
+}

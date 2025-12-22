@@ -1,0 +1,100 @@
+﻿@model IEnumerable<CinemaMasterTicketsMVC.Models.Movie>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+@* Si el modelo tiene datos, mostramos la pagina *@
+@if (Model != null && Model.Any())
+{
+    @* Logica pra montar el carrousel con los posters de las imagenes. Utiliza bootstrap para montar el carrousel, 
+para montar la logica de deslizamiento al iniciar la pagina(ride) y la de pausa con el hover(cuando el raton se ponde encima)
+    *@
+    <div id="movieCarousel" class="carousel slide movie-banner-container" data-bs-ride="carousel" data-bs-pause="hover">
+        @* Aqui es donde se colocan todos los elementos del carrousel *@
+        <div class="carousel-inner">
+            @{
+                @* esto es un pequeño truquillo de C# para saber cual es el primer elemento en mostrarse
+                , si no el carrousel no mostrara nada.*@
+                var first = true;
+            }
+            @* vamos a ir construyendo los elementos del carrousel a traves del Model *@
+            @foreach (var movie in Model)
+            {
+                @* Iniciamos los items del carrousel, poniendole solo al primer elemento la clase activa
+                    y un intervalo de 5 seg para que se deslice automaticamente en ese tiempo.
+                    Solo debe estar activo el primer elemento, si hay mas de uno, el carrousel intentara mostrar
+                    mas de uno a la vez y fallara, por el contrario si no hay ninguno actio, el carrousel
+                    no sabra por donde empezar y no mostrara ninguna
+                *@
+                <div class="carousel-item @(first ? "active" : "")" data-bs-interval="5000">
+                    @* Este div contiene la foto de la peli(el poster) *@
+                    <div class="carousel-clip">
+                        <img src="@movie.BackdropUrl" class="carousel-backdrop-img" alt="@movie.Title">
+                    </div>
+                    @* Este div contiene tanto el titulo como el boton que nos llevara a la pagina de detalles
+                        de la pelicula seleccionada
+                    *@
+                    <div class="custom-caption">
+                        <h2>@movie.Title</h2>
+                        <a asp-controller="Movie"
+                           asp-action="Index"
+                           asp-route-id="@movie.MovieId"
+                           class="btn-futuristic">
+                            COMPRAR ENTRADAS
+                        </a>
+                    </div>
+
+                </div>
+                first = false;
+            }
+        </div>
+
+        @* Controles de flechas para deslizar manualmente las peliculas del carrousel *@
+        <button class="carousel-control-prev" type="button" data-bs-target="#movieCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#movieCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    @* Seccion para mostrar un titulo para la seccion de peliculas *@
+    <div class="container mt-5">
+        <div class="section-title-container mb-5">
+            <h2 class="section-title">Cartelera Actual</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5 g-4">
+            @foreach (var movie in Model)
+            {
+                <div class="col">
+                    <div class="movie-card-mini">
+                        <div class="movie-card-poster">
+                            <img src="@movie.PosterUrl" alt="@movie.Title" loading="lazy">
+                            <div class="movie-card-overlay">
+                                <a asp-controller="Movie" asp-action="Index" asp-route-id="@movie.MovieId" class="btn-detail-mini">
+                                    VER DETALLES
+                                </a>
+                            </div>
+                        </div>
+                        @* Título pegado a la imagen *@
+                        <div class="movie-card-info text-center">
+                            <h6 class="movie-mini-title">@movie.Title</h6>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    @* Mensaje amigable cuando no hay sesiones disponibles *@
+    <div class="no-sessions-container">
+        <div class="no-sessions-content">
+            <h1 class="display-4 fw-bold text-info">CARTELERA EN PREPARACIÓN</h1>
+            <p class="lead text-light">Estamos preparando las mejores proyecciones para ti. Vuelve pronto para ver los horarios disponibles.</p>
+            <div class="neon-line"></div>
+        </div>
+    </div>
+}

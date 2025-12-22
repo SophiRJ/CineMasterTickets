@@ -1,0 +1,65 @@
+﻿.seat-map {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.row-label {
+    width: 20px;
+    font-weight: bold;
+}
+
+.seat {
+    width: 30px; /* ancho de la butaca */
+    height: 30px; /* alto de la butaca */
+    background-color: #4CAF50; /* color por defecto */
+    margin: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    /* Esquinas superiores redondeadas, inferiores rectas */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+    .seat.available:hover {
+        background-color: #45a049;
+        transform: translateY(-2px); /* efecto “levantar” */
+    }
+
+    .seat.reserved {
+        background-color: #999; /* gris para asientos ocupados */
+        cursor: not-allowed;
+    }
+
+    .seat.selected {
+        background-color: #ff9800; /* naranja para seleccionados */
+    }
+
+
+
+    /* Hueco antes del 5 */
+    .seat:nth-child(6) {
+        margin-left: 50px;
+    }
+
+    /* Hueco antes del 17 */
+    .seat:nth-child(18) {
+        margin-left: 50px;
+    }
+

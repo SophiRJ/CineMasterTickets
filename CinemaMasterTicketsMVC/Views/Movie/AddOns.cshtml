@@ -1,0 +1,54 @@
+﻿@model CinemaMasterTicketsMVC.ViewModels.SeatSelectionViewModel
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h3>Resumen de tu compra</h3>
+        </div>
+        <div class="card-body">
+            <h5>Película: <span class="text-primary">@Model.MovieTitle</span></h5>
+            <p><strong>Fecha y Hora:</strong> @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Sala:</strong> @Model.RoomId</p>
+
+            <hr />
+
+            <h5>Tus Asientos:</h5>
+            <ul class="list-group mb-3">
+                @foreach (var row in Model.SeatMap)
+                {
+                    @foreach (var seat in row.Seats)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Fila @row.Row - Asiento @seat.Number
+                            <span class="badge bg-success rounded-pill">@Model.Price.ToString("C")</span>
+                        </li>
+                    }
+                }
+            </ul>
+
+            <div class="text-end">
+                @{
+                    var totalSeats = Model.SeatMap.Sum(r => r.Seats.Count);
+                    var totalAmount = totalSeats * Model.Price;
+                }
+                <h4>Total a pagar: <span class="text-success">@totalAmount.ToString("C")</span></h4>
+            </div>
+
+            <hr />
+
+            <h4>¿Deseas añadir complementos?</h4>
+            <div class="alert alert-info">
+                Próximamente: Lista de productos disponibles.
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="SeatSelection" asp-route-sessionId="@Model.SessionId" class="btn btn-outline-secondary">
+                    Volver a asientos
+                </a>
+                <form asp-controller="Ticket" asp-action="ConfirmPurchase" method="post">
+                    <button type="submit" class="btn btn-primary btn-lg">Finalizar Compra</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

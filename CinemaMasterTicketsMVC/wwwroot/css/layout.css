@@ -1,0 +1,133 @@
+﻿body {
+    background: radial-gradient(circle at top, #1a1a1a, #000);
+    color: #eaeaea;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+/* =====================================================
+   NAVBAR CINE (NETFLIX STYLE)
+   ===================================================== */
+
+.navbar {
+    background: linear-gradient(135deg, #b20710, #e50914) !important;
+    border-bottom: 2px solid #8b0000;
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.8);
+}
+
+/* =====================================================
+   LOGO / BRAND
+   ===================================================== */
+
+.navbar-brand {
+    color: #fff !important; /* BLANCO para diferenciar */
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+    transition: all 0.3s ease;
+}
+
+    .navbar-brand:hover {
+        color: #f5c518 !important; /* Amarillo al hover */
+        text-shadow: 0 0 12px rgba(245,197,24,0.9);
+    }
+
+/* =====================================================
+   LINKS NAVBAR (HOME, PRIVACY, ETC.)
+   ===================================================== */
+
+.navbar .nav-link {
+    color: #f1f1f1 !important;
+    font-weight: 600;
+    margin: 0 6px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+    /* Subrayado animado */
+    .navbar .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 4px;
+        width: 0;
+        height: 2px;
+        background-color: #f5c518;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .navbar .nav-link:hover {
+        color: #f5c518 !important;
+    }
+
+        .navbar .nav-link:hover::after {
+            width: 70%;
+        }
+
+/* =====================================================
+   BOTONES LOGIN / REGISTER / LOGOUT
+   ===================================================== */
+
+/* Dropdown contenedor */
+.navbar .dropdown-menu {
+    background-color: #111;
+    border: 1px solid #222;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* Items base */
+.navbar .dropdown-item {
+    color: #ddd;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+    /* LOGIN */
+    .navbar .dropdown-item.login {
+        color: #f5c518;
+    }
+
+        .navbar .dropdown-item.login:hover {
+            background-color: rgba(245,197,24,0.15);
+            color: #fff;
+        }
+
+    /* REGISTER */
+    .navbar .dropdown-item.register {
+        color: #4cd964; /* verde suave */
+    }
+
+        .navbar .dropdown-item.register:hover {
+            background-color: rgba(76,217,100,0.15);
+            color: #fff;
+        }
+
+    /* LOGOUT */
+    .navbar .dropdown-item.logout {
+        color: #e50914;
+        font-weight: 600;
+        font-size: 0.85rem; /* más pequeño */
+        padding: 6px 12px; /* menos padding */
+        border-radius: 6px; /* bordes suaves */
+        transition: all 0.3s ease;
+    }
+
+        .navbar .dropdown-item.logout:hover {
+            background-color: rgba(229, 9, 20, 0.3); /* hover más suave */
+            color: #fff;
+            box-shadow: 0 0 8px rgba(229,9,20,0.5);
+        }
+
+/* =====================================================
+   BOTÓN HAMBURGUESA
+   ===================================================== */
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.6);
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}

@@ -1,0 +1,52 @@
+﻿@model CinemaMasterTicketsMVC.ViewModels.CreateEmployeeBoxOficceViewModel
+
+@{
+    ViewData["Title"] = "Crear Empleado";
+}
+
+<h2>Crear Empleado</h2>
+
+<form asp-controller="Admin" asp-action="CreateEmployee" method="post">
+   
+
+    <div class="mb-3">
+        <label asp-for="Employee.Firstname" class="form-label"></label>
+        <input asp-for="Employee.Firstname" class="form-control" />
+        <span asp-validation-for="Employee.Firstname" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.Lastname" class="form-label"></label>
+        <input asp-for="Employee.Lastname" class="form-control" />
+        <span asp-validation-for="Employee.Lastname" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.Email" class="form-label"></label>
+        <input asp-for="Employee.Email" class="form-control" />
+        <span asp-validation-for="Employee.Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.DNI" class="form-label"></label>
+        <input asp-for="Employee.DNI" class="form-control" />
+        <span asp-validation-for="Employee.DNI" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Employee.BoxOfficeId" class="form-label">Taquilla</label>
+        <select asp-for="Employee.BoxOfficeId"
+                asp-items="Model.BoxOffices"
+                class="form-select">
+            <option value="">-- Selecciona una taquilla --</option>
+        </select>
+        <span asp-validation-for="Employee.BoxOfficeId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear Empleado</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
