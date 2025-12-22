@@ -1,4 +1,5 @@
-﻿let currentMovieId = null;
+﻿
+let currentMovieId = null;
 
 //function loadSessions(movieId) {
 //    currentMovieId = movieId;
@@ -216,6 +217,13 @@ function saveSession() {
             // RECARGA INSTANTÁNEA
             loadSessions(data.MovieId);
 
+            // 2. NUEVO: Recarga la lista global del panel lateral si está abierto
+            //const globalContent = document.getElementById('activeSessionsContent');
+            //if (globalContent) {
+            //    fetch('/Cartelera/ActiveSessions')
+            //        .then(r => r.text())
+            //        .then(html => globalContent.innerHTML = html);
+
             // CERRAR MODAL
             const modalElement = document.getElementById("sessionModal");
             const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -272,3 +280,30 @@ function showSessionError(message) {
     div.textContent = message;
     div.classList.remove("d-none");
 }
+//window.openActiveSessionsModal = function () {
+//    // 1. Instanciar y mostrar el Offcanvas de Bootstrap
+//    const element = document.getElementById('activeSessionsModal');
+//    if (!element) {
+//        console.error("No se encontró el elemento 'activeSessionsModal' en el DOM.");
+//        return;
+//    }
+//    const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(element);
+//    offcanvas.show();
+
+//    // 2. Cargar el contenido de la tabla
+//    const contentDiv = document.getElementById('activeSessionsContent');
+
+//    fetch('/Cartelera/ActiveSessions')
+//        .then(response => {
+//            if (!response.ok) throw new Error("Error en la carga");
+//            return response.text();
+//        })
+//        .then(html => {
+//            contentDiv.innerHTML = html;
+//        })
+//        .catch(err => {
+//            contentDiv.innerHTML = '<div class="alert alert-danger">No se pudieron cargar las sesiones.</div>';
+//            console.error(err);
+//        });
+//}
+
