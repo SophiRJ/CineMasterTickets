@@ -7,7 +7,20 @@
     var clientes = Model.Where(u => u.IsCustomer).ToList();
 }
 
-<h2 class="mb-4">Panel de Administrador</h2>
+<h2 class="mb-4">Gestión de Usuarios</h2>
+
+<!-- ===================== -->
+<!-- BOTONES SUPERIORES -->
+<!-- ===================== -->
+<div class="d-flex justify-content-end gap-2 mb-4">
+    <a asp-action="CreateEmployee" class="btn btn-success">
+        Crear Nuevo Empleado
+    </a>
+
+    <a asp-action="Home" asp-controller="Admin" class="btn btn-secondary">
+        Volver al Panel
+    </a>
+</div>
 
 <!-- ===================== -->
 <!-- EMPLEADOS -->
@@ -96,12 +109,12 @@
 <!-- ===================== -->
 <!-- ACCIONES -->
 <!-- ===================== -->
-<div class="mt-4 d-flex gap-2">
+@* <div class="mt-4 d-flex gap-2">
     <a asp-action="CreateEmployee" class="btn btn-success">
         Crear Nuevo Empleado
     </a>
 
-    <a asp-action="Roles" class="btn btn-secondary">
+   @*  <a asp-action="Roles" class="btn btn-secondary">
         Gestionar Roles
-    </a>
-</div>
+    </a> 
+</div> *@

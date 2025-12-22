@@ -1,0 +1,97 @@
+﻿/* ===== ADDONS - ESTILO GENERAL ===== */
+
+h2 {
+    color: #f8f9fa;
+    margin-bottom: 1.5rem;
+}
+
+/* ===== TABLA ===== */
+
+.table {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table thead {
+        background-color: #1f1f1f;
+    }
+
+    .table th {
+        color: #f8f9fa;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.05em;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* ===== IMÁGENES ===== */
+
+    .table img,
+    form img {
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+    }
+
+/* ===== BOTONES ===== */
+
+.btn {
+    border-radius: 6px;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.6rem;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-success {
+    background-color: #198754;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+/* ===== FORMULARIOS ===== */
+
+.form-group label {
+    color: #f8f9fa;
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: #1e1e1e;
+    color: #f8f9fa;
+    border: 1px solid #444;
+}
+
+    .form-control:focus {
+        background-color: #1e1e1e;
+        color: #f8f9fa;
+        border-color: #0d6efd;
+        box-shadow: none;
+    }
+
+/* ===== ALERTAS / VALIDACIONES ===== */
+
+.text-danger {
+    font-size: 0.85rem;
+}

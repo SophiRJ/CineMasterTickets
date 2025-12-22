@@ -1,0 +1,40 @@
+﻿.admin-card {
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+}
+
+    .admin-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    }
+
+.admin-icon {
+    font-size: 3rem;
+}
+
+/* Colores por sección */
+.users-card {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.movies-card {
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+}
+
+.addons-card {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.sales-card {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    color: #212529;
+}
+
+.reports-card {
+    background: linear-gradient(135deg, #232526, #414345);
+}
+
+.settings-card {
+    background: linear-gradient(135deg, #8360c3, #2ebf91);
+}

@@ -1,0 +1,49 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CinemaMasterTicketsMVC.Models.AddOn
+@*Conexion a su archivo de estilos  *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/addons.css" />
+}
+@{
+    ViewData["Title"] = "Agregar AddOn";
+}
+
+<h2>Agregar AddOn</h2>
+
+<form asp-action="AddAddon" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="AddOnName"></label>
+        <input asp-for="AddOnName" class="form-control" />
+        <span asp-validation-for="AddOnName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Type"></label>
+        <select asp-for="Type" asp-items="ViewBag.AddOnTypes" class="form-control"></select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AddOnImageFile">Imagen del AddOn</label>
+        <input asp-for="AddOnImageFile" type="file" class="form-control" />
+        <span asp-validation-for="AddOnImageFile" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
