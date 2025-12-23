@@ -4,6 +4,7 @@ using CinemaMasterTicketsMVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace CinemaMasterTicketsMVC.Controllers
 {
@@ -74,10 +75,18 @@ namespace CinemaMasterTicketsMVC.Controllers
 
     public async Task<IActionResult> SeatSelection(int sessionId)
     {
+        HttpContext.Session.SetInt32("SessionId",sessionId);
         var reservedSeatIds = await _db.TicketSeats
         .Where(ts => ts.SessionId == sessionId)
         .Select(ts => ts.SeatId)
         .ToListAsync();
+
+        // ✅ Asientos seleccionados por el usuario (Session)
+        var selectedSeatIdsStr = HttpContext.Session.GetString("SelectedSeatIds");
+
+        var selectedSeatIds = string.IsNullOrEmpty(selectedSeatIdsStr)
+            ? new List<int>()
+            : selectedSeatIdsStr.Split(',').Select(int.Parse).ToList();
 
         var vm = await _db.Sessions
             .Where(s => s.SessionId == sessionId)
@@ -88,27 +97,28 @@ namespace CinemaMasterTicketsMVC.Controllers
                 StartTime = s.StartTime,
                 Price = s.Price,
                 RoomId = s.RoomId,
-                // 1. Ordenamos las filas (por nombre: A, B, C...)
-                SeatMap = s.Room!.Rows.OrderBy(r => r.Name).Select(row => new RowSeats
-                {
-                    Row = row.Name.ToString(),
-                    // 2. Ordenamos los asientos dentro de la fila (por número: 1, 2, 3...)
-                    Seats = row.Seats
-                        .OrderBy(seat => Convert.ToInt32(seat.Number))
-                        .Select(seat => new SeatInfo
-                        {
-                            SeatId = seat.SeatId,
-                            Number = seat.Number,
-                            IsReserved = reservedSeatIds.Contains(seat.SeatId)
-                        }).ToList()
-                }).ToList()
+                SeatMap = s.Room!.Rows
+                    .OrderBy(r => r.Name)
+                    .Select(row => new RowSeats
+                    {
+                        Row = row.Name.ToString(),
+                        Seats = row.Seats
+                            .OrderBy(seat => Convert.ToInt32(seat.Number))
+                            .Select(seat => new SeatInfo
+                            {
+                                SeatId = seat.SeatId,
+                                Number = seat.Number,
+                                IsReserved = reservedSeatIds.Contains(seat.SeatId),
+
+                                // ✅ AQUÍ ESTÁ LA CLAVE
+                                IsSelected = selectedSeatIds.Contains(seat.SeatId)
+                            }).ToList()
+                    }).ToList()
             })
             .FirstOrDefaultAsync();
 
         if (vm == null) return NotFound();
 
-        // OPCIONAL: Guardar el título y precio en Session AQUÍ 
-        // para que el POST de AddOns ya no necesite recibirlos de la vista.
         HttpContext.Session.SetString("MovieTitle", vm.MovieTitle);
         HttpContext.Session.SetString("SessionTime", vm.StartTime.ToString("dd/MM/yyyy HH:mm"));
 
@@ -131,20 +141,24 @@ namespace CinemaMasterTicketsMVC.Controllers
 
     //Esta es la que va desde los asientos a los addons
     [HttpPost]
-    public IActionResult AddOns(int sessionId, string selectedSeats, string totalSeatsPrice)
+    public IActionResult SeatSelectionPost(SeatSelectionViewModel model)
     {
-        if (string.IsNullOrEmpty(selectedSeats))
-            return RedirectToAction("SeatSelection", new { sessionId });
 
-        decimal precioLimpio = decimal.Parse(totalSeatsPrice, System.Globalization.CultureInfo.InvariantCulture);
-        
-        // Guardamos solo lo que cambia o es nuevo en este paso
-        HttpContext.Session.SetInt32("SessionId", sessionId);
-        HttpContext.Session.SetString("SelectedSeatIds", selectedSeats);
 
-        // Guardamos el decimal como string de forma neutra
-        HttpContext.Session.SetString("SeatsSubtotal", precioLimpio.ToString(System.Globalization.CultureInfo.InvariantCulture));
-        Console.WriteLine($"[DEBUG] SeatsSubtotal enviado: {HttpContext.Session.GetString("SeatsSubtotal")}");
+        if (string.IsNullOrEmpty(model.SelectedSeats))
+        {
+            TempData["ErrorMessage"] = "Debes seleccionar al menos un asiento.";
+            return RedirectToAction("SeatSelection", new { sessionId = model.SessionId });
+        }
+
+        HttpContext.Session.SetString("SelectedSeatIds", model.SelectedSeats);
+        HttpContext.Session.SetString("SelectedSeatNames", model.SelectedSeatNames ?? "");
+        HttpContext.Session.SetString("SeatUserTypes", model.SeatUserTypes ?? "");
+        HttpContext.Session.SetString(
+        "SeatsSubtotal",
+        model.TotalSeatsPrice
+    );
+
         return RedirectToAction("AddOns");
     }
 
@@ -153,7 +167,6 @@ namespace CinemaMasterTicketsMVC.Controllers
     {
         var sessionId = HttpContext.Session.GetInt32("SessionId");
         var seatsPriceStr = HttpContext.Session.GetString("SeatsSubtotal");
-        Console.WriteLine($"[DEBUG] SeatsSubtotal recuperado:: {seatsPriceStr}");
 
         if (sessionId == null || string.IsNullOrEmpty(seatsPriceStr))
         {
@@ -161,7 +174,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
 
         // 1. Convertimos el string de la sesión a decimal (usando el punto que guardamos antes)
-        decimal seatsPrice = decimal.Parse(seatsPriceStr, System.Globalization.CultureInfo.InvariantCulture);
+        decimal seatsPrice = decimal.Parse(seatsPriceStr, new CultureInfo("es-ES"));
 
         var vm = new AddOnsViewModel
         {
@@ -207,7 +220,4 @@ namespace CinemaMasterTicketsMVC.Controllers
         return Json(result);
     }
 }
-
-
-
 

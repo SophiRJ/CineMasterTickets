@@ -7,14 +7,17 @@
 
     <div class="screen">PANTALLA</div>
 
-    <form asp-controller="Movie" asp-action="AddOns" method="post">
-        <input type="hidden" name="sessionId" value="@Model.SessionId" />
-        @* Cambiamos el name a 'selectedSeats' para que coincida con el parámetro del controlador *@
-        <input type="hidden" id="SelectedSeats" name="selectedSeats" />
-        <input type="hidden" id="pricePerSeatData" value="@Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
-        <input type="hidden" id="TotalSeatsPrice" name="totalSeatsPrice" />
+    <form asp-controller="Movie" asp-action="SeatSelectionPost" method="post">
+        <input asp-for="SessionId" type="hidden" />
+        <input asp-for="Price" type="hidden" />
+        <input asp-for="SelectedSeats" type="hidden" />
+        <input asp-for="SelectedSeatNames" type="hidden" />
+        <input asp-for="SeatUserTypes" type="hidden" />
+        <input asp-for="TotalSeatsPrice" type="hidden" step="0.01" min="0.01" />
+        <input type="hidden"
+               id="pricePerSeatData"
+               value="@Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
     
-
         <div class="seat-map">
             @foreach (var row in Model.SeatMap)
             {
@@ -23,7 +26,9 @@
                     @foreach (var seat in row.Seats)
                     {
                         @* La lógica de clases se mantiene idéntica a la original *@
-                        <div class="seat @(seat.IsReserved ? "reserved" : "available")"
+                        <div class="seat
+                             @(seat.IsReserved ? "reserved" : "available")
+                             @(seat.IsSelected ? "selected" : "")"
                              data-seat-id="@seat.SeatId"
                              data-seat-label="@row.Row@seat.Number">
                             @seat.Number
@@ -33,16 +38,27 @@
             }
         </div>
         <div class="selected-seats-container mt-3">
-            <strong>Asientos seleccionados: </strong><span id="selectedSeatsDisplay"></span>
+            <strong>Asientos seleccionados: </strong><span id="selectedSeatsDiv"></span>
             <br />
-            <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDisplay"></span>
+            <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDiv"></span>
+            <br />
+            <strong>Tipos de usuario: </strong><span id="selectedSeatTypesDiv"></span>
+            
         </div>
-        
+        <div id="userTypeContainer"></div>
 
         <div class="mt-2">
             <strong>Total Butacas: </strong>
-            <span id="totalPriceDisplay" class="text-success fw-bold">0,00 €</span>
+            <span id="totalPriceDiv" class="text-success fw-bold">0,00 €</span>
         </div>
+        @* Mensaje de error si no hay asientos seleccionados *@
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
         <div class="d-flex gap-3 mt-4">
             <button type="submit" class="btn btn-primary px-4">
