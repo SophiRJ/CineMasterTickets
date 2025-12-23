@@ -7,9 +7,9 @@
 
 <h2>@ViewBag.MovieTitle</h2>
 <p>Sesión: @ViewBag.SessionTime</p>
-<p>Subtotal asientos: @String.Format("{0:N2} €", ViewBag.SeatsSubtotal)</p>
+<p>Precio Butacas: <span>@($"{ViewBag.SeatsSubtotal:N2} €")</span></p>
 
-<form asp-action="AddOns" method="post">
+<form asp-controller="Ticket" asp-action="Index" method="post">
     <div class="mb-3">
         <label asp-for="SelectedType" class="form-label">Filtrar por tipo:</label>
         <select asp-for="SelectedType" asp-items="Model.AddOnTypesSelectList" class="form-select" id="addonTypeSelect">
@@ -20,12 +20,18 @@
     <!-- Aquí se generará dinámicamente la tabla de addons con JS -->
     <div id="addonsTableContainer"></div>
 
-    <p>Total general: <span id="grandTotal">@String.Format("{0:N2} €", ViewBag.SeatsSubtotal)</span></p>
+    <p>Total general: <span id="grandTotal">@($"{ViewBag.SeatsSubtotal:N2} €")</span></p>
 
     <div class="mt-3">
         <button type="submit" class="btn btn-primary me-2">Continuar</button>
-        <a asp-action="BackToHome" class="btn btn-secondary">Volver</a>
+        <a asp-controller="Movie"
+           asp-action="SeatSelection"
+           asp-route-sessionId="@ViewBag.SessionId"
+           class="btn btn-secondary">
+            Volver
+        </a>
     </div>
+    <input type="hidden" name="addonsData" id="addonsData" />
 </form>
 
 @section Scripts {

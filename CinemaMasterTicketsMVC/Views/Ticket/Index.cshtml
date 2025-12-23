@@ -1,0 +1,58 @@
+﻿@model CinemaMasterTicketsMVC.ViewModels.TicketViewModel
+
+@{
+    ViewData["Title"] = "Resumen de Compra";
+}
+
+<h2>Resumen de Compra</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4 class="card-title">@Model.MovieTitle</h4>
+        <p><strong>Sala:</strong> @Model.RoomNumber</p>
+        <p><strong>Hora sesión:</strong> @Model.SessionTime</p>
+        <p><strong>Asientos seleccionados:</strong> @string.Join(", ", Model.SelectedSeats)</p>
+        <p><strong>Subtotal asientos:</strong> @Model.SeatsSubtotal €</p>
+    </div>
+</div>
+
+@if (Model.Addons.Any())
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>Addons seleccionados</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var addon in Model.Addons)
+                    {
+                        <tr>
+                            <td>@addon.Name</td>
+                            <td>@addon.Quantity</td>
+                            <td>@addon.UnitPrice €</td>
+                            <td>@addon.Total €</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5>Total General: @Model.TotalGeneral €</h5>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver a inicio</a>
+    <a asp-controller="Payment" asp-action="Checkout" class="btn btn-primary">Proceder al pago</a>
+</div>
