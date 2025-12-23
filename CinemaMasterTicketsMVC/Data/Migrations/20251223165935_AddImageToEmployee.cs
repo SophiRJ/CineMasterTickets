@@ -5,14 +5,14 @@
 namespace CinemaMasterTicketsMVC.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ImageAddOn : Migration
+    public partial class AddImageToEmployee : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "AddOnImage",
-                table: "AddOns",
+                name: "ProfileImage",
+                table: "Employees",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -21,8 +21,8 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "AddOnImage",
-                table: "AddOns");
+                name: "ProfileImage",
+                table: "Employees");
         }
     }
 }

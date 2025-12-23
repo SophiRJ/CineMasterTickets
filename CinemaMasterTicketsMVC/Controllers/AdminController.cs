@@ -341,7 +341,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View();
         }
 
-            [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAddon(AddOn addOn)
         {
@@ -430,6 +430,16 @@ namespace CinemaMasterTicketsMVC.Controllers
             // Si se sube nueva imagen
             if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
             {
+
+                //Borrar imagen antigua de la carpeta
+                if (!string.IsNullOrEmpty(addOnDb.AddOnImage))
+                {
+                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", addOnDb.AddOnImage);
+                    if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
+                }
+
+
+                //Guardar nueva imagen
                 var fileName = Path.GetFileName(addOn.AddOnImageFile.FileName);
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
 

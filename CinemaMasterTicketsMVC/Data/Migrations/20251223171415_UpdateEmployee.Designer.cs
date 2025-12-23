@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaMasterTicketsMVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251222102417_ImageAddOn")]
-    partial class ImageAddOn
+    [Migration("20251223171415_UpdateEmployee")]
+    partial class UpdateEmployee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,33 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                     b.HasKey("BoxOfficeId");
 
                     b.ToTable("BoxOffices");
+
+                    b.HasData(
+                        new
+                        {
+                            BoxOfficeId = 1,
+                            BoxOfficeName = "Taquilla Principal - Entrada"
+                        },
+                        new
+                        {
+                            BoxOfficeId = 2,
+                            BoxOfficeName = "Taquilla Lateral - Parking"
+                        },
+                        new
+                        {
+                            BoxOfficeId = 3,
+                            BoxOfficeName = "Taquilla VIP - Planta 1"
+                        },
+                        new
+                        {
+                            BoxOfficeId = 4,
+                            BoxOfficeName = "Taquilla Online - Recogida"
+                        },
+                        new
+                        {
+                            BoxOfficeId = 5,
+                            BoxOfficeName = "Taquilla Express - Kiosko"
+                        });
                 });
 
             modelBuilder.Entity("CinemaMasterTicketsMVC.Models.Customer", b =>
@@ -102,6 +129,9 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
@@ -140,6 +170,9 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeId");
 

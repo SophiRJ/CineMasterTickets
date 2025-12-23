@@ -1,0 +1,77 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile-edit.css" />
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg cinema-edit-container">
+
+                <div class="card-header border-0 pt-4 pb-0 text-center cinema-card-header">
+                    <h2 class="fw-bold cinema-title">
+                        <i class="fas fa-user-edit me-2"></i>Editar Perfil
+                    </h2>
+                    <p class="text-muted small">Actualiza tu información personal</p>
+                    <hr class="cinema-divider" />
+                </div>
+
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Email" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label cinema-label">Nombre</label>
+                                <div class="input-group cinema-input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="FirstName" class="form-control cinema-input" placeholder="Tu nombre" />
+                                </div>
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label cinema-label">Apellido</label>
+                                <div class="input-group cinema-input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="LastName" class="form-control cinema-input" placeholder="Tu apellido" />
+                                </div>
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label cinema-label">Dirección</label>
+                            <div class="input-group cinema-input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                <input asp-for="Address" class="form-control cinema-input" placeholder="Calle, número, piso..." />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="City" class="form-label cinema-label">Ciudad</label>
+                            <div class="input-group cinema-input-group">
+                                <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                <input asp-for="City" class="form-control cinema-input" placeholder="Tu ciudad" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-cinema-save py-2 shadow-sm rounded-pill">
+                                <i class="fas fa-save me-2"></i>Guardar Cambios
+                            </button>
+                            <a asp-action="Index" class="btn btn-cinema-cancel rounded-pill py-2 border-0">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

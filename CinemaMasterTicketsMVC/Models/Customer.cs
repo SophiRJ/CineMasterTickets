@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CinemaMasterTicketsMVC.Models
 {
@@ -24,7 +25,15 @@ namespace CinemaMasterTicketsMVC.Models
 
         public int FidelityPoints { get; set; }
 
-        public bool isActive {  get; set; }
+        //PROPIEDAD QUE NO SE USA
+        public bool isActive {  get; set; } = true;
+
+        // ruta de la imagen (nullable)
+        public string? ProfileImage { get; set; }
+
+        // no persistido (solo para subir)
+        [NotMapped]
+        public IFormFile? ProfileImageFile { get; set; }
 
 
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();

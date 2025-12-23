@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaMasterTicketsMVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251222101909_AddOnsType")]
-    partial class AddOnsType
+    [Migration("20251223104423_AddProfileImageToCustomer")]
+    partial class AddProfileImageToCustomer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddOnId"));
+
+                    b.Property<string>("AddOnImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddOnName")
                         .IsRequired()
@@ -99,6 +102,9 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");

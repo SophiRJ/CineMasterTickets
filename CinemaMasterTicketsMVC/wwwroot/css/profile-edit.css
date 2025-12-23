@@ -1,0 +1,61 @@
+﻿/* Estenedor principal con temática Cinema Dark */
+.cinema-edit-container {
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 15px;
+}
+
+.cinema-card-header {
+    background: transparent;
+}
+
+.cinema-title {
+    color: #ffc107; /* Dorado Cinema */
+}
+
+.cinema-divider {
+    border-color: #b30000; /* Rojo Cinema */
+    opacity: 0.5;
+    width: 80%;
+    margin: 1rem auto;
+}
+
+/* Estilos de los inputs */
+.cinema-input-group .input-group-text {
+    background-color: #121212;
+    border-color: #444;
+    color: #6c757d;
+}
+
+.cinema-input {
+    background-color: #121212 !important;
+    color: white !important;
+    border-color: #444 !important;
+}
+
+    .cinema-input:focus {
+        border-color: #ffc107 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
+    }
+
+.cinema-label {
+    color: #ffc107;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+/* Botones redondeados */
+.btn-cinema-save {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: bold;
+}
+
+    .btn-cinema-save:hover {
+        background-color: #e0a800;
+        color: #000;
+    }
+
+.btn-cinema-cancel {
+    color: #6c757d;
+}

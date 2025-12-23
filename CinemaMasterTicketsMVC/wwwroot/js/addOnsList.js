@@ -26,9 +26,18 @@
             addonPrices[addon.addOnId] = parseFloat(addon.price);
 
             const tr = document.createElement('tr');
+
+
+            const imagePath = addon.addOnImage || addon.addonImage || "";
+
             tr.innerHTML = `
-                <td><img src="${addon.addOnImage}" style="width:50px"/></td>
-                <td>${addon.addOnName}</td>
+                <td>
+                <img src="/${imagePath}" 
+                         alt="${addon.addOnName || addon.addonName}" 
+                         style="width:50px; height:50px; object-fit:cover;" 
+                         onerror="this.src='/img/no-photo.png'"/>
+                </td>
+                <td>${addon.addOnName || addon.addonName}</td>
                 <td>${addon.price.toFixed(2)} €</td>
                 <td>
                     <div class="input-group">
