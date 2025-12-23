@@ -1,1 +1,90 @@
-﻿<h6>Bienvenido Customer</h6>
+﻿@model Customer
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile-index.css" />
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show mb-4 border-0 shadow" role="alert">
+                    <i class="fas fa-info-circle me-2"></i> @TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-lg overflow-hidden cinema-profile-card">
+
+                <div class="cinema-profile-header">
+                    <div class="position-relative d-inline-block">
+                        <img src="~/@(Model.ProfileImage ?? "img/default-avatar.png")"
+                             class="rounded-circle cinema-avatar shadow-lg" />
+
+                        <button type="button" class="btn btn-cinema-camera btn-sm rounded-circle position-absolute bottom-0 end-0"
+                                onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 text-center">
+                    <h2 class="fw-bold mb-1 cinema-name">@Model.FirstName @Model.LastName</h2>
+                    <p class="text-uppercase fw-bold cinema-vip-tag mb-3">Cliente VIP</p>
+
+                    <div class="d-inline-block mb-4 cinema-points-badge">
+                        <span class="h5 m-0"><i class="fas fa-ticket-alt me-2"></i>@Model.FidelityPoints Puntos</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Correo Electrónico</small>
+                        <h6 class="mt-1">@Model.Email</h6>
+                    </div>
+
+                    <form asp-action="UploadPhoto" method="post" enctype="multipart/form-data" id="photoForm" class="d-none">
+                        <input asp-for="ProfileImageFile" type="file" id="fileInput" onchange="document.getElementById('photoForm').submit()" />
+                    </form>
+
+                    <div class="d-grid mb-4">
+                        <a asp-action="Edit" class="btn btn-outline-warning rounded-pill py-2">
+                            <i class="fas fa-edit me-2"></i>Editar Datos del Perfil
+                        </a>
+                    </div>
+
+                    @* SECCION SUSCRIPCION ANULADA *@
+                    @* <div class="cinema-subscription-box @(Model.isActive ? "sub-active" : "sub-inactive")">
+                        @if (Model.isActive)
+                        {
+                            <p class="text-success mb-2 small fw-bold"><i class="fas fa-check-circle me-2"></i>Suscripción activa</p>
+                            <a asp-action="Deactivate" class="btn btn-sm btn-danger px-4 rounded-pill">Desactivar</a>
+                        }
+                        else
+                        {
+                            <p class="text-danger mb-2 small fw-bold"><i class="fas fa-times-circle me-2"></i>Suscripción desactivada</p>
+                            <a asp-action="Activate" class="btn btn-sm btn-success px-4 rounded-pill">Activar</a>
+                        }
+                    </div> *@
+
+                    @* SECCIÓN DARSE DE BAJA *@
+                    <div class="cinema-danger-zone">
+                        <p class="text-danger-cinema mb-2 fw-bold">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Zona de Peligro
+                        </p>
+
+                        <div class="d-grid shadow-sm">
+                            <a asp-action="Unsubscribe" class="btn btn-sm btn-outline-cinema-danger rounded-pill py-2">
+                                Darme de baja del Club
+                            </a>
+                        </div>
+
+                        <p class="text-muted mt-3 mb-0" style="font-size: 0.7rem; font-style: italic;">
+                            Atención: Al salir perderás tus <strong>@Model.FidelityPoints puntos</strong> y beneficios VIP.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -184,6 +184,20 @@ namespace CinemaMasterTicketsMVC.Data
                 }
             }
             modelBuilder.Entity<Seat>().HasData(seats);
+
+            // -----------------------------
+            // 5️⃣ Seed de BoxOffices
+            // -----------------------------
+            var boxOffices = new List<BoxOffice>
+                {
+                    new BoxOffice { BoxOfficeId = 1, BoxOfficeName = "Taquilla Principal - Entrada" },
+                    new BoxOffice { BoxOfficeId = 2, BoxOfficeName = "Taquilla Lateral - Parking" },
+                    new BoxOffice { BoxOfficeId = 3, BoxOfficeName = "Taquilla VIP - Planta 1" },
+                    new BoxOffice { BoxOfficeId = 4, BoxOfficeName = "Taquilla Online - Recogida" },
+                    new BoxOffice { BoxOfficeId = 5, BoxOfficeName = "Taquilla Express - Kiosko" }
+                };
+
+            modelBuilder.Entity<BoxOffice>().HasData(boxOffices);
         }
     }
     

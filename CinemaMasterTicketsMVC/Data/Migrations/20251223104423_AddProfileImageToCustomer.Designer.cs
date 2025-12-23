@@ -4,6 +4,7 @@ using CinemaMasterTicketsMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaMasterTicketsMVC.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251223104423_AddProfileImageToCustomer")]
+    partial class AddProfileImageToCustomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,33 +67,6 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                     b.HasKey("BoxOfficeId");
 
                     b.ToTable("BoxOffices");
-
-                    b.HasData(
-                        new
-                        {
-                            BoxOfficeId = 1,
-                            BoxOfficeName = "Taquilla Principal - Entrada"
-                        },
-                        new
-                        {
-                            BoxOfficeId = 2,
-                            BoxOfficeName = "Taquilla Lateral - Parking"
-                        },
-                        new
-                        {
-                            BoxOfficeId = 3,
-                            BoxOfficeName = "Taquilla VIP - Planta 1"
-                        },
-                        new
-                        {
-                            BoxOfficeId = 4,
-                            BoxOfficeName = "Taquilla Online - Recogida"
-                        },
-                        new
-                        {
-                            BoxOfficeId = 5,
-                            BoxOfficeName = "Taquilla Express - Kiosko"
-                        });
                 });
 
             modelBuilder.Entity("CinemaMasterTicketsMVC.Models.Customer", b =>
@@ -167,9 +143,6 @@ namespace CinemaMasterTicketsMVC.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ProfileImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EmployeeId");
 

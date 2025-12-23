@@ -1,0 +1,75 @@
+﻿/* profile-employee.css */
+
+.cinema-profile-card {
+    border-radius: 15px;
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.employee-header {
+    background: linear-gradient(180deg, #005f73 0%, #1a1a1a 100%);
+    padding: 2rem 0;
+}
+
+.employee-avatar {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border: 4px solid #00d9ff;
+}
+
+.btn-employee-camera {
+    background-color: #00d9ff;
+    color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+}
+
+.employee-name {
+    color: #00d9ff;
+}
+
+.employee-staff-tag {
+    color: #adb5bd;
+    letter-spacing: 2px;
+    font-size: 0.75rem;
+}
+
+.employee-stats-badge {
+    background-color: rgba(0, 217, 255, 0.1);
+    border: 1px solid #00d9ff;
+    color: #00d9ff;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.employee-info-box {
+    background-color: #262626;
+    padding: 1.2rem;
+    border-radius: 12px;
+    border-left: 4px solid #00d9ff;
+}
+
+.text-employee {
+    color: #00d9ff;
+}
+
+.btn-employee-primary {
+    background-color: #00d9ff;
+    color: #1a1a1a;
+    font-weight: bold;
+}
+
+    .btn-employee-primary:hover {
+        background-color: #00b4d8;
+        color: white;
+    }
+
+.btn-outline-employee {
+    color: #00d9ff;
+    border: 1px solid #00d9ff;
+}
+
+    .btn-outline-employee:hover {
+        background-color: #00d9ff;
+        color: #1a1a1a;
+    }

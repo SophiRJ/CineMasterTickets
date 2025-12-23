@@ -150,7 +150,8 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
                         Email = Input.Email,
                         CreatedDate = DateTime.Now,
                         FidelityPoints = 0,
-                        isActive = true
+                        isActive = true,
+                        ProfileImage=null
                     };
 
                     _context.Customers.Add(customer);
