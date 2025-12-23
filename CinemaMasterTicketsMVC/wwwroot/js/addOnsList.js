@@ -3,7 +3,6 @@
     const container = document.getElementById('addonsTableContainer');
     const grandTotalEl = document.getElementById('grandTotal');
 
-    // SOLUCIÓN: Leemos del input HIDDEN, no del texto de la pantalla
     const seatsSubtotal = parseFloat(document.getElementById('seatsSubtotalRaw').value) || 0;
 
     let addonQuantities = {};
@@ -22,7 +21,11 @@
         const tbody = document.createElement('tbody');
 
         addons.forEach(addon => {
-            addonQuantities[addon.addOnId] = 0;
+
+            if (!(addon.addOnId in addonQuantities)) {
+                addonQuantities[addon.addOnId] = 0;
+            }
+
             addonPrices[addon.addOnId] = parseFloat(addon.price);
 
             const tr = document.createElement('tr');
@@ -53,13 +56,25 @@
             const input = tr.querySelector('.qty-input');
             const totalCell = tr.querySelector('.addonTotal');
 
+            const qty = addonQuantities[addon.addOnId] || 0;
+            input.value = qty;
+            totalCell.textContent = (qty * addon.price).toLocaleString('es-ES', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + ' €';
+            quitBtn.disabled = qty === 0;
+
             const FinalTotal = () => {
                 let addonsTotal = 0;
                 for (let id in addonQuantities) {
                     addonsTotal += addonQuantities[id] * addonPrices[id];
                 }
                 const totalCalculado = seatsSubtotal + addonsTotal;
-                grandTotalEl.textContent = totalCalculado.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+                grandTotalEl.textContent =
+                    totalCalculado.toLocaleString('es-ES', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) + ' €';
             };
 
             quitBtn.addEventListener('click', () => {
@@ -67,7 +82,11 @@
                 if (qty > 0) {
                     qty--;
                     input.value = qty;
-                    totalCell.textContent = (qty * addon.price).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+                    totalCell.textContent =
+                        (qty * addon.price).toLocaleString('es-ES', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) + ' €';
                     addonQuantities[addon.addOnId] = qty;
                     if (qty === 0) quitBtn.disabled = true;
                     FinalTotal();
@@ -78,7 +97,11 @@
                 let qty = parseInt(input.value || '0');
                 qty++;
                 input.value = qty;
-                totalCell.textContent = (qty * addon.price).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+                totalCell.textContent =
+                    (qty * addon.price).toLocaleString('es-ES', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) + ' €';
                 addonQuantities[addon.addOnId] = qty;
                 quitBtn.disabled = false;
                 FinalTotal();
@@ -86,6 +109,7 @@
 
             tbody.appendChild(tr);
         });
+
         table.appendChild(tbody);
         container.appendChild(table);
     };
@@ -98,4 +122,21 @@
 
     if (select) select.addEventListener('change', () => loadAddons(select.value));
     loadAddons('All');
+
+    document.querySelector('form').addEventListener('submit', () => {
+        //Filtrado apra que solo guarde los addOns que su cantidad sea >0
+        const selectedAddons = {};
+        for (let id in addonQuantities) {
+            if (addonQuantities[id] > 0) {
+                selectedAddons[id] = addonQuantities[id];
+            }
+        }
+
+        // 3️⃣ Guardar en sessionStorage (opcional)
+        sessionStorage.setItem('addonQuantities', JSON.stringify(selectedAddons));
+        sessionStorage.setItem('addonPrices', JSON.stringify(addonPrices));
+
+        // 4️⃣ Guardar en input oculto para enviar al controller
+        document.getElementById('addonsData').value = JSON.stringify(selectedAddons);
+    });
 });

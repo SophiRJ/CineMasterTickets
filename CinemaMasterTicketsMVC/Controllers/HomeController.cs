@@ -19,6 +19,7 @@ namespace CinemaMasterTicketsMVC.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.Clear();
             var model = _db.Movies
             .Include(m => m.Sessions)
             .Where(m => m.BackdropUrl != null && m.Sessions.Any()) 

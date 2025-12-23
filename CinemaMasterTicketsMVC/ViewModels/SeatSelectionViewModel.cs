@@ -10,8 +10,10 @@ namespace CinemaMasterTicketsMVC.ViewModels
         public decimal Price { get; set; }
         public int RoomId { get; set; } // El ID que tienes en tu modelo
         public List<RowSeats> SeatMap { get; set; } = new();
-        //public Session Session { get; set; } = null!;
-        //public List<RowSeats> SeatMap { get; set; } = new();
+        public string? SelectedSeats { get; set; }
+        public string? SelectedSeatNames { get; set; }
+        public string? SeatUserTypes { get; set; }
+        public string? TotalSeatsPrice { get; set; }
     }
 
     public class RowSeats
@@ -25,6 +27,9 @@ namespace CinemaMasterTicketsMVC.ViewModels
         public int SeatId { get; set; }
         public string Number { get; set; } = "";
         public bool IsReserved { get; set; }
+        //Este sirve para marcar los asientos seleccionados que tiene el usuario por si vuelve atras
+        public bool IsSelected { get; set; }
+        public string UserType { get; set; } = "Adulto"; // valor por defecto
     }
 }
 

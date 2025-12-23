@@ -383,6 +383,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View(addOn);
         }
 
+        
+
         public async Task<IActionResult> EditAddOn(int id)
         {
             var addOn = await _db.AddOns.FindAsync(id);
