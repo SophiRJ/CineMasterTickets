@@ -1,12 +1,15 @@
-﻿using CinemaMasterTicketsMVC.Data;
+﻿                                                                                                                                      using CinemaMasterTicketsMVC.Data;
 using CinemaMasterTicketsMVC.Models;
+using CinemaMasterTicketsMVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CinemaMasterTicketsMVC.Controllers
 {
+    [Authorize(Roles = "Employee,Admin")]
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -16,15 +19,29 @@ namespace CinemaMasterTicketsMVC.Controllers
             _db = db;
             _userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
+            Employee? employee;
 
-            var employee = await _db.Employees
-                .Include(e => e.BoxOffice)
-                .Include(e => e.Tickets) // IMPORTANTE: Para que VentasHoy funcione
-                .FirstOrDefaultAsync(e => e.Email == user.Email);
+            if (id.HasValue)
+            {
+                // El Admin está consultando un perfil específico
+                employee = await _db.Employees
+                    .Include(e => e.BoxOffice)
+                    .Include(e => e.Tickets)
+                    .FirstOrDefaultAsync(e => e.EmployeeId == id.Value);
+            }
+            else
+            {
+                // El empleado logueado entra a su propio panel
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return NotFound();
+
+                employee = await _db.Employees
+                    .Include(e => e.BoxOffice)
+                    .Include(e => e.Tickets)
+                    .FirstOrDefaultAsync(e => e.Email == user.Email);
+            }
 
             if (employee == null) return NotFound();
 
@@ -74,45 +91,83 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        // GET: Employee/Edit
-        [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> Edit()
+        
+        [Authorize(Roles = "Employee,Admin")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var employee = await _db.Employees.FirstOrDefaultAsync(e => e.Email == user.Email);
+            Employee? employee = null;
+
+            // 1. DETERMINAR QUÉ EMPLEADO BUSCAR
+            if (id.HasValue && User.IsInRole("Admin"))
+            {
+                // Si hay ID y soy Admin, busco al empleado por ese ID
+                employee = await _db.Employees.FindAsync(id.Value);
+            }
+            else
+            {
+                // Si no hay ID (o soy empleado), busco MI PROPIO perfil por mi Email
+                var user = await _userManager.GetUserAsync(User);
+                employee = await _db.Employees.FirstOrDefaultAsync(e => e.Email == user.Email);
+            }
 
             if (employee == null) return NotFound();
 
-            return View(employee);
+            //Prepara el view model para el BoxOffice
+            var boxOficceDisplay = _db.BoxOffices.Select(b => new
+            {
+                id = b.BoxOfficeId,
+                value = b.BoxOfficeName
+            });
+            var model = new CreateEmployeeBoxOficceViewModel
+            {
+                Employee= employee,
+                BoxOffices = new SelectList(boxOficceDisplay, "id", "value")
+            };
+
+            return View(model);
         }
 
-        // POST: Employee/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Employee")]
-        public async Task<IActionResult> Edit(Employee model)
+        public async Task<IActionResult> Edit(CreateEmployeeBoxOficceViewModel model)
         {
-            // Buscamos el empleado original para asegurar que no tocamos campos sensibles
-            var employeeInDb = await _db.Employees.FindAsync(model.EmployeeId);
-
+            // Buscamos la entidad real en la DB para no perder datos que no están en el form (como la imagen)
+            var employeeInDb = await _db.Employees.FindAsync(model.Employee.EmployeeId);
             if (employeeInDb == null) return NotFound();
 
-            // Quitamos la validación de la imagen ya que no se envía en este formulario
-            ModelState.Remove("ProfileImageFile");
+            // Actualizamos solo los campos permitidos (Pattern de Customer)
+            employeeInDb.Firstname = model.Employee.Firstname;
+            employeeInDb.Lastname = model.Employee.Lastname;
+            employeeInDb.DNI = model.Employee.DNI;
 
+            // Solo el Admin puede cambiar la taquilla
+            if (User.IsInRole("Admin"))
+            {
+                employeeInDb.BoxOfficeId = model.Employee.BoxOfficeId;
+            }
+
+            // Como solo actualizamos campos específicos de la entidad trackeada, 
+            // no necesitamos validar ProfileImageFile ni campos que no enviamos.
             if (ModelState.IsValid)
             {
-                // Actualizamos solo los datos permitidos
-                employeeInDb.Firstname = model.Firstname;
-                employeeInDb.Lastname = model.Lastname;
-                employeeInDb.DNI = model.DNI;
-
                 _db.Update(employeeInDb);
                 await _db.SaveChangesAsync();
-
                 TempData["Message"] = "Datos actualizados correctamente.";
+                if (User.IsInRole("Admin"))
+                {
+                    // Si eres Admin, vuelve a la lista general de empleados 
+                    // (Asegúrate de que esta acción existe, ej: List o AdminIndex)
+                    return RedirectToAction("Index", "Admin");
+                    // O si tu lista está en el mismo controller pero en otra acción:
+                    // return RedirectToAction(nameof(List));
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+
+            // Si hay error de validación, recargar lista
+            var boxOficceDisplay = _db.BoxOffices.Select(b => new { id = b.BoxOfficeId, value = b.BoxOfficeName });
+            model.BoxOffices = new SelectList(boxOficceDisplay, "id", "value", model.Employee.BoxOfficeId);
 
             return View(model);
         }

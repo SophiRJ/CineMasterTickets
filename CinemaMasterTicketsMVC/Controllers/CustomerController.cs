@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CinemaMasterTicketsMVC.Controllers
 {
-    [Authorize(Roles = "Customer")]
+    [Authorize(Roles = "Customer,Admin")]
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -22,15 +22,27 @@ namespace CinemaMasterTicketsMVC.Controllers
             _signInManager = signInManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            //Comprobar que el usuario est registrado tanto en identity como en bdLocal
-            var customer = await _db.Customers
-                .FirstOrDefaultAsync(c => c.Email == user!.Email);
+            Customer? customer;
 
-            if (customer == null)
-                return NotFound();
+            if (id.HasValue)
+            {
+                // El Admin está consultando la ficha de un cliente
+                customer = await _db.Customers
+                    .FirstOrDefaultAsync(c => c.CustomerId == id.Value);
+            }
+            else
+            {
+                // El cliente está viendo su propio perfil
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return NotFound();
+
+                customer = await _db.Customers
+                    .FirstOrDefaultAsync(c => c.Email == user.Email);
+            }
+
+            if (customer == null) return NotFound();
 
             return View(customer);
         }

@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\img\addons\" />
     <Folder Include="wwwroot\img\employees\" />
-    <Folder Include="wwwroot\img\profiles\" />
   </ItemGroup>
 
 </Project>

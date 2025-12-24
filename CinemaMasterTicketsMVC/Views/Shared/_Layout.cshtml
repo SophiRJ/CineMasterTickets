@@ -32,13 +32,13 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Home">Admin</a>
                             </li>
                         }
-                        @if (User.IsInRole("Customer") || User.IsInRole("Admin"))
+                        @if (User.IsInRole("Customer") )
                              {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customer</a>
                             </li>
                         }
-                        @if (User.IsInRole("Employee") || User.IsInRole("Admin"))
+                        @if (User.IsInRole("Employee") )
                              {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
