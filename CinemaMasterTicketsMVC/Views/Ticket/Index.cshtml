@@ -5,6 +5,36 @@
 }
 
 <h2>Resumen de Compra</h2>
+@* Detalles del Comprador *@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="mb-3">Datos del Comprador</h5>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="mb-1"><strong>Nombre:</strong> @(ViewBag.BuyerName ?? "Invitado")</p>
+                <p class="mb-1"><strong>Correo:</strong> @ViewBag.BuyerEmail</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="mb-1"><strong>Tipo:</strong> @ViewBag.BuyerRole</p>
+
+                @if (ViewBag.BuyerRole == "Empleado Staff")
+                {
+                    <p class="mb-0"><strong>Taquilla:</strong> @ViewBag.BoxOffice</p>
+                }
+                else if (ViewBag.BuyerRole == "Cliente VIP")
+                {
+                    <p class="mb-0 text-success"><strong>Puntos a conseguir:</strong> +@ViewBag.PuntosA_Acumular pts</p>
+                }
+                else
+                {
+                    <p class="mb-0 text-muted small"><em>Compra sin beneficios VIP</em></p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="card mb-3">
     <div class="card-body">

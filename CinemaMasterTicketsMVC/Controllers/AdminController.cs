@@ -32,31 +32,46 @@ namespace CinemaMasterTicketsMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var users = _userManager!.Users.ToList();
-            var model = new List<AdminUserViewModel>();
+            //var users = _userManager!.Users.ToList();
+            //var model = new List<AdminUserViewModel>();
 
-            foreach (var user in users)
+            //foreach (var user in users)
+            //{
+            //    var roles = await _userManager.GetRolesAsync(user);
+            //    var role = roles.FirstOrDefault();
+
+            //    var employee = await _db.Employees
+            //        .FirstOrDefaultAsync(e => e.Email == user.Email);
+
+            //    var customer = await _db.Customers
+            //        .FirstOrDefaultAsync(c => c.Email == user.Email);
+
+            //    model.Add(new AdminUserViewModel
+            //    {
+            //        UserId = user.Id,
+            //        Email = user.Email!,
+            //        Role = role ?? "Sin rol",
+            //        IsEmployee = employee != null,
+            //        IsCustomer = customer != null,
+            //        EmployeeId = employee?.EmployeeId,
+            //        CustomerId = customer?.CustomerId
+            //    });
+            //}
+
+            //return View(model);
+            var model = new AdminUsersPanelViewModel
             {
-                var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault();
+                // Traemos empleados con su taquilla incluida
+                Employees = await _db.Employees
+            .Include(e => e.BoxOffice)
+            .OrderBy(e => e.Lastname)
+            .ToListAsync(),
 
-                var employee = await _db.Employees
-                    .FirstOrDefaultAsync(e => e.Email == user.Email);
-
-                var customer = await _db.Customers
-                    .FirstOrDefaultAsync(c => c.Email == user.Email);
-
-                model.Add(new AdminUserViewModel
-                {
-                    UserId = user.Id,
-                    Email = user.Email!,
-                    Role = role ?? "Sin rol",
-                    IsEmployee = employee != null,
-                    IsCustomer = customer != null,
-                    EmployeeId = employee?.EmployeeId,
-                    CustomerId = customer?.CustomerId
-                });
-            }
+                // Traemos clientes
+                Customers = await _db.Customers
+            .OrderBy(c => c.LastName)
+            .ToListAsync()
+            };
 
             return View(model);
         }
@@ -143,65 +158,107 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
 
        
-        // DELETE EMPLOYEE
+        //// DELETE EMPLOYEE
         
-        public async Task<IActionResult> DeleteEmployee(int id)
-        {
-            //Falta vista
-            var employee = await _db.Employees.FindAsync(id);
-            if (employee == null)
-                return NotFound();
+        //public async Task<IActionResult> DeleteEmployee(int id)
+        //{
+        //    //Falta vista
+        //    var employee = await _db.Employees.FindAsync(id);
+        //    if (employee == null)
+        //        return NotFound();
 
-            return View(employee);
-        }
+        //    return View(employee);
+        //}
 
-        [HttpPost, ActionName("DeleteEmployee")]
+        //[HttpPost, ActionName("DeleteEmployee")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteEmployeeConfirmed(int id)
+        //{
+        //    var employee = await _db.Employees.FindAsync(id);
+        //    if (employee == null)
+        //        return NotFound();
+
+        //    // borrar IdentityUser
+        //    var user = await _userManager!.FindByEmailAsync(employee.Email);
+        //    if (user != null)
+        //        await _userManager.DeleteAsync(user);
+
+        //    _db.Employees.Remove(employee);
+        //    await _db.SaveChangesAsync();
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteEmployeeConfirmed(int id)
+        public async Task<IActionResult> DeleteEmployeeAjax(int id)
         {
+            // 1. Buscar al empleado
             var employee = await _db.Employees.FindAsync(id);
             if (employee == null)
-                return NotFound();
+                return Json(new { success = false, message = "Empleado no encontrado." });
 
-            // borrar IdentityUser
-            var user = await _userManager!.FindByEmailAsync(employee.Email);
-            if (user != null)
-                await _userManager.DeleteAsync(user);
+            try
+            {
+                // 2. Borrar el usuario de Identity (basado en el Email)
+                var user = await _userManager!.FindByEmailAsync(employee.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                    if (!result.Succeeded)
+                    {
+                        return Json(new { success = false, message = "Error al eliminar el usuario de acceso." });
+                    }
+                }
 
-            _db.Employees.Remove(employee);
-            await _db.SaveChangesAsync();
+                // 3. Borrar de la base de datos de empleados
+                _db.Employees.Remove(employee);
+                await _db.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Empleado eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                // Loguear el error si es necesario
+                return Json(new { success = false, message = "Error interno: " + ex.Message });
+            }
         }
 
-        
-        // DELETE CUSTOMER
-        
-        public async Task<IActionResult> DeleteCustomer(int id)
+        //// DELETE CUSTOMER
+
+        //public async Task<IActionResult> DeleteCustomer(int id)
+        //{
+        //    var customer = await _db.Customers.FindAsync(id);
+        //    if (customer == null)
+        //        return NotFound();
+
+        //    return View(customer);
+        //}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCustomerAjax(int id)
         {
             var customer = await _db.Customers.FindAsync(id);
             if (customer == null)
-                return NotFound();
+                return Json(new { success = false, message = "Cliente no encontrado" });
 
-            return View(customer);
-        }
+            try
+            {
+                // Borrar de identity
+                var user = await _userManager!.FindByEmailAsync(customer.Email);
+                if (user != null)
+                    await _userManager.DeleteAsync(user);
 
-        [HttpPost, ActionName("DeleteCustomer")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCustomerConfirmed(int id)
-        {
-            var customer = await _db.Customers.FindAsync(id);
-            if (customer == null)
-                return NotFound();
+                // Borrar de base de datos local
+                _db.Customers.Remove(customer);
+                await _db.SaveChangesAsync();
 
-            var user = await _userManager!.FindByEmailAsync(customer.Email);
-            if (user != null)
-                await _userManager.DeleteAsync(user);
-
-            _db.Customers.Remove(customer);
-            await _db.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Cliente eliminado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error en el servidor: " + ex.Message });
+            }
         }
 
 
