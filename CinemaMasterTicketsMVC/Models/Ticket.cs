@@ -1,5 +1,10 @@
 ﻿namespace CinemaMasterTicketsMVC.Models
 {
+    public enum PaymentMethodType
+    {
+        Efectivo,
+        Tarjeta
+    }
     public class Ticket
     {
         public int TicketId { get; set; }
@@ -9,7 +14,7 @@
         public string? EmailToSend { get; set; }
         public int SessionId { get; set; }
         public decimal TotalPrice { get; set; }
-        public string? PaymentMethod { get; set; }
+        public PaymentMethodType PaymentMethod { get; set; }
         public DateTime? PurchasedAt { get; set; } = DateTime.Now;
         public bool SoldAtBoxOffice { get; set; }
 
