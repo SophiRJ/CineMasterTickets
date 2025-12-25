@@ -5,30 +5,26 @@
 }
 
 <h2>Resumen de Compra</h2>
-@* Detalles del Comprador *@
+@* SECCIÓN: DATOS DEL COMPRADOR (Usando Model.Buyer) *@
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="mb-3">Datos del Comprador</h5>
-
+        <h5 class="mb-3 border-bottom pb-2">Datos del Comprador</h5>
         <div class="row">
             <div class="col-sm-6">
-                <p class="mb-1"><strong>Nombre:</strong> @(ViewBag.BuyerName ?? "Invitado")</p>
-                <p class="mb-1"><strong>Correo:</strong> @ViewBag.BuyerEmail</p>
+                <p class="mb-1"><strong>Nombre:</strong> @Model.Buyer.Name</p>
+                <p class="mb-1"><strong>Correo:</strong> @Model.Buyer.Email</p>
             </div>
             <div class="col-sm-6">
-                <p class="mb-1"><strong>Tipo:</strong> @ViewBag.BuyerRole</p>
+                <p class="mb-1"><strong>Tipo:</strong> @Model.Buyer.Role</p>
 
-                @if (ViewBag.BuyerRole == "Empleado Staff")
+                @if (Model.Buyer.IsEmployee)
                 {
-                    <p class="mb-0"><strong>Taquilla:</strong> @ViewBag.BoxOffice</p>
+                    <p class="mb-0 text-primary"><strong>Taquilla:</strong> @(Model.Buyer.BoxOffice ?? "General")</p>
                 }
-                else if (ViewBag.BuyerRole == "Cliente VIP")
+                else if (Model.Buyer.IsCustomer)
                 {
-                    <p class="mb-0 text-success"><strong>Puntos a conseguir:</strong> +@ViewBag.PuntosA_Acumular pts</p>
-                }
-                else
-                {
-                    <p class="mb-0 text-muted small"><em>Compra sin beneficios VIP</em></p>
+                    <p class="mb-0 text-success"><strong>Puntos a conseguir:</strong> +@Model.Buyer.PointsToEarn pts</p>
+                    <p class="mb-0 text-muted small">Puntos actuales: @Model.Buyer.CurrentFidelityPoints</p>
                 }
             </div>
         </div>
@@ -79,6 +75,38 @@
 <div class="card">
     <div class="card-body">
         <h5>Total General: @Model.TotalGeneral €</h5>
+    </div>
+</div>
+
+@* SECCIÓN: CANJEAR PUNTOS (Solo clientes con puntos suficentes) *@
+@if (Model.Buyer.IsCustomer && Model.Buyer.CurrentFidelityPoints >= 100 && Model.DescuentoPuntos == 0)
+{
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <div>
+            <strong>¡Tienes puntos disponibles!</strong>
+            Canjea 100 puntos por 1€ de descuento.
+        </div>
+        <form asp-action="ApplyPoints" method="post">
+            <button type="submit" class="btn btn-info btn-sm">Aplicar Descuento</button>
+        </form>
+    </div>
+}
+@* SECCIÓN: TOTALES *@
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="row text-end">
+            <div class="col-12">
+                <p class="mb-1">Subtotal Asientos: @Model.SeatsSubtotal €</p>
+                <p class="mb-1">Subtotal Addons: @Model.AddonsTotal €</p>
+
+                @if (Model.DescuentoPuntos > 0)
+                {
+                    <p class="mb-1 text-danger font-italic">Descuento VIP aplicado: -@Model.DescuentoPuntos €</p>
+                }
+                <hr />
+                <h4 class="fw-bold">Total General: @Model.TotalGeneral €</h4>
+            </div>
+        </div>
     </div>
 </div>
 

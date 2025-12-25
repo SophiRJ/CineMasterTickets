@@ -149,7 +149,7 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
                         City = Input.City,
                         Email = Input.Email,
                         CreatedDate = DateTime.Now,
-                        FidelityPoints = 50,
+                        FidelityPoints = 150,
                         isActive = true,
                         ProfileImage=null
                     };
