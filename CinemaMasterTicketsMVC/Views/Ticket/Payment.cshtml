@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Seleccionar Pago";
+    bool isEmployee = ViewBag.IsEmployee ?? false;
+}
+
+<div class="container mt-5 text-center">
+    <h3>¿Cómo desea realizar el pago?</h3>
+    <p class="text-muted">Seleccione un método para finalizar su reserva</p>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <form asp-action="ProcessPurchase" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="list-group">
+                    @* Opción estándar para todos *@
+                    <label class="list-group-item list-group-item-action p-3">
+                        <input class="form-check-input me-1" type="radio" name="paymentMethod" value="Tarjeta" checked>
+                        <strong>💳 Tarjeta de Crédito / Débito</strong>
+                    </label>
+
+                    @* Evaluación directa de la propiedad de ViewBag *@
+                    @if (ViewBag.IsEmployee == true)
+                    {
+                        <label class="list-group-item list-group-item-action p-3 list-group-item-info">
+                            <input class="form-check-input me-1" type="radio" name="paymentMethod" value="Efectivo">
+                            <strong>💵 Efectivo (Cobro en Taquilla)</strong>
+                        </label>
+                    }
+                </div>
+
+                <div class="mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Volver al resumen</a>
+                    <button type="submit" class="btn btn-primary btn-lg">Confirmar Pago</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -8,8 +8,16 @@
 <h2>@ViewBag.MovieTitle</h2>
 <p>Sesión: @ViewBag.SessionTime</p>
 <p>Precio Butacas: <span>@($"{ViewBag.SeatsSubtotal:N2} €")</span></p>
+@* Faltaba capturar debidamente el formulario para que cuando un usuario logueado haga seleccion de addons,
+el programa no se confundiese con este formulario, y el que crea "escondido" para el cierre de sesion automatico.
+Cuando entramos con identities el navegador crea un primer formulario justo arriba de la pagina oculto. Lo que pasa
+ba es que los datos se guardaban en un form...pero como no le habiamos puesto un ID a ese formulario, el programa
+detectaba dos forms "el oculto y este", por lo que los datos de addOns se guardaban en el primer formulario, resul
+tando en que no se mostraban los addons.
+*@
+<form asp-controller="Ticket" asp-action="Index" method="post" id="addonsForm">
 
-<form asp-controller="Ticket" asp-action="Index" method="post">
+    <input type="hidden" name="addonsData" id="addonsDataInput" />
     <div class="mb-3">
         <label asp-for="SelectedType" class="form-label">Filtrar por tipo:</label>
         <select asp-for="SelectedType" asp-items="Model.AddOnTypesSelectList" class="form-select" id="addonTypeSelect">
@@ -31,7 +39,7 @@
             Volver
         </a>
     </div>
-    <input type="hidden" name="addonsData" id="addonsData" />
+    @* <input type="hidden" name="addonsData" id="addonsData" /> *@
 </form>
 
 @section Scripts {

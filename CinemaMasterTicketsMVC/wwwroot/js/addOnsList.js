@@ -123,20 +123,46 @@
     if (select) select.addEventListener('change', () => loadAddons(select.value));
     loadAddons('All');
 
-    document.querySelector('form').addEventListener('submit', () => {
-        //Filtrado apra que solo guarde los addOns que su cantidad sea >0
-        const selectedAddons = {};
-        for (let id in addonQuantities) {
-            if (addonQuantities[id] > 0) {
-                selectedAddons[id] = addonQuantities[id];
+    const form = document.getElementById('addonsForm');
+
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            const selectedAddons = {};
+            for (let id in addonQuantities) {
+                if (addonQuantities[id] > 0) {
+                    selectedAddons[id] = addonQuantities[id];
+                }
             }
-        }
 
-        // 3️⃣ Guardar en sessionStorage (opcional)
-        sessionStorage.setItem('addonQuantities', JSON.stringify(selectedAddons));
-        sessionStorage.setItem('addonPrices', JSON.stringify(addonPrices));
+            const jsonString = JSON.stringify(selectedAddons);
 
-        // 4️⃣ Guardar en input oculto para enviar al controller
-        document.getElementById('addonsData').value = JSON.stringify(selectedAddons);
-    });
+            // Esto te confirmará en la consola del navegador si el JSON se crea
+            console.log("JSON a enviar:", jsonString);
+
+            const inputOculto = document.getElementById('addonsDataInput');
+            if (inputOculto) {
+                inputOculto.value = jsonString;
+            }
+
+            sessionStorage.setItem('addonQuantities', jsonString);
+            sessionStorage.setItem('addonPrices', JSON.stringify(addonPrices));
+        });
+    }
+
+    //document.querySelector('form').addEventListener('submit', () => {
+    //    //Filtrado apra que solo guarde los addOns que su cantidad sea >0
+    //    const selectedAddons = {};
+    //    for (let id in addonQuantities) {
+    //        if (addonQuantities[id] > 0) {
+    //            selectedAddons[id] = addonQuantities[id];
+    //        }
+    //    }
+
+    //    // 3️⃣ Guardar en sessionStorage (opcional)
+    //    sessionStorage.setItem('addonQuantities', JSON.stringify(selectedAddons));
+    //    sessionStorage.setItem('addonPrices', JSON.stringify(addonPrices));
+
+    //    // 4️⃣ Guardar en input oculto para enviar al controller
+    //    document.getElementById('addonsData').value = JSON.stringify(selectedAddons);
+    //});
 });
