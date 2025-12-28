@@ -322,7 +322,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 {
                     //Aqui solo tenemos que añadir el id del Complemento o complementos que el usuario haya escogido
                     AddOnId = item.Key
-                    
+
                 });
             }
 

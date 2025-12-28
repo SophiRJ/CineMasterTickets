@@ -39,13 +39,23 @@
 
                             <div class="d-flex gap-2 mb-3">
                                 <div class="d-flex gap-2 mb-3">
-                                    <button class="btn btn-outline-primary btn-sm"
+                                    @* <button class="btn btn-outline-primary btn-sm"
                                             onclick="loadSessions(@movie.MovieId)">
                                         Ver sesiones
                                     </button>
 
                                     <button class="btn btn-success btn-sm"
                                             onclick="openSessionModal(@movie.MovieId)">
+                                        Añadir sesión
+                                    </button> *@
+                                    @* REFACTORIZADO: Clases para identificar y data-id para el valor *@
+                                    <button class="btn btn-outline-primary btn-sm btn-load-sessions"
+                                            data-movie-id="@movie.MovieId">
+                                        Ver sesiones
+                                    </button>
+
+                                    <button class="btn btn-success btn-sm btn-add-session"
+                                            data-movie-id="@movie.MovieId">
                                         Añadir sesión
                                     </button>
                                 </div>
@@ -60,7 +70,6 @@
         </div>
     }
 </div>
-@* @await Html.PartialAsync("_ActiveSessionsModal") *@
 
 @await Html.PartialAsync("_CreateSessionModal")
 @section Scripts {

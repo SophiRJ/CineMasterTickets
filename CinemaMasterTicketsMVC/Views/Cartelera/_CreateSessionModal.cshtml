@@ -52,11 +52,17 @@
                 </div>
             </div>
 
-            <div class="modal-footer">
-                @* Botón para guardar la sesión, llama a saveSession() en JS *@
+            @* <div class="modal-footer">
+                @* Botón para guardar la sesión, llama a saveSession() en JS 
                 <button class="btn btn-success" onclick="saveSession()">Guardar</button>
-            </div>
+            </div> *@
 
+            @*... (resto del código igual) ... *@
+            <div class="modal-footer">
+                @* Quitamos onclick="saveSession()" y añadimos id="btnSaveSession" *@
+                <button type="button" class="btn btn-success" id="btnSaveSession">Guardar</button>
+            </div>
+            @* ... (resto del código igual) ... *@
 
         </div>
     </div>
