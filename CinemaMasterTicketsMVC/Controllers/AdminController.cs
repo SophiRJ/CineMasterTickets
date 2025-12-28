@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 using X.PagedList;
 
 namespace CinemaMasterTicketsMVC.Controllers
@@ -14,16 +15,20 @@ namespace CinemaMasterTicketsMVC.Controllers
     {
         private readonly RoleManager<IdentityRole>? _roleManager;
         private readonly UserManager<IdentityUser>? _userManager;
+        //Agregamos la proviedad privada _configuration, la cual extiende de la interfaz IConfiguration
+        //para poder acceder a las variables de entorno y extraer la APIKey
+        private readonly IConfiguration _configuration;
         public ApplicationDbContext _db;
 
 
         public AdminController(RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
+            UserManager<IdentityUser> userManager, IConfiguration configuration,
             ApplicationDbContext db)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _db = db;
+            _configuration = configuration;
         }
         public IActionResult Home()
         {
@@ -32,33 +37,6 @@ namespace CinemaMasterTicketsMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var users = _userManager!.Users.ToList();
-            //var model = new List<AdminUserViewModel>();
-
-            //foreach (var user in users)
-            //{
-            //    var roles = await _userManager.GetRolesAsync(user);
-            //    var role = roles.FirstOrDefault();
-
-            //    var employee = await _db.Employees
-            //        .FirstOrDefaultAsync(e => e.Email == user.Email);
-
-            //    var customer = await _db.Customers
-            //        .FirstOrDefaultAsync(c => c.Email == user.Email);
-
-            //    model.Add(new AdminUserViewModel
-            //    {
-            //        UserId = user.Id,
-            //        Email = user.Email!,
-            //        Role = role ?? "Sin rol",
-            //        IsEmployee = employee != null,
-            //        IsCustomer = customer != null,
-            //        EmployeeId = employee?.EmployeeId,
-            //        CustomerId = customer?.CustomerId
-            //    });
-            //}
-
-            //return View(model);
             var model = new AdminUsersPanelViewModel
             {
                 // Traemos empleados con su taquilla incluida
@@ -158,36 +136,6 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
 
        
-        //// DELETE EMPLOYEE
-        
-        //public async Task<IActionResult> DeleteEmployee(int id)
-        //{
-        //    //Falta vista
-        //    var employee = await _db.Employees.FindAsync(id);
-        //    if (employee == null)
-        //        return NotFound();
-
-        //    return View(employee);
-        //}
-
-        //[HttpPost, ActionName("DeleteEmployee")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteEmployeeConfirmed(int id)
-        //{
-        //    var employee = await _db.Employees.FindAsync(id);
-        //    if (employee == null)
-        //        return NotFound();
-
-        //    // borrar IdentityUser
-        //    var user = await _userManager!.FindByEmailAsync(employee.Email);
-        //    if (user != null)
-        //        await _userManager.DeleteAsync(user);
-
-        //    _db.Employees.Remove(employee);
-        //    await _db.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEmployeeAjax(int id)
@@ -200,7 +148,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             try
             {
                 // 2. Borrar el usuario de Identity (basado en el Email)
-                var user = await _userManager!.FindByEmailAsync(employee.Email);
+                var user = await _userManager!.FindByEmailAsync(employee.Email!);
                 if (user != null)
                 {
                     var result = await _userManager.DeleteAsync(user);
@@ -223,17 +171,6 @@ namespace CinemaMasterTicketsMVC.Controllers
             }
         }
 
-        //// DELETE CUSTOMER
-
-        //public async Task<IActionResult> DeleteCustomer(int id)
-        //{
-        //    var customer = await _db.Customers.FindAsync(id);
-        //    if (customer == null)
-        //        return NotFound();
-
-        //    return View(customer);
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCustomerAjax(int id)
@@ -245,7 +182,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             try
             {
                 // Borrar de identity
-                var user = await _userManager!.FindByEmailAsync(customer.Email);
+                var user = await _userManager!.FindByEmailAsync(customer.Email!);
                 if (user != null)
                     await _userManager.DeleteAsync(user);
 
@@ -262,17 +199,14 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         //Este metodo se encarga de mostrar el listado de peliculas disponibles desde la API externa 
         //de TheMovieDB
         public async Task<IActionResult> SelectFilmsAPI(int? pageNumber, string searchString)
         {
             //Variables necesarias para el paginador, apiKey y el buscador
             int page = pageNumber ?? 1;
-            string apiKey = "e30c1ae43fe34f0a90b23ecb086b8571";
+            //La APIKey se recoge desde las variables de entorno
+            string apiKey = _configuration["MovieApi:ApiKey"] ?? ""; 
             int pageSize = 10;
 
             ViewBag.CurrentSearch = searchString;
@@ -302,31 +236,41 @@ namespace CinemaMasterTicketsMVC.Controllers
                     //Hay que traducir la respuesta enviada para poder pasarlas a string(las pelis de dentro de la respuesta
                     var jsonString = await response.Content.ReadAsStringAsync();
                     //Usamos DeserializeObject para transformar el string a Json y se guarda en un tipo dinamico
-                    dynamic apiData = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+                    dynamic apiData = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString)!;
 
                     //Hacemos una lista de las pelis con el resultado anterior para poder manejarla en la View
-                    var movies = ((IEnumerable<dynamic>)apiData.results).Take(pageSize).ToList();
+                    var movies = ((IEnumerable<dynamic>)apiData!.results).Take(pageSize).ToList();
 
+                    //El movimiento siguiente es importante e interesante:
+                    //Por cada pelicula se van pidiendo los detalles necesarios que no encontramos en la llamada
+                    //de la URL normal (hay que hacer una segunda llamada para acceder a datos como el director o la 
+                    //duracion de la pelicula).
                     foreach (var movie in movies)
                     {
                         try
                         {
+                            //Llamada a la url para los detalles de la pelicula con GetAsync
                             string detailUrl = $"https://api.themoviedb.org/3/movie/{movie.id}?api_key={apiKey}&language=es-ES&append_to_response=credits";
                             var detailResponse = await httpClient.GetAsync(detailUrl);
 
+                            //Si la llamada tieene exito...
                             if (detailResponse.IsSuccessStatusCode)
                             {
+                                //Recogemos el contenido de la respuesta que vuelve en JSON y lo deserializamos
                                 var detailJson = await detailResponse.Content.ReadAsStringAsync();
-                                dynamic detailData = Newtonsoft.Json.JsonConvert.DeserializeObject(detailJson);
-
+                                dynamic detailData = Newtonsoft.Json.JsonConvert.DeserializeObject(detailJson)!;
+                                //Recogemos la duracion con un ternario por si viene vacío
                                 movie.runtime = detailData!.runtime != null ? (int)detailData.runtime : 0;
+                                //Tambien capturamos la seccion donde se define el director y lo inicializamos a "Desconocido"
                                 var crew = detailData.credits.crew;
                                 string directorName = "Desconocido";
 
+                                //Si hay director...
                                 if (crew != null)
                                 {
                                     foreach (var dir in crew)
                                     {
+                                        //Si en los datos (dri.job) coincide alguno con el Director, capturamos su nombre
                                         if (dir.job == "Director")
                                         {
                                             directorName = dir.name;
@@ -334,6 +278,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                                         }
                                     }
                                 }
+                                //Lo guardamos en el objeto
                                 movie.director = directorName;
                             }
                             else
@@ -342,6 +287,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                             }
                         }
                         catch
+                        //Si falla alguna llamada, directamente ponemos la duración a 0 para evitar errores
                         {
                             movie.runtime = 0;
                         }
@@ -362,29 +308,34 @@ namespace CinemaMasterTicketsMVC.Controllers
                 }
             }
 
-            // En caso de error o si la API falla
+            // En caso de error o si la API falla, devolvemos una lista paginada vacía, para que no rompa la vista
             return View(new StaticPagedList<dynamic>(new List<dynamic>(), 1, pageSize, 0));
         }
 
 
-
+        //Metodo para agregar películas seleccionadas por el administrador a la base de datos. Las captura desde el JS con AJAX
         [HttpPost]
         public async Task<IActionResult> AddMovie([FromBody] Movie movie)
         {
+            //Captura de errores
             if (movie == null) return BadRequest("Datos inválidos");
-
+            //Le damos valor a la fecha de añadido a la BBDD con fecha actual
             movie.AddedAt = DateTime.Now;
-
+            //Añadimos la pelicula a la BD
             _db.Add(movie);
             await _db.SaveChangesAsync();
-
+            //Retornamos un mensaej de exito
             return Ok(new { message = "Película añadida correctamente" });
         }
+
         public async Task<IActionResult> GetAddons()
         {
-            return View(_db.AddOns);
+            var addons = await _db.AddOns.ToListAsync();
+
+            return View(addons);
         }
-        public async Task<IActionResult> AddAddon()
+
+        public IActionResult AddAddon()
         {
             // Preparar dropdown de tipos
             ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
@@ -441,7 +392,6 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
 
         
-
         public async Task<IActionResult> EditAddOn(int id)
         {
             var addOn = await _db.AddOns.FindAsync(id);

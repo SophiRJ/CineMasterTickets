@@ -27,4 +27,8 @@
     <Folder Include="wwwroot\img\employees\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\payment.css" />
+  </ItemGroup>
+
 </Project>

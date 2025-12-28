@@ -1,11 +1,133 @@
-﻿/* Estilos específicos para la impresión del ticket */
+﻿/* --- TU ESTILO ORIGINAL (Mantenido) --- */
+.ticket-visual {
+    font-family: 'Courier New', Courier, monospace !important;
+    color: #000 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    padding: 10px 20px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+    .ticket-visual::before,
+    .ticket-visual::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 12px;
+        background-size: 16px 16px;
+        background-repeat: repeat-x;
+    }
+
+    .ticket-visual::before {
+        top: -12px;
+        background-image: radial-gradient(circle at 8px -4px, transparent 10px, #fff 11px);
+    }
+
+    .ticket-visual::after {
+        bottom: -12px;
+        background-image: radial-gradient(circle at 8px 20px, transparent 10px, #fff 11px);
+    }
+
+    .ticket-visual .card-header,
+    .ticket-visual .card-footer {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px dashed #000 !important;
+        padding: 20px 0;
+    }
+
+    .ticket-visual .card-footer {
+        border-bottom: none !important;
+        border-top: 2px dashed #000 !important;
+    }
+
+    .ticket-visual hr {
+        border-top: 1px dashed #000 !important;
+        opacity: 1;
+    }
+
+/* --- AJUSTES ESPECÍFICOS PARA EL CANVAS DEL QR --- */
+#qrcode {
+    text-align: center;
+    margin-top: 15px;
+}
+
+    #qrcode canvas {
+        /* Esto asegura que el QR no se estire y mantenga nitidez */
+        max-width: 180px;
+        height: auto !important;
+        display: block;
+        margin: 0 auto;
+        /* Optimización para que los puntos del QR se vean nítidos al imprimir */
+        image-rendering: pixelated;
+    }
+
+.educational-disclaimer {
+    border-top: 1px dashed #000;
+    padding-top: 10px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+    .educational-disclaimer p {
+        font-size: 0.65rem !important; /* Letra pequeña típica de ticket */
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+/* --- ESTILO PARA IMPRESIÓN --- */
 @media print {
-    /* Ocultar botones y elementos de navegación en el papel */
+    body {
+        background: white !important;
+    }
+
+    .action-buttons, header, footer, nav {
+        display: none !important;
+    }
+
+    .main-ticket-wrapper, .container, .row, .col-md-6 {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .ticket-visual {
+        box-shadow: none !important;
+        width: 80mm !important;
+        margin: 0 auto !important;
+        border: 1px solid #eee !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    #qrcode canvas {
+        width: 45mm !important; /* Tamaño perfecto para el PDF */
+    }
+
+    .educational-disclaimer {
+        display: block !important;
+        border-top: 1px solid #000 !important;
+    }
+
+    /* Ocultamos la alerta de Bootstrap de la web para que no salga en el PDF */
+    .alert-warning {
+        display: none !important;
+    }
+}
+
+
+/* Estilos específicos para la impresión del ticket */
+/*@media print {
+    / Ocultar botones y elementos de navegación en el papel /
     .btn, .card-footer, .text-center.mt-4, header, footer {
         display: none !important;
     }
 
-    /* Ajustes de diseño para la impresora */
+    / Ajustes de diseño para la impresora /
     .container {
         width: 100% !important;
         max-width: 100% !important;
@@ -18,15 +140,15 @@
         border: 1px solid #ddd !important;
     }
 
-    /* Asegurar que el cuerpo de la página no tenga márgenes raros al imprimir */
+    / Asegurar que el cuerpo de la página no tenga márgenes raros al imprimir /
     body {
         margin: 0 !important;
         padding: 0 !important;
     }
-}
+}*/
 
 /* Estilo para que el QR se vea bien en pantalla */
-#qrcode img {
+/*#qrcode img {
     margin: 0 auto;
     display: block;
-}
+}*/

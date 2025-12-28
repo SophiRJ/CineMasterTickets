@@ -1,12 +1,18 @@
 ﻿@model CinemaMasterTicketsMVC.ViewModels.SeatSelectionViewModel
 
-<div class="container mt-5">
-    @*  *@
-    <h2>@Model.MovieTitle - @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</h2>
-    <h4>Sala @Model.RoomId</h4>
+@* <div class="container mt-5 d-flex flex-column align-items-center">
+ *@    @* Representacion de los titulos correspondientes para la cabecera de la pagina (los datos de la pelicula). *@
+    <div class="container mt-5 d-flex flex-column align-items-center">
+        <div class="movie-header text-center mb-4 w-100">
+            <h2 class="movie-title">@Model.MovieTitle</h2>
+            <p class="movie-datetime mb-1">Sesión: @Model.StartTime.ToString("dd/MM/yyyy HH:mm")</p>
+            <p class="movie-room">Sala @Model.RoomId</p>
+        </div>
 
-    <div class="screen">PANTALLA</div>
+    <div class="screen mt-1">PANTALLA</div>
 
+    @* Formulario que enviara los asientos seleccionados, junto con otros datos relevantes de los asientos
+       y la sesion en oculto para poder guardarlos en la session cuando el usuario acepte los asientos seleccionados.*@
     <form asp-controller="Movie" asp-action="SeatSelectionPost" method="post">
         <input asp-for="SessionId" type="hidden" />
         <input asp-for="Price" type="hidden" />
@@ -14,21 +20,29 @@
         <input asp-for="SelectedSeatNames" type="hidden" />
         <input asp-for="SeatUserTypes" type="hidden" />
         <input asp-for="TotalSeatsPrice" type="hidden" step="0.01" min="0.01" />
+        @* Ha sido necesario parsear este dato aqui tambien para evitar errores de conversion y muestreo con
+           los tipo "decimal"*@ 
         <input type="hidden"
                id="pricePerSeatData"
                value="@Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
-    
+
+        @* Este bucle foreach es el encargado de representar las filas y butacas en la sala. *@
         <div class="seat-map">
+            @* Por cada fila, pintamos su nombre y recorremos todas sus butacas *@
             @foreach (var row in Model.SeatMap)
             {
                 <div class="seat-row">
                     <span class="row-label">@row.Row</span>
+                    @* Recorremos las butacas *@
                     @foreach (var seat in row.Seats)
                     {
-                        @* La lógica de clases se mantiene idéntica a la original *@
+                        @* Comprobamos si el asiento esta reservado o no y le asignamos una clase u otra
+                           dependiendo de su estado para que el css le aplique el estilo correspondiente.
+                           Tambien controlamos el estilo de si esta seleccionado o no mediante Css
+                        *@
                         <div class="seat
-                             @(seat.IsReserved ? "reserved" : "available")
-                             @(seat.IsSelected ? "selected" : "")"
+                                     @(seat.IsReserved ? "reserved" : "available")
+                                     @(seat.IsSelected ? "selected" : "")"
                              data-seat-id="@seat.SeatId"
                              data-seat-label="@row.Row@seat.Number">
                             @seat.Number
@@ -37,47 +51,60 @@
                 </div>
             }
         </div>
-        <div class="selected-seats-container mt-3">
-            <strong>Asientos seleccionados: </strong><span id="selectedSeatsDiv"></span>
-            <br />
-            <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDiv"></span>
-            <br />
-            <strong>Tipos de usuario: </strong><span id="selectedSeatTypesDiv"></span>
-            
-        </div>
-        <div id="userTypeContainer"></div>
 
-        <div class="mt-2">
-            <strong>Total Butacas: </strong>
-            <span id="totalPriceDiv" class="text-success fw-bold">0,00 €</span>
+        <div class="selected-seats-container mt-5">
+                <strong class="fs-4 label-seats-title">Asientos seleccionados: </strong><span id="selectedSeatsDiv" class="fs-5"></span>
+            <br />
+            <hr>
+            @* Por meras comprobaciones de funcionamiento, se deja comentado este código, el cual ha estado
+               activo durante el desarrollo de esta funcionalidad para que el usuario entienda mejor el funcionamiento
+               de la seleccion de asientos (mostrabamos los id seleccionados)
+            
+               <strong>IDs seleccionados: </strong><span id="selectedSeatIdsDiv"></span>
+            <br /> *@
+            <strong id="userTypeLabel" class="mt-2 fs-5" style="display:none;">
+                Selecciona el tipo de entrada:
+            </strong>
+            <span id="selectedSeatTypesDiv" class="fs-5"></span>
         </div>
+        @* Desde aqui cargamos dinámicamente las butacas en este contenedor *@
+        <div id="userTypeContainer"></div>
+        @* Div para ir imprimiendo dinamicamente el total del precio desde el JS *@
+        <div class="mt-2">
+            <strong class="fs-2 fw-bold">Total Butacas: </strong>
+            <span id="totalPriceDiv" class="fs-2 fw-bold total-green">0,00 €</span>
+        </div>
+
         @* Mensaje de error si no hay asientos seleccionados *@
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert custom-alert alert-dismissible fade show" role="alert">
                 @TempData["ErrorMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
-
+        @* Botones para aceptar y continuar con la compra, el cual va a enviar los datos del formulario al controller
+            y el de volver atras, el cual llevara a la accion correspondiente del formulario para volver a la 
+            pagina de seleccion de sesión de la pelicula.
+        *@
         <div class="d-flex gap-3 mt-4">
-            <button type="submit" class="btn btn-primary px-4">
+            <button type="submit" class="btn btn-continuar px-4">
                 Continuar
             </button>
 
-            <a asp-controller="Movie" asp-action="CancelPurchase" class="btn btn-outline-danger px-4">
+            <a asp-controller="Movie" asp-action="CancelPurchase" class="btn btn-cancelar px-4">
                 Cancelar y volver
             </a>
         </div>
     </form>
 </div>
-
+@* Enlaces con los scripts de estilso y de Js necesarios para completar los estilos y funcionalidades de la vista *@
 @section Styles {
-    <link rel="stylesheet" href="~/css/seats.css" />
+    <link rel="stylesheet" href="~/css/seatAddOn.css" />
 }
-
 @section Scripts {
     <script src="~/js/seats.js"></script>
 }
+
 
 

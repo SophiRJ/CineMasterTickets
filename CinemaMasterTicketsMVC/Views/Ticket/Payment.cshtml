@@ -3,35 +3,59 @@
     bool isEmployee = ViewBag.IsEmployee ?? false;
 }
 
-<div class="container mt-5 text-center">
-    <h3>¿Cómo desea realizar el pago?</h3>
-    <p class="text-muted">Seleccione un método para finalizar su reserva</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/payment.css" />
+}
 
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-6">
-            <form asp-action="ProcessPurchase" method="post">
+<div class="container mt-5 payment-main-container">
+    <div class="payment-header mb-5">
+        <h3 class="display-6 highlight-gold">¿Cómo desea realizar el pago?</h3>
+        <p class="text-muted letter-spacing-2">Seleccione un método para finalizar su reserva</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <form asp-action="ProcessPurchase" method="post" class="payment-form">
                 @Html.AntiForgeryToken()
 
-                <div class="list-group">
-                    @* Opción estándar para todos *@
-                    <label class="list-group-item list-group-item-action p-3">
-                        <input class="form-check-input me-1" type="radio" name="paymentMethod" value="Tarjeta" checked>
-                        <strong>💳 Tarjeta de Crédito / Débito</strong>
+                <div class="payment-options-grid">
+                    @* Opción: Tarjeta *@
+                    <label class="payment-card card-visa">
+                        <input type="radio" name="paymentMethod" value="Tarjeta" checked>
+                        <div class="card-content">
+                            <div class="icon-box"><i class="bi bi-credit-card-2-front"></i></div>
+                            <div class="text-box">
+                                <span class="method-title">Tarjeta de Crédito / Débito</span>
+                                <span class="method-desc">Pago seguro mediante pasarela bancaria</span>
+                            </div>
+                            <div class="floating-bg card-slide"></div>
+                        </div>
                     </label>
 
-                    @* Evaluación directa de la propiedad de ViewBag *@
+                    @* Opción: Efectivo (Solo empleados) *@
                     @if (ViewBag.IsEmployee == true)
                     {
-                        <label class="list-group-item list-group-item-action p-3 list-group-item-info">
-                            <input class="form-check-input me-1" type="radio" name="paymentMethod" value="Efectivo">
-                            <strong>💵 Efectivo (Cobro en Taquilla)</strong>
+                        <label class="payment-card card-cash mt-3">
+                            <input type="radio" name="paymentMethod" value="Efectivo">
+                            <div class="card-content">
+                                <div class="icon-box"><i class="bi bi-cash-stack"></i></div>
+                                <div class="text-box">
+                                    <span class="method-title">Efectivo</span>
+                                    <span class="method-desc">Cobro presencial en Taquilla Staff</span>
+                                </div>
+                                <div class="floating-bg cash-rain"></div>
+                            </div>
                         </label>
                     }
                 </div>
 
-                <div class="mt-4">
-                    <a asp-action="Index" class="btn btn-secondary">Volver al resumen</a>
-                    <button type="submit" class="btn btn-primary btn-lg">Confirmar Pago</button>
+                <div class="mt-3 text-center">
+                    <a asp-action="Index" class="btn btn-cancelar py-2">
+                        Volver al resumen
+                    </a>
+                    <button type="submit" class="btn btn-continuar py-3">
+                        Confirmar pago y finalizar
+                    </button>
                 </div>
             </form>
         </div>
