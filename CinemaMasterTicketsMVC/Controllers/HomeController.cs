@@ -21,8 +21,11 @@ namespace CinemaMasterTicketsMVC.Controllers
         {
             HttpContext.Session.Clear();
             var model = _db.Movies
-            .Include(m => m.Sessions)
-            .Where(m => m.BackdropUrl != null && m.Sessions.Any()) 
+            .Include(m => m.Sessions) // Cargamos las sesiones
+            .Where(m =>
+                m.BackdropUrl != null &&
+                m.Sessions.Any(s => s.Status == "Active") // FILTRO: Al menos una sesión activa
+            )
             .OrderByDescending(m => m.AddedAt)
             .Take(10)
             .ToList();

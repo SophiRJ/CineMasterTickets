@@ -253,7 +253,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                         model.Buyer.Role = "Cliente VIP";
                         model.Buyer.IsCustomer = true;
                         model.Buyer.CurrentFidelityPoints = customer.FidelityPoints;
-                        model.Buyer.PointsToEarn = selectedSeats.Count * 10;
+                        model.Buyer.PointsToEarn = selectedSeats.Count * 50;
 
                         HttpContext.Session.SetInt32("BuyerId", customer.CustomerId);
                         HttpContext.Session.SetInt32("ActualPoints", customer.FidelityPoints);
@@ -363,7 +363,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             var seatIdsStr = HttpContext.Session.GetString("SelectedSeatIds");
             var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
             var seatsSubtotalStr = HttpContext.Session.GetString("SeatsSubtotal");
-            var descuentoStr = HttpContext.Session.GetString("DescuentoAplicado");
+            var descuentoStr = HttpContext.Session.GetString("AppliedDiscount");
             var buyerId = HttpContext.Session.GetInt32("BuyerId");
             var employeeId = HttpContext.Session.GetInt32("EmployeeId");
 
@@ -439,7 +439,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 {
                     //Aqui solo tenemos que añadir el id del Complemento o complementos que el usuario haya escogido
                     AddOnId = item.Key
-                    
+
                 });
             }
 
@@ -452,7 +452,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 if (customer != null)
                 {
                     //Recuperamos los puntos para canjear
-                    int puntosACanjear = HttpContext.Session.GetInt32("PuntosACanjear") ?? 0;
+                    int puntosACanjear = HttpContext.Session.GetInt32("PointsToApply") ?? 0;
                     //Calculamos la logica de puntos que va a ganar el usuario por la compra actual
                     int puntosGanados = seatIds.Count * 50;
                     //Actualizamos los puntos del usuario en su base de datos
@@ -470,6 +470,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             //Y guardamos el Id del ticket en la sesion junto con el metodo de pago final
             HttpContext.Session.SetInt32("LastTicketId", nuevoTicket.TicketId);
             HttpContext.Session.SetString("MetodoPagoFinal", paymentMethod);
+            HttpContext.Session.SetString("TotalCalculado", totalCalculado.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             return RedirectToAction(nameof(FinalTicket));
         }
@@ -491,7 +492,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             var seatNames = HttpContext.Session.GetString("SelectedSeatNames") ?? "";
             var seatsSubtotalStr = HttpContext.Session.GetString("SeatsSubtotal");
             var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
-            var descuentoStr = HttpContext.Session.GetString("DescuentoAplicado");
+            var descuentoStr = HttpContext.Session.GetString("AppliedDiscount");
+            var totalFinalGuardado = HttpContext.Session.GetString("TotalCalculado");
 
             // 2. Obtener datos de la película y sala (necesario para el nombre de la película)
             var session = await _db.Sessions
@@ -502,7 +504,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             // 4. Construir el ViewModel para la vista igual que en los metodos de antes
             decimal seatsSubtotal = decimal.Parse(seatsSubtotalStr ?? "0", new System.Globalization.CultureInfo("es-ES"));
             decimal descuento = !string.IsNullOrEmpty(descuentoStr)
-                ? decimal.Parse(descuentoStr, System.Globalization.CultureInfo.InvariantCulture) : 0;
+        ? decimal.Parse(descuentoStr, System.Globalization.CultureInfo.InvariantCulture) : 0;
 
             var addonQuantities = string.IsNullOrEmpty(addonQuantitiesStr)
                 ? new Dictionary<int, int>()

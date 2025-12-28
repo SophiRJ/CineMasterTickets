@@ -18,7 +18,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         {
 
             // limpiar sesiones pasadas
-            //Marcar sesiones pasadas como Finalizadas-> se ca,bia su estado
+            //Marcar sesiones pasadas como Finalizadas->ca,bia su estado
             var toFinish = _db.Sessions
                 .Where(s => s.Status == "Active" && s.StartTime < DateTime.Now);
 
@@ -31,33 +31,71 @@ namespace CinemaMasterTicketsMVC.Controllers
                 .OrderByDescending(m => m.AddedAt)
                 .ToList();
 
+            foreach (var movie in movies)
+            {
+                movie.Sessions = movie.Sessions
+                    .Where(s => s.Status == "Active")
+                    .OrderBy(s => s.StartTime)
+                    .ToList();
+            }
+
             //Cargar salas para el dropdown
             ViewBag.Rooms = _db.Rooms.ToList();
             return View(movies);
         }
+
+        //public IActionResult Index()
+        //{
+        //    // 1️⃣ Marcar sesiones pasadas como Finished
+        //    var now = DateTime.Now;
+
+        //    var toFinish = _db.Sessions
+        //        .Where(s => s.Status == "Active" && s.StartTime < now)
+        //        .ToList();
+
+        //    foreach (var s in toFinish)
+        //        s.Status = "Finished";
+
+        //    if (toFinish.Any())
+        //        _db.SaveChanges();
+
+        //    // 2️ Cargar SOLO películas (sin sesiones)
+        //    var movies = _db.Movies
+        //        .OrderByDescending(m => m.AddedAt)
+        //        .ToList();
+
+        //    // 3️ Salas para dropdown
+        //    ViewBag.Rooms = _db.Rooms.ToList();
+
+        //    return View(movies);
+        //}
+
         //Obtener sesiones por pelicula
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetSessions(int movieId)
+        //{
+        //    var sessions = await _db.Sessions
+        //        .Where(s => s.MovieId == movieId && s.Status == "Active")// REvisar esta filtrando tb sesiones finalizadas
+        //        .OrderBy(s => s.StartTime)
+        //        .ToListAsync();
+
+        //    return PartialView("_SessionsPartial", sessions);
+
+
+        //}
         [HttpGet]
         public async Task<IActionResult> GetSessions(int movieId)
         {
             var sessions = await _db.Sessions
+                .AsNoTracking() //CLAVE
                 .Where(s => s.MovieId == movieId && s.Status == "Active")
                 .OrderBy(s => s.StartTime)
                 .ToListAsync();
 
             return PartialView("_SessionsPartial", sessions);
         }
-        //Obtener Sesiones activas en general
-        //public async Task<IActionResult> ActiveSessions()
-        //{
-        //    var sessions = await _db.Sessions
-        //        .Where(s => s.Status == "Active")
-        //        .Include(s=>s.Movie)
-        //        .Include(s => s.Room)
-        //        .OrderBy(s => s.StartTime)
-        //        .ToListAsync();
-        //    return PartialView("_ActiveSessionsTable", sessions);
-        //}
+
 
 
         //modificado 19/12/2025
@@ -78,9 +116,6 @@ namespace CinemaMasterTicketsMVC.Controllers
                 return NotFound("La película no existe");
 
             // Obtener la sala con sus sesiones
-            //var room = await _db.Rooms
-            //    .Include(r => r.Sessions)
-            //    .FirstOrDefaultAsync(r => r.RoomId == session.RoomId);
 
             var room = await _db.Rooms
                 .Include(r => r.Sessions)
@@ -123,16 +158,6 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             TimeSpan duracion = TimeSpan.FromMinutes(existing.Movie!.DurationMinutes);
 
-            //var room = await _db.Rooms
-            //    .Include(r => r.Sessions)
-            //    .FirstAsync(r => r.RoomId == session.RoomId);
-            ////var room = await _db.Rooms
-            ////    .Include(r => r.Sessions)
-            ////        .ThenInclude(s => s.Movie)
-            ////    .FirstOrDefaultAsync(r => r.RoomId == session.RoomId);
-
-            //if (room.EstaDisponible(session.StartTime, duracion))
-            //    return BadRequest("Sala no disponible");
             // Cargar la sala con todas sus sesiones activas, incluyendo las películas
             var room = await _db.Rooms
                 .Include(r => r.Sessions)
@@ -201,13 +226,25 @@ namespace CinemaMasterTicketsMVC.Controllers
         {
             var movie = await _db.Movies
                 .Include(m => m.Sessions)
+                .ThenInclude(s => s.SessionSeats) // Incluir los asientos de la sesión
                 .FirstOrDefaultAsync(m => m.MovieId == movieId);
 
             if (movie == null)
                 return NotFound();
 
+            // Si tiene sesiones activas (no finalizadas), no permitimos borrar
             if (movie.Sessions.Any(s => s.Status == "Active"))
                 return BadRequest("La película tiene sesiones activas");
+
+            // LIMPIEZA DE DEPENDENCIAS:
+            foreach (var session in movie.Sessions)
+            {
+                // Borrar los bloqueos de asientos de cada sesión
+                _db.SessionSeats.RemoveRange(session.SessionSeats);
+            }
+
+            // Borrar las sesiones
+            _db.Sessions.RemoveRange(movie.Sessions);
 
             _db.Movies.Remove(movie);
             await _db.SaveChangesAsync();

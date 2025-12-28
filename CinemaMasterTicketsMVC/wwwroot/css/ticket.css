@@ -1,0 +1,32 @@
+﻿/* Estilos específicos para la impresión del ticket */
+@media print {
+    /* Ocultar botones y elementos de navegación en el papel */
+    .btn, .card-footer, .text-center.mt-4, header, footer {
+        display: none !important;
+    }
+
+    /* Ajustes de diseño para la impresora */
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    /* Asegurar que el cuerpo de la página no tenga márgenes raros al imprimir */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/* Estilo para que el QR se vea bien en pantalla */
+#qrcode img {
+    margin: 0 auto;
+    display: block;
+}

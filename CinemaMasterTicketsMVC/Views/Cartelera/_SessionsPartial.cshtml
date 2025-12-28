@@ -18,12 +18,28 @@
         aún no tiene sesiones programadas. 
         Esto evita mostrar una lista vacía al usuario.
     *@
-    <div class="text-muted">Esta película aún no tiene sesiones.</div>
+    @* <div class="text-muted">Esta película aún no tiene sesiones.</div> *@
     //Opcion de eliminar pelicula de la bd si no tiene sesines activas
-    <button class="btn btn-danger btn-sm"
+    @* <button class="btn btn-danger btn-sm"
             onclick="deleteMovieFromSessions()">
         Eliminar película
-    </button>
+    </button> *@
+
+    @* @if (!Model.Any())
+    {
+        <button class="btn btn-danger btn-sm btn-delete-movie">
+            Eliminar película
+        </button>
+    } *@
+    @if (!Model.Any())
+    {
+        <div class="text-muted">Esta película aún no tiene sesiones.</div>
+        @* Agregamos el data-movie-id extrayéndolo de la URL o el contexto *@
+        <button class="btn btn-danger btn-sm btn-delete-movie"
+                data-movie-id="@Context.Request.Query["movieId"]">
+            Eliminar película
+        </button>
+    }
 }
 else
 {
@@ -48,9 +64,9 @@ else
                 </span>
 
                 @* Cancelar sesion*@
-                <div class="d-flex gap-2">
+                @* <div class="d-flex gap-2">
                     <strong>@s.Price €</strong>
-                    @* Boton editar sesion *@
+                    @* Boton editar sesion 
                     <button class="btn btn-outline-primary btn-sm"
                             onclick="openEditSession(
                                         @s.SessionId,
@@ -61,12 +77,35 @@ else
                                     )">
                         Editar
                     </button>
-                    @* Boton cancelar sesion *@
+                    @* Boton cancelar sesion 
                     <button class="btn btn-warning btn-sm"
                             onclick="cancelSession(@s.SessionId, @s.MovieId)">
                         Cancelar
                     </button>
+                </div> *@
+
+
+                @* ... (resto del código igual) ... *@
+
+                <div class="d-flex gap-2">
+                    <strong>@s.Price €</strong>
+                    @* Quitamos los onclick y usamos clases + atributos data para pasar la info *@
+                    <button class="btn btn-outline-primary btn-sm btn-edit-session"
+                            data-session-id="@s.SessionId"
+                            data-start-time="@s.StartTime.ToString("yyyy-MM-ddTHH:mm")"
+                            data-room-id="@s.RoomId"
+                            data-price="@s.Price"
+                            data-movie-id="@s.MovieId">
+                        Editar
+                    </button>
+
+                    <button class="btn btn-warning btn-sm btn-cancel-session"
+                            data-session-id="@s.SessionId"
+                            data-movie-id="@s.MovieId">
+                        Cancelar
+                    </button>
                 </div>
+                @* ... (resto del código igual) ... *@
             </li>
         }
     </ul>

@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "¡Compra Confirmada!";
 }
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/ticket.css" asp-append-version="true" />
+}
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -72,6 +74,15 @@
                             <i class="bi bi-wallet2"></i> Método de pago: <strong>@ViewBag.MetodoPago</strong>
                         </div>
                     </div>
+                    @* SECCIÓN DEL CÓDIGO QR *@
+                    <div class="text-center mt-5 border-top pt-4">
+                        @* Usamos un atributo 'data-' para pasarle el ID al JS de forma limpia *@
+                        <div id="qrcode"
+                             data-ticket-id="@ViewBag.TicketId"
+                             class="d-inline-block p-2 bg-white border">
+                        </div>
+                        <p class="text-muted small mt-2">Escanee este código en la entrada de la sala</p>
+                    </div>
                 </div>
 
                 <div class="card-footer bg-light text-center py-3">
@@ -90,3 +101,10 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @* 1. Librería externa *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    @* 2.archivo js *@
+    <script src="~/js/ticket-qr.js" asp-append-version="true"></script>
+}

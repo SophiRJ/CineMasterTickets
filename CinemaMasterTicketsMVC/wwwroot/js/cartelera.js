@@ -1,75 +1,138 @@
 ﻿
 let currentMovieId = null;
 
+document.addEventListener("DOMContentLoaded", () => {
 
-function loadSessions(movieId) {
-    if (!movieId) {
-        console.error("Error: Se intentó cargar sesiones sin un MovieId válido.");
-        return;
-    }
+    // --- 1. CAPTURA DE ELEMENTOS DEL DOM ---
+    const btnSaveSession = document.getElementById("btnSaveSession");
+    const sessionModalElement = document.getElementById("sessionModal");
+    // Inicializamos el objeto Modal de Bootstrap una sola vez
+    const bsModal = new bootstrap.Modal(sessionModalElement);
+
+    // --- 2. ASIGNACIÓN DE EVENTOS CON LAMBDAS ---
+
+    // Evento para el botón GUARDAR del modal
+    btnSaveSession.addEventListener("click", () => saveSession(bsModal));
+
+    // DELEGACIÓN DE EVENTOS (Para botones que aparecen dinámicamente)
+    document.addEventListener("click", (e) => {
+
+        // Botón "Ver Sesiones"
+        if (e.target.classList.contains("btn-load-sessions")) {
+            const movieId = e.target.getAttribute("data-movie-id");
+            loadSessions(movieId);
+        }
+
+        // Botón "Añadir Sesión" (Abre modal vacío)
+        if (e.target.classList.contains("btn-add-session")) {
+            const movieId = e.target.getAttribute("data-movie-id");
+            openSessionModal(movieId, bsModal);
+        }
+
+        // Botón "Editar Sesión" (Carga datos en modal)
+        if (e.target.closest(".btn-edit-session")) {
+            const btn = e.target.closest(".btn-edit-session");
+            const data = {
+                id: btn.dataset.sessionId,
+                start: btn.dataset.startTime,
+                room: btn.dataset.roomId,
+                price: btn.dataset.price,
+                movie: btn.dataset.movieId
+            };
+            openEditSession(data, bsModal);
+        }
+
+        // Botón "Cancelar Sesión"
+        if (e.target.classList.contains("btn-cancel-session")) {
+            const sid = e.target.dataset.sessionId;
+            const mid = e.target.dataset.movieId;
+            cancelSession(sid, mid);
+        }
+
+        // Botón "Eliminar Película"
+        //if (e.target.classList.contains("btn-delete-movie")) {
+        //    deleteMovieFromSessions();
+        //}
+        if (e.target.classList.contains("btn-delete-movie")) {
+            // Capturamos el ID directamente del botón que pulsamos
+            const movieId = e.target.getAttribute("data-movie-id");
+
+            // Si por algún motivo el partial no tiene el ID, usamos la global como plan B
+            const idFinal = movieId || currentMovieId;
+
+            if (idFinal) {
+                deleteMovieFromSessions(idFinal);
+            } else {
+                alert("Error: No se pudo identificar la película a eliminar.");
+            }
+        }
+    });
+});
+
+// --- 3. FUNCIONES DE LÓGICA (Convertidas a Lambdas para seguir el estilo) ---
+
+//const loadSessions = (movieId) => {
+//    currentMovieId = movieId;
+//    const container = document.getElementById(`sessions-${movieId}`);
+
+//    fetch(`/Cartelera/GetSessions?movieId=${movieId}`)
+//        .then(r => r.text())
+//        .then(html => container.innerHTML = html)
+//        .catch(err => console.error("Error:", err));
+//};
+const loadSessions = (movieId) => {
+    if (!movieId) return;
 
     currentMovieId = movieId;
-    const containerId = `sessions-${movieId}`;
-    const container = document.getElementById(containerId);
+    const container = document.getElementById(`sessions-${movieId}`);
 
-    // Verificación de seguridad para evitar la excepción
-    if (!container) {
-        console.error(`Error: No se encontró el contenedor con ID "${containerId}" en el HTML.`);
-        return;
-    }
+    // PASO CLAVE: Limpiar el contenedor antes de la nueva carga para evitar duplicados
+    container.innerHTML = '<div class="spinner-border spinner-border-sm text-primary"></div>';
 
-    fetch(`/Cartelera/GetSessions?movieId=${movieId}&t=${new Date().getTime()}`)
-        .then(r => {
-            if (!r.ok) throw new Error("Error en la respuesta del servidor");
-            return r.text();
-        })
+    fetch(`/Cartelera/GetSessions?movieId=${movieId}&t=${new Date().getTime()}`) // 't' evita caché del navegador
+        .then(r => r.text())
         .then(html => {
             container.innerHTML = html;
         })
-        .catch(err => console.error("Error al cargar sesiones:", err));
-}
+        .catch(err => {
+            container.innerHTML = '<span class="text-danger">Error al cargar.</span>';
+            console.error("Error:", err);
+        });
+};
 
-// Función para abrir el modal de creación de sesion
-function openSessionModal(movieId) {
-    //Limpiar el modal al abrirlo y
-    // asignamos el ID de la película al input hidden dentro del modal
+const openSessionModal = (movieId, modalInstance) => {
+    // Limpiamos campos
+    document.getElementById("session-error").classList.add("d-none");
     document.getElementById("sessionId").value = "";
     document.getElementById("movieId").value = movieId;
     document.getElementById("startTime").value = "";
     document.getElementById("roomId").value = "";
     document.getElementById("price").value = "";
-    // Inicializamos y mostramos el modal usando Bootstrap 5
-    new bootstrap.Modal(document.getElementById("sessionModal")).show();
-}
 
-function saveSession() {
+    modalInstance.show();
+};
+
+const openEditSession = (data, modalInstance) => {
+    document.getElementById("session-error").classList.add("d-none");
+    document.getElementById("sessionId").value = data.id;
+    document.getElementById("movieId").value = data.movie;
+    document.getElementById("startTime").value = data.start;
+    document.getElementById("roomId").value = data.room;
+    document.getElementById("price").value = data.price;
+
+    modalInstance.show();
+};
+
+const saveSession = (modalInstance) => {
     const errorDiv = document.getElementById("session-error");
-    errorDiv.classList.add("d-none");
-
-    //Intentar obtener el MovieId del input
-    let movieIdVal = document.getElementById("movieId").value;
-
-    //Si el input está vacío, usar la variable global que se asignó al abrir
-    if (!movieIdVal || movieIdVal == "0") {
-        movieIdVal = currentMovieId;
-    }
-
-    const sessionId = document.getElementById("sessionId").value;
 
     const data = {
-        SessionId: sessionId ? parseInt(sessionId) : 0,
-        MovieId: parseInt(movieIdVal),
+        SessionId: parseInt(document.getElementById("sessionId").value) || 0,
+        MovieId: parseInt(document.getElementById("movieId").value),
         StartTime: document.getElementById("startTime").value,
         RoomId: parseInt(document.getElementById("roomId").value),
-        Price: document.getElementById("price").value.replace(',', '.') // Manejo de decimales
+        Price: document.getElementById("price").value.replace(',', '.')
     };
-
-    // VALIDACIÓN FINAL antes de enviar al servidor
-    if (isNaN(data.MovieId) || data.MovieId <= 0) {
-        showSessionError("Error interno: No se detectó el ID de la película. Cierre el modal e intente de nuevo.");
-        console.error("Data incompleta:", data);
-        return;
-    }
 
     const url = data.SessionId === 0 ? "/Cartelera/CreateSession" : "/Cartelera/UpdateSession";
 
@@ -78,45 +141,18 @@ function saveSession() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-        .then(async response => {
-            if (!response.ok) {
-                const msg = await response.text();
-                throw new Error(msg);
-            }
-
-            // RECARGA INSTANTÁNEA
+        .then(async r => {
+            if (!r.ok) throw new Error(await r.text());
             loadSessions(data.MovieId);
-
-            // 2. NUEVO: Recarga la lista global del panel lateral si está abierto
-            //const globalContent = document.getElementById('activeSessionsContent');
-            //if (globalContent) {
-            //    fetch('/Cartelera/ActiveSessions')
-            //        .then(r => r.text())
-            //        .then(html => globalContent.innerHTML = html);
-
-            // CERRAR MODAL
-            const modalElement = document.getElementById("sessionModal");
-            const modalInstance = bootstrap.Modal.getInstance(modalElement);
-            if (modalInstance) modalInstance.hide();
+            modalInstance.hide();
         })
-        .catch(error => {
-            showSessionError(error.message || "Error al procesar la solicitud");
+        .catch(err => {
+            errorDiv.textContent = err.message;
+            errorDiv.classList.remove("d-none");
         });
-}
-//Funcion para editar la sesion usamos el mismo modal
-function openEditSession(sessionId, startTime, roomId, price, movieId) {
-    document.getElementById("sessionId").value = sessionId;
-    document.getElementById("movieId").value = movieId;
-    document.getElementById("startTime").value = startTime;
-    document.getElementById("roomId").value = roomId;
-    document.getElementById("price").value = price;
+};
 
-    new bootstrap.Modal(document.getElementById("sessionModal")).show();
-}
-
-
-//Funcion para cancelar la sesion en caso de que no tenga tickets vendidos
-function cancelSession(sessionId, movieId) {
+const cancelSession = (sessionId, movieId) => {
     if (!confirm("¿Cancelar sesión?")) return;
 
     fetch("/Cartelera/CancelSession", {
@@ -125,55 +161,37 @@ function cancelSession(sessionId, movieId) {
         body: `sessionId=${sessionId}`
     })
         .then(() => loadSessions(movieId));
-}
+};
 
-//Eliminar peliculas que no tengan sesiones
-function deleteMovieFromSessions() {
+//const deleteMovieFromSessions = () => {
+//    if (!confirm("¿Eliminar película?")) return;
+
+//    fetch("/Cartelera/DeleteMovie", {
+//        method: "POST",
+//        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+//        body: `movieId=${currentMovieId}`
+//    })
+//        .then(r => {
+//            if (!r.ok) throw new Error();
+//            location.reload();
+//        })
+//        .catch(() => alert("No se puede borrar la película"));
+//};
+const deleteMovieFromSessions = (movieId) => {
     if (!confirm("¿Eliminar película?")) return;
 
     fetch("/Cartelera/DeleteMovie", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `movieId=${currentMovieId}`
+        // Enviamos el ID que recibimos por parámetro
+        body: `movieId=${movieId}`
     })
         .then(r => {
-            if (!r.ok) throw new Error();
+            if (!r.ok) {
+                // Si el controlador devuelve BadRequest, lanzamos el error para el catch
+                return r.text().then(text => { throw new Error(text) });
+            }
             location.reload();
         })
-        .catch(() => alert("No se puede borrar la película"));
-}
-
-
-// mostrar el error en caso de que la sesion no se pueda crear
-function showSessionError(message) {
-    const div = document.getElementById("session-error");
-    div.textContent = message;
-    div.classList.remove("d-none");
-}
-//window.openActiveSessionsModal = function () {
-//    // 1. Instanciar y mostrar el Offcanvas de Bootstrap
-//    const element = document.getElementById('activeSessionsModal');
-//    if (!element) {
-//        console.error("No se encontró el elemento 'activeSessionsModal' en el DOM.");
-//        return;
-//    }
-//    const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(element);
-//    offcanvas.show();
-
-//    // 2. Cargar el contenido de la tabla
-//    const contentDiv = document.getElementById('activeSessionsContent');
-
-//    fetch('/Cartelera/ActiveSessions')
-//        .then(response => {
-//            if (!response.ok) throw new Error("Error en la carga");
-//            return response.text();
-//        })
-//        .then(html => {
-//            contentDiv.innerHTML = html;
-//        })
-//        .catch(err => {
-//            contentDiv.innerHTML = '<div class="alert alert-danger">No se pudieron cargar las sesiones.</div>';
-//            console.error(err);
-//        });
-//}
-
+        .catch(err => alert(err.message || "No se puede borrar la película"));
+};
