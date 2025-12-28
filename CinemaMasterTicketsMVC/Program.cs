@@ -10,8 +10,10 @@ CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// La cadena de conexion se recoge desde la variable de entorno
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -49,10 +51,10 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-
+    var config = services.GetRequiredService<IConfiguration>();
     // Admin por defecto
-    string adminEmail = "admin@site.com";
-    string adminPassword = "Admin123!";
+    string adminEmail = config["AdminSettings:Email"] ?? "admin@fallback.com";
+    string adminPassword = config["AdminSettings:Password"] ?? "Default_Password_123!";
 
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
 

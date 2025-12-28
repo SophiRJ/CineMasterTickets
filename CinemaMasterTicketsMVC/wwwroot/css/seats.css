@@ -1,4 +1,9 @@
-﻿.seat-map {
+﻿/*UNIFICADO TODO EN seatAddOn.css*/
+
+/* ==========================================================================
+   MAPA DE BUTACAS (ESTRUCTURA ORIGINAL)
+   ========================================================================== */
+/*.seat-map {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -17,15 +22,14 @@
 }
 
 .seat {
-    width: 30px; /* ancho de la butaca */
-    height: 30px; /* alto de la butaca */
-    background-color: #4CAF50; /* color por defecto */
+    width: 30px;
+    height: 30px;
+    background-color: #4CAF50;
     margin: 5px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    /* Esquinas superiores redondeadas, inferiores rectas */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-left-radius: 0;
@@ -39,27 +43,176 @@
 
     .seat.available:hover {
         background-color: #45a049;
-        transform: translateY(-2px); /* efecto “levantar” */
+        transform: translateY(-2px);
     }
 
     .seat.reserved {
-        background-color: #999; /* gris para asientos ocupados */
+        background-color: #999;
         cursor: not-allowed;
     }
 
     .seat.selected {
-        background-color: #ff9800; /* naranja para seleccionados */
+        background-color: #ff9800;
     }
 
-
-
-    /* Hueco antes del 5 */
     .seat:nth-child(6) {
         margin-left: 50px;
     }
 
-    /* Hueco antes del 17 */
     .seat:nth-child(18) {
         margin-left: 50px;
     }
 
+.screen {
+    width: 1000px;
+    display: inline-block;
+    padding: 12px 80px;
+    margin: 0 auto 25px auto;
+    background: linear-gradient(to bottom, #eee, #ccc);
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 3px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}*/
+
+/* ==========================================================================
+   TÍTULOS DE LOS SELECTORES (AMARILLO, NEGRITA Y MOVIMIENTO)
+   ========================================================================== */
+/* Forzamos el color amarillo y negrita en los labels de los selectores de asiento */
+/*#userTypeSelectors label {
+    color: #f5c518 !important;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-weight: 800 !important;*/ /* Negrita extra */
+    /*letter-spacing: 1px;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}*/
+
+/* Efecto de movimiento cuando pasas el ratón por el contenedor de cada selector */
+/*#userTypeSelectors div:hover label {
+    text-shadow: 0 0 15px rgba(245, 197, 24, 0.8);
+    transform: translateX(5px);
+}*/
+
+/* ==========================================================================
+   ESTILO DE LOS SELECTORES (APARIENCIA DORADA)
+   ========================================================================== */
+/*#userTypeSelectors select {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    backdrop-filter: blur(10px);
+    color: #f5c518 !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 10px;
+    max-width: 220px;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f5c518' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+    #userTypeSelectors select:hover,
+    #userTypeSelectors select:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 12px rgba(245, 197, 24, 0.5) !important;
+        transform: translateY(-1px);
+        background-color: rgba(35, 35, 35, 0.95) !important;
+        outline: none;
+    }
+
+#userTypeSelectors option {
+    background-color: #1a1a1a;
+    color: #f5c518 !important;
+}*/
+
+/* ==========================================================================
+   BOTONES Y CABECERA (RESTAURADOS)
+   ========================================================================== */
+/*.btn-continuar {
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    background-color: transparent;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
+    }
+
+.btn-cancelar {
+    border: 2px solid #e50914;
+    color: #e50914;
+    background-color: transparent;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+    }
+
+.movie-header {
+    text-align: center;
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    margin-bottom: 1.5rem;
+    padding: 30px;
+    background: linear-gradient(to bottom, rgba(245, 197, 24, 0.1), transparent);*/
+    /* ESQUINAS REDONDEADAS */
+    /*border-radius: 20px 20px 0 0;*/ /* 20px arriba, 0 abajo */
+    /* Aseguramos que el degradado respete el redondeado */
+    /*overflow: hidden;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #f5c518;
+    text-transform: uppercase;
+}
+
+.movie-datetime {
+    font-size: 1.25rem;
+    color: #b3b3b3;
+    font-weight: 500;
+    margin: 0;
+}
+
+.movie-room {
+    font-size: 1.25rem;
+    color: #ff9800;
+    font-weight: 600;
+    margin: 0;
+}
+
+.total-green {
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+#userTypeSelectors .seat-selector-row {
+    color: #f5c518 !important;*/ /* Amarillo de la película */
+    /*font-weight: 800 !important;*/ /* Negrita máxima */
+    /*text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}*/
+
+    /* El efecto de movimiento a la derecha cuando pasas el ratón */
+    /*#userTypeSelectors .seat-selector-row:hover {
+        transform: translateX(8px);
+        text-shadow: 0 0 15px rgba(245, 197, 24, 0.8);
+    }*/

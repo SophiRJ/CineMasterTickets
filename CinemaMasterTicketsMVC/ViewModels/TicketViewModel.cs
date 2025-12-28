@@ -3,6 +3,7 @@
     public class TicketViewModel
     {
         public string? MovieTitle { get; set; }
+        public string? PosterURL { get; set; }
         public string? SessionTime { get; set; }
         public string? RoomNumber { get; set; }
 

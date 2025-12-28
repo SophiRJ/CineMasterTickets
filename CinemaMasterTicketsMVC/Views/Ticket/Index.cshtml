@@ -3,136 +3,159 @@
 @{
     ViewData["Title"] = "Resumen de Compra";
 }
-<div class="alert alert-warning">
-    DEBUG: ¿Hay addons en el modelo? @Model.Addons.Count() <br />
-    DEBUG: ¿Hay datos en la sesión? @Context.Session.GetString("AddonsData")
-</div>
 
-<h2>Resumen de Compra</h2>
-@* SECCIÓN: DATOS DEL COMPRADOR (Usando Model.Buyer) *@
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="mb-3 border-bottom pb-2">Datos del Comprador</h5>
-        <div class="row">
-            <div class="col-sm-6">
-                <p class="mb-1"><strong>Nombre:</strong> @Model.Buyer.Name</p>
-                <p class="mb-1"><strong>Correo:</strong> @Model.Buyer.Email</p>
-            </div>
-            <div class="col-sm-6">
-                <p class="mb-1"><strong>Tipo:</strong> @Model.Buyer.Role</p>
-
-                @if (Model.Buyer.IsEmployee)
-                {
-                    <p class="mb-0 text-primary"><strong>Taquilla:</strong> @(Model.Buyer.BoxOffice ?? "General")</p>
-                }
-                else if (Model.Buyer.IsCustomer)
-                {
-                    <p class="mb-0 text-success"><strong>Puntos a conseguir:</strong> +@Model.Buyer.PointsToEarn pts</p>
-                    <p class="mb-0 text-muted small">Puntos actuales: @Model.Buyer.CurrentFidelityPoints</p>
-                }
-            </div>
-        </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/preTicket.css" asp-append-version="true" />
+}
+<div class="ticket-container shadow-lg">
+    <div class="card-ticket">
+        <h2>Resumen de Compra</h2>
     </div>
-</div>
 
-
-<div class="card mb-3">
-    <div class="card-body">
-        <h4 class="card-title">@Model.MovieTitle</h4>
-        <p><strong>Sala:</strong> @Model.RoomNumber</p>
-        <p><strong>Hora sesión:</strong> @Model.SessionTime</p>
-        <p><strong>Asientos seleccionados:</strong> @string.Join(", ", Model.SelectedSeats)</p>
-        <p><strong>Subtotal asientos:</strong> @Model.SeatsSubtotal €</p>
-    </div>
-</div>
-
-@if (Model.Addons.Any())
-{
-    <div class="card mb-3">
+    @* SECCIÓN: DATOS DEL COMPRADOR (Usando Model.Buyer) *@
+    <div class="card-ticket card mb-3">
         <div class="card-body">
-            <h5>Addons seleccionados</h5>
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio unitario</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var addon in Model.Addons)
+            <h5 class="section-title mb-3 border-bottom pb-2">Datos del Comprador</h5>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p class="mb-1 ticket-info-row"><strong>Nombre:</strong> @Model.Buyer.Name</p>
+                    <p class="mb-1 ticket-info-row"><strong>Correo:</strong> @Model.Buyer.Email</p>
+                </div>
+                <div class="col-sm-6">
+                    <p class="mb-1 ticket-info-row"><strong>Tipo:</strong> @Model.Buyer.Role</p>
+
+                    @if (Model.Buyer.IsEmployee)
                     {
-                        <tr>
-                            <td>@addon.Name</td>
-                            <td>@addon.Quantity</td>
-                            <td>@addon.UnitPrice €</td>
-                            <td>@addon.Total €</td>
-                        </tr>
+                        <p class="mb-0 text-primary"><strong>Taquilla:</strong> @(Model.Buyer.BoxOffice ?? "General")</p>
                     }
-                </tbody>
-            </table>
+                    else if (Model.Buyer.IsCustomer)
+                    {
+                        <p class="mb-0 text-success"><strong>Puntos a conseguir:</strong> +@Model.Buyer.PointsToEarn pts</p>
+                        <p class="mb-0 text-muted small">Puntos actuales: @Model.Buyer.CurrentFidelityPoints</p>
+                    }
+                </div>
+            </div>
         </div>
     </div>
-}
 
-<div class="card">
-    <div class="card-body">
-        <h5>Total General: @Model.TotalGeneral €</h5>
+    @* SECCIÓN: DETALLES DE LA PELÍCULA *@
+    @* SECCIÓN: DETALLES DE LA PELÍCULA CON PÓSTER *@
+    <div class="card-ticket card mb-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                @* Columna de Datos (Izquierda) *@
+                <div class="col-md-8">
+                    <h4 class="card-title highlight-movie mb-3">@Model.MovieTitle</h4>
+                    <p class="ticket-info-row"><strong>Sala:</strong> @Model.RoomNumber</p>
+                    <p class="ticket-info-row"><strong>Hora sesión:</strong> @Model.SessionTime</p>
+                    <p class="ticket-info-row"><strong>Asientos seleccionados:</strong> @string.Join(", ", Model.SelectedSeats)</p>
+                    <p class="ticket-info-row"><strong>Subtotal asientos:</strong> <span class="price-highlight">@Model.SeatsSubtotal €</span> </p>
+                </div>
+
+                @* Columna del Póster (Derecha) *@
+                <div class="col-md-4 text-center">
+                    <div class="movie-card-poster shadow-lg mx-auto" style="max-width: 180px;">
+                        @if (!string.IsNullOrEmpty(Model.PosterURL))
+                        {
+                            <img src="@Model.PosterURL" alt="Cartel de @Model.MovieTitle" />
+                        }
+                        else
+                        {
+                            <img src="/images/no-poster.png" alt="Sin imagen" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* SECCIÓN: ADDONS *@
+    @if (Model.Addons.Any())
+    {
+        <div class="card-ticket card mb-3">
+            <div class="card-body">
+                <h5 class="section-title">Addons seleccionados</h5>
+                <table class="table table-ticket table-sm">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var addon in Model.Addons)
+                        {
+                            <tr>
+                                <td>@addon.Name</td>
+                                <td>@addon.Quantity</td>
+                                <td>@addon.UnitPrice €</td>
+                                <td class="ticket-info-value">@addon.Total €</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <div class="card-ticket card">
+        <div class="card-body">
+            <h5>Total General: <span class="price-highlight"> @Model.TotalGeneral €</span> </p></h5>
+        </div>
+    </div>
+
+    @* --- NUEVA SECCIÓN DE GESTIÓN DE PUNTOS --- *@
+    @if (Model.Buyer.IsCustomer)
+    {
+        @if (Model.DescuentoPuntos > 0)
+        {
+            <div class="alert alert-points alert-success d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <strong>✨ Descuento VIP Aplicado:</strong> Has canjeado tus puntos por un ahorro de <strong>@Model.DescuentoPuntos.ToString("0.00") €</strong>.
+                </div>
+                <form asp-action="CancelPoints" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Quitar Descuento</button>
+                </form>
+            </div>
+        }
+        else if (Model.Buyer.CurrentFidelityPoints >= 100)
+        {
+            <div class="alert alert-points alert-info d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <strong>¡Tienes puntos disponibles!</strong>
+                    Canjea tus @Model.Buyer.CurrentFidelityPoints puntos por un descuento de <strong>@((Model.Buyer.CurrentFidelityPoints / 100m).ToString("0.00")) €</strong>.
+                </div>
+                <form asp-action="ApplyPoints" method="post">
+                    <button type="submit" class="btn btn-info btn-sm btn-info-neon">Aplicar Descuento</button>
+                </form>
+            </div>
+        }
+    }
+
+    @* SECCIÓN: TOTALES *@
+    <div class="total-section card shadow-sm">
+        <div class="card-body">
+            <div class="row text-end">
+                <div class="col-12">
+                    <h5 class="section-title text-end mb-3">Total a pagar</h5>
+                    <p class="mb-1 ticket-info-row">Subtotal Asientos: @Model.SeatsSubtotal €</p>
+                    <p class="mb-1 ticket-info-row">Subtotal Addons: @Model.AddonsTotal €</p>
+
+                    @if (Model.DescuentoPuntos > 0)
+                    {
+                        <p class="mb-1 text-danger font-italic">Descuento VIP aplicado: -@Model.DescuentoPuntos €</p>
+                    }
+                    <hr class="ticket-divider" />
+                    <h4 class="fw-bold grand-total-amount">Total General: @Model.TotalGeneral €</h4>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-@* --- NUEVA SECCIÓN DE GESTIÓN DE PUNTOS (Aquí es donde ocurre la magia) --- *@
-@if (Model.Buyer.IsCustomer)
-{
-    @if (Model.DescuentoPuntos > 0)
-    {
-        @* Mostramos esto si el usuario ya aplicó el descuento *@
-        <div class="alert alert-success d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <strong>✨ Descuento VIP Aplicado:</strong> Has canjeado tus puntos por un ahorro de <strong>@Model.DescuentoPuntos.ToString("0.00") €</strong>.
-            </div>
-            <form asp-action="CancelPoints" method="post">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-outline-danger btn-sm">Quitar Descuento</button>
-            </form>
-        </div>
-    }
-    else if (Model.Buyer.CurrentFidelityPoints >= 100)
-    {
-        @* Mostramos esto si tiene puntos pero no los ha usado aún *@
-        <div class="alert alert-info d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <strong>¡Tienes puntos disponibles!</strong>
-                Canjea tus @Model.Buyer.CurrentFidelityPoints puntos por un descuento de <strong>@((Model.Buyer.CurrentFidelityPoints / 100m).ToString("0.00")) €</strong>.
-            </div>
-            <form asp-action="ApplyPoints" method="post">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-info btn-sm">Aplicar Descuento</button>
-            </form>
-        </div>
-    }
-}
-@* SECCIÓN: TOTALES *@
-<div class="card shadow-sm">
-    <div class="card-body">
-        <div class="row text-end">
-            <div class="col-12">
-                <p class="mb-1">Subtotal Asientos: @Model.SeatsSubtotal €</p>
-                <p class="mb-1">Subtotal Addons: @Model.AddonsTotal €</p>
-
-                @if (Model.DescuentoPuntos > 0)
-                {
-                    <p class="mb-1 text-danger font-italic">Descuento VIP aplicado: -@Model.DescuentoPuntos €</p>
-                }
-                <hr />
-                <h4 class="fw-bold">Total General: @Model.TotalGeneral €</h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="mt-3">
-    <a asp-controller="Movie" asp-action="AddOns" class="btn btn-secondary">Volver atras</a>
-    <a asp-controller="Ticket" asp-action="Payment" class="btn btn-primary">Proceder al pago</a>
+<div class="mt-3 text-center">
+    <a asp-controller="Movie" asp-action="AddOns" class="btn btn-cancelar">Volver atras</a>
+    <a asp-controller="Ticket" asp-action="Payment" class="btn btn-continuar">Proceder al pago</a>
 </div>

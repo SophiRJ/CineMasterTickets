@@ -1,6 +1,7 @@
 ﻿using CinemaMasterTicketsMVC.Data;
 using CinemaMasterTicketsMVC.Models;
 using CinemaMasterTicketsMVC.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,159 +19,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             _db = db;
             _userManager = userManager;
         }
-
-        //[HttpPost]
-        //public async Task<IActionResult> Index(string addonsData)
-        //{
-        //    if (!string.IsNullOrEmpty(addonsData))
-        //    {
-        //        HttpContext.Session.SetString("AddonsData", addonsData);
-        //    }
-
-        //    // Recuperar datos de la sesión
-        //    var sessionId = HttpContext.Session.GetInt32("SessionId");
-        //    var seatIdsStr = HttpContext.Session.GetString("SelectedSeatIds");
-        //    var seatsSubtotalStr = HttpContext.Session.GetString("SeatsSubtotal");
-        //    var selectedSeatNamesStr = HttpContext.Session.GetString("SelectedSeatNames"); 
-
-        //    if (sessionId == null || string.IsNullOrEmpty(seatIdsStr)
-        //        || string.IsNullOrEmpty(seatsSubtotalStr)
-        //        || string.IsNullOrEmpty(selectedSeatNamesStr))
-        //    {
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    //var seatsSubtotal = decimal.Parse(seatsSubtotalStr, System.Globalization.CultureInfo.InvariantCulture);
-        //    //con esto funciona Rubennnn
-        //    var seatsSubtotal = decimal.Parse(seatsSubtotalStr, new System.Globalization.CultureInfo("es-ES"));
-
-        //    // Obtener datos completos de la sesión y sala
-        //    var session = await _db.Sessions
-        //        .Include(s => s.Movie)
-        //        .Include(s => s.Room)
-        //        .FirstOrDefaultAsync(s => s.SessionId == sessionId);
-
-        //    if (session == null) return RedirectToAction("Index", "Home");
-
-        //    // ✅ Usamos directamente los nombres de los asientos desde la sesión
-        //    var selectedSeats = selectedSeatNamesStr.Split(',').ToList();
-
-        //    // Procesar addons
-        //    var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
-        //    var addonQuantities = string.IsNullOrEmpty(addonQuantitiesStr)
-        //        ? new Dictionary<int, int>()
-        //        : System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(addonQuantitiesStr)!;
-
-        //    var addons = await _db.AddOns.ToListAsync();
-
-        //    var selectedAddons = addons
-        //        .Where(a => addonQuantities.ContainsKey(a.AddOnId))
-        //        .Select(a => new AddonItem
-        //        {
-        //            Name = a.AddOnName,
-        //            UnitPrice = a.Price,
-        //            Quantity = addonQuantities[a.AddOnId]
-        //        })
-        //        .ToList();
-
-        //    var totalAddons = selectedAddons.Sum(a => a.Total);
-        //    var grandTotal = seatsSubtotal + totalAddons;
-
-        //    // Construir ViewModel
-        //    var model = new TicketViewModel
-        //    {
-        //        MovieTitle = session.Movie!.Title,
-        //        RoomNumber = session.Room.RoomId.ToString(),
-        //        SessionTime = session.StartTime.ToString("dd/MM/yyyy HH:mm"),
-        //        SelectedSeats = selectedSeats, // <-- aquí usamos la sesión
-        //        SeatsSubtotal = seatsSubtotal,
-        //        Addons = selectedAddons,
-        //        Buyer = new BuyerInfo() // Inicializamos
-        //    };
-
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user != null)
-        //    {
-        //        model.Buyer.Email = user.Email;
-
-        //        var employee = await _db.Employees.Include(e => e.BoxOffice)
-        //                                .FirstOrDefaultAsync(e => e.Email == user.Email);
-        //        if (employee != null)
-        //        {
-        //            model.Buyer.BuyerId = employee.EmployeeId;
-        //            model.Buyer.Name = $"{employee.Firstname} {employee.Lastname}";
-        //            model.Buyer.Role = "Empleado Staff";
-        //            model.Buyer.BoxOffice = employee.BoxOffice?.BoxOfficeName;
-        //            model.Buyer.IsEmployee = true;
-
-        //            // GUARDAMOS ID DE EMPLEADO EN SESIÓN
-        //            HttpContext.Session.SetInt32("EmployeeId", employee.EmployeeId);
-        //        }
-        //        else
-        //        {
-        //            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
-        //            if (customer != null)
-        //            {
-        //                model.Buyer.BuyerId = customer.CustomerId;
-        //                model.Buyer.Name = $"{customer.FirstName} {customer.LastName}";
-        //                model.Buyer.Role = "Cliente VIP";
-        //                model.Buyer.IsCustomer = true;
-        //                model.Buyer.CurrentFidelityPoints = customer.FidelityPoints;
-        //                model.Buyer.PointsToEarn = selectedSeats.Count * 10;
-
-        //                // GUARDAMOS DATOS DEL CLIENTE Y PUNTOS EN SESIÓN
-        //                HttpContext.Session.SetInt32("BuyerId", customer.CustomerId);
-        //                HttpContext.Session.SetInt32("PuntosActuales", customer.FidelityPoints);
-        //                HttpContext.Session.SetInt32("PuntosPendientes", model.Buyer.PointsToEarn);
-        //            }
-        //        }
-        //    }
-
-        //    // SI YA SE APLICÓ UN DESCUENTO (para refrescar la vista si canjea puntos)
-        //    var descuentoStr = HttpContext.Session.GetString("DescuentoAplicado");
-        //    if (!string.IsNullOrEmpty(descuentoStr))
-        //    {
-        //        model.DescuentoPuntos = decimal.Parse(descuentoStr, System.Globalization.CultureInfo.InvariantCulture);
-        //    }
-
-        //    return View(model);
-        //}
-
-
-        ////metodo para aplicar descuento
-        //[HttpPost]
-        //public IActionResult ApplyPoints()
-        //{
-        //    var puntosActuales = HttpContext.Session.GetInt32("PuntosActuales") ?? 0;
-
-        //    if (puntosActuales >= 100)
-        //    {
-        //        // Regla: Por cada 100 puntos, 1€ de descuento
-        //        // Puedes cambiar esto según tu lógica
-        //        decimal descuento = 1.00m;
-
-        //        // Guardamos que se usaron 100 puntos
-        //        HttpContext.Session.SetInt32("PuntosACanjear", 100);
-        //        HttpContext.Session.SetString("DescuentoAplicado", descuento.ToString(System.Globalization.CultureInfo.InvariantCulture));
-        //    }
-
-        //    return RedirectToAction("Index"); // Recarga la página para mostrar el nuevo Total
-        //}
-        // --- 1. EL POST (Para los datos de tu compañero) ---
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(string addonsData)
-        {
-            Console.WriteLine("LLEGADA POST: " + addonsData);
-            if (!string.IsNullOrEmpty(addonsData))
-            {
-                HttpContext.Session.SetString("AddonsData", addonsData);
-            }
-            // Redirigimos al GET para evitar el error 405 y seguir el patrón PRG
-            return RedirectToAction(nameof(Index));
-        }
-
-        // --- 2. EL GET (Para cargar la vista y procesar los puntos) ---
+        
+        //Este Action va a mostrar todos los datos recopilados del ticket en la pantalla o vista del ticket
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -181,32 +31,57 @@ namespace CinemaMasterTicketsMVC.Controllers
             var selectedSeatNamesStr = HttpContext.Session.GetString("SelectedSeatNames");
             var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
 
-            Console.WriteLine($"DEBUG: Usuario: {User.Identity.Name} - Addons en Sesion: {addonQuantitiesStr}");
-
+            // Si no hay ID de sesión o falta el precio de los asientos, algo ha ido mal (el usuario entró directo por URL, posiblemente para hacer maldades).
+            // asique lo redirigimos a Home por seguridad para que resetee toda la session.
             if (sessionId == null || string.IsNullOrEmpty(seatsSubtotalStr))
             {
+                TempData["ErrorMessage"] = "No se ha podido encontrar la sesión solicitada. Por favor, selecciona una película de la cartelera.";
+
                 return RedirectToAction("Index", "Home");
             }
 
-            //con esto funciona 
+            //Ya que al recuperar los datos de la session vienen como string, debemos parsearlos a decimal usando la cultura local
+            //para que respete o interprete de forma correcta las comas.
             var seatsSubtotal = decimal.Parse(seatsSubtotalStr, new System.Globalization.CultureInfo("es-ES"));
 
-
+            //A traves del ID de la sesion, volvemos a recuperar los datos de la pelicula antes de proceder
+            //a registrar los datos en el ticket por seguridad (alomejor en ese transcurso la sesion ya ha caducado).
             var session = await _db.Sessions
                 .Include(s => s.Movie)
                 .Include(s => s.Room)
                 .FirstOrDefaultAsync(s => s.SessionId == sessionId);
 
-            if (session == null) return RedirectToAction("Index", "Home");
+            //Si es null mandamos el mismo mensaje de error
+            if (session == null)
+            {
+                TempData["ErrorMessage"] = "No se ha podido encontrar la sesión solicitada. Por favor, selecciona una película de la cartelera.";
 
+                return RedirectToAction("Index", "Home");
+            }
+
+            //Si la sesion ha expirado durante el proceso de compra del usuario, cancelara la operacion
+            //y redirigira al Home con un mensaje informativo
+            if (session.StartTime < DateTime.Now)
+            {
+                TempData["ErrorMessage"] = $"Lo sentimos, la sesión para '{session.Movie?.Title}'" +
+                    $" ya ha comenzado (hora de inicio: {session.StartTime:HH:mm}).";
+
+                return RedirectToAction("Index", "Home");
+            }
+            //Aunque podriamos imprimir directamente los asientos guardados en la session, preferimos hacerlo
+            //formando una lista de strings por si en un futuro nos diera tiempo a ampliar el ticket, mostrando 
+            //cuantos se han seleccionado o ampliar el programa de fidelizacion calculando los puntos por asiento y tipo.
             var selectedSeats = selectedSeatNamesStr?.Split(',').ToList() ?? new List<string>();
 
-            // Procesar addons desde la sesión (guardados por el POST)
-
+            // Aqui recibimos el Json que guarda esta variable y la deserializamos, convirtiendo su contenido
+            //en un diccionario clave-valor, donde la clave vaa ser el ID del producto y el valor la cantidad
+            //para posteriormente poder buscar el precio unitario de ese producto y realizar el calculo correctamente
             var addonQuantities = string.IsNullOrEmpty(addonQuantitiesStr)
                 ? new Dictionary<int, int>()
                 : System.Text.Json.JsonSerializer.Deserialize<Dictionary<int, int>>(addonQuantitiesStr)!;
 
+            //Aqui consultamos a la base de datos para traer SOLO los complementos que ha elegido el usuario
+            //(los que estan en nuestra lista anterior, y creamos un nuevo ViewModel con el nombre, precio y cantidad.
             var addons = await _db.AddOns.ToListAsync();
             var selectedAddons = addons
                 .Where(a => addonQuantities.ContainsKey(a.AddOnId))
@@ -217,10 +92,13 @@ namespace CinemaMasterTicketsMVC.Controllers
                     Quantity = addonQuantities[a.AddOnId]
                 }).ToList();
 
+            //Por ultimo, Creamos el ViewModel total del ticket con los datos
+            //Basicos que se reflejaran en cualquiera de los casos
             var model = new TicketViewModel
             {
                 MovieTitle = session.Movie!.Title,
-                RoomNumber = session.Room.RoomId.ToString(),
+                RoomNumber = session.Room!.RoomId.ToString(),
+                PosterURL = session.Movie.PosterUrl,
                 SessionTime = session.StartTime.ToString("dd/MM/yyyy HH:mm"),
                 SelectedSeats = selectedSeats,
                 SeatsSubtotal = seatsSubtotal,
@@ -228,14 +106,17 @@ namespace CinemaMasterTicketsMVC.Controllers
                 Buyer = new BuyerInfo()
             };
 
-            // Lógica del usuario (Igual que la tenías)
-            var user = await _userManager.GetUserAsync(User);
+            // Preguntamos por los datos del usuario que tiene la sesion abierta ( si la tiene...)
+            var user = await _userManager!.GetUserAsync(User);
             if (user != null)
             {
+                //Si lo encuentra, cogemos sus datos
                 model.Buyer.Email = user.Email;
+                //Ahora comprobamos si es empleado buscando su email, incluyendo su puesto de trabajo
                 var employee = await _db.Employees.Include(e => e.BoxOffice).FirstOrDefaultAsync(e => e.Email == user.Email);
                 if (employee != null)
                 {
+                    //Si es empleado incluimos sus datos en el ViewModel
                     model.Buyer.BuyerId = employee.EmployeeId;
                     model.Buyer.Name = $"{employee.Firstname} {employee.Lastname}";
                     model.Buyer.Role = "Empleado Staff";
@@ -245,6 +126,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 }
                 else
                 {
+                    //Si no lo es, lo buscamos por Cliente y realizamos el mismo proceso
                     var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
                     if (customer != null)
                     {
@@ -253,8 +135,8 @@ namespace CinemaMasterTicketsMVC.Controllers
                         model.Buyer.Role = "Cliente VIP";
                         model.Buyer.IsCustomer = true;
                         model.Buyer.CurrentFidelityPoints = customer.FidelityPoints;
-                        model.Buyer.PointsToEarn = selectedSeats.Count * 10;
-
+                        //Hacemos un conteo de los asientos y, por cada asiento, le sumamos 50 puntos.
+                        model.Buyer.PointsToEarn = selectedSeats.Count * 50;
                         HttpContext.Session.SetInt32("BuyerId", customer.CustomerId);
                         HttpContext.Session.SetInt32("ActualPoints", customer.FidelityPoints);
                     }
@@ -262,11 +144,12 @@ namespace CinemaMasterTicketsMVC.Controllers
             }
             else
             {
+                //Si no encuentra roles, será invitado o usuario sin registrar
                 model.Buyer.Name = "Invitado";
                 model.Buyer.Role = "Público General";
             }
 
-            // Recuperar descuento si se aplicó en ApplyPoints
+            // Recuperamos el descuento si se aplicó en ApplyPoints
             var descuentoStr = HttpContext.Session.GetString("AppliedDiscount");
             if (!string.IsNullOrEmpty(descuentoStr))
             {
@@ -363,7 +246,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             var seatIdsStr = HttpContext.Session.GetString("SelectedSeatIds");
             var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
             var seatsSubtotalStr = HttpContext.Session.GetString("SeatsSubtotal");
-            var descuentoStr = HttpContext.Session.GetString("DescuentoAplicado");
+            var descuentoStr = HttpContext.Session.GetString("AppliedDiscount");
             var buyerId = HttpContext.Session.GetInt32("BuyerId");
             var employeeId = HttpContext.Session.GetInt32("EmployeeId");
 
@@ -452,7 +335,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 if (customer != null)
                 {
                     //Recuperamos los puntos para canjear
-                    int puntosACanjear = HttpContext.Session.GetInt32("PuntosACanjear") ?? 0;
+                    int puntosACanjear = HttpContext.Session.GetInt32("PointsToApply") ?? 0;
                     //Calculamos la logica de puntos que va a ganar el usuario por la compra actual
                     int puntosGanados = seatIds.Count * 50;
                     //Actualizamos los puntos del usuario en su base de datos
@@ -470,6 +353,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             //Y guardamos el Id del ticket en la sesion junto con el metodo de pago final
             HttpContext.Session.SetInt32("LastTicketId", nuevoTicket.TicketId);
             HttpContext.Session.SetString("MetodoPagoFinal", paymentMethod);
+            HttpContext.Session.SetString("TotalCalculado", totalCalculado.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
             return RedirectToAction(nameof(FinalTicket));
         }
@@ -491,7 +375,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             var seatNames = HttpContext.Session.GetString("SelectedSeatNames") ?? "";
             var seatsSubtotalStr = HttpContext.Session.GetString("SeatsSubtotal");
             var addonQuantitiesStr = HttpContext.Session.GetString("AddonsData");
-            var descuentoStr = HttpContext.Session.GetString("DescuentoAplicado");
+            var descuentoStr = HttpContext.Session.GetString("AppliedDiscount");
+            var totalFinalGuardado = HttpContext.Session.GetString("TotalCalculado");
 
             // 2. Obtener datos de la película y sala (necesario para el nombre de la película)
             var session = await _db.Sessions
@@ -502,7 +387,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             // 4. Construir el ViewModel para la vista igual que en los metodos de antes
             decimal seatsSubtotal = decimal.Parse(seatsSubtotalStr ?? "0", new System.Globalization.CultureInfo("es-ES"));
             decimal descuento = !string.IsNullOrEmpty(descuentoStr)
-                ? decimal.Parse(descuentoStr, System.Globalization.CultureInfo.InvariantCulture) : 0;
+        ? decimal.Parse(descuentoStr, System.Globalization.CultureInfo.InvariantCulture) : 0;
 
             var addonQuantities = string.IsNullOrEmpty(addonQuantitiesStr)
                 ? new Dictionary<int, int>()
@@ -529,6 +414,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 Addons = selectedAddons,
                 DescuentoPuntos = descuento,
                 Buyer = new BuyerInfo { Name = User.Identity?.Name ?? "Cliente" }
+                
             };
 
             // Pasamos los datos extra por ViewBag
@@ -540,4 +426,3 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
     }
 }
-

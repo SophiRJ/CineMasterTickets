@@ -1,0 +1,401 @@
+﻿/* ==========================================================================
+   1. ESTILOS BASE Y CONTENEDORES (COMPARTIDOS)
+   ========================================================================== */
+.addons-summary,
+.addons-total,
+.seat-selection-summary {
+    background: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    padding: 20px;
+}
+
+/* ==========================================================================
+   2. CABECERA DE PELÍCULA (UNIFICADA)
+   ========================================================================== */
+.movie-header {
+    text-align: center;
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    margin-bottom: 1.5rem;
+    padding: 30px;
+    background: linear-gradient(to bottom, rgba(245, 197, 24, 0.1), transparent);
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #f5c518;
+    text-transform: uppercase;
+}
+
+.movie-datetime {
+    font-size: 1.25rem;
+    color: #b3b3b3;
+    font-weight: 500;
+    margin: 0;
+}
+
+.movie-room {
+    font-size: 1.25rem;
+    color: #ff9800;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ==========================================================================
+   3. TEXTOS RESALTADOS Y TOTALES
+   ========================================================================== */
+#grandTotal,
+.price-total,
+.total-green,
+.price-highlight {
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    font-weight: 800;
+}
+
+.price-highlight {
+    font-size: 1.4rem;
+}
+
+.addonTotal {
+    font-weight: 800;
+    color: #ff9800;
+    font-size: 1.2rem;
+}
+
+/* ==========================================================================
+   4. SELECTORES Y ETIQUETAS (AMARILLO NEÓN)
+   ========================================================================== */
+.label-select,
+#userTypeSelectors label,
+#userTypeSelectors .seat-selector-row,
+.label-seats-title {
+    color: #f5c518 !important;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+    /* Movimiento lateral al pasar el ratón */
+    .mb-3:hover .label-select,
+    #userTypeSelectors .seat-selector-row:hover,
+    #userTypeSelectors div:hover label {
+        text-shadow: 0 0 15px rgba(245, 197, 24, 0.8);
+        transform: translateX(8px);
+    }
+
+#addonTypeSelect,
+#userTypeSelectors select,
+.form-select {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    backdrop-filter: blur(10px);
+    color: #f5c518 !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f5c518' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+#userTypeSelectors select {
+    max-width: 220px;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+}
+
+    #addonTypeSelect:hover,
+    #userTypeSelectors select:hover,
+    .form-select:hover,
+    #addonTypeSelect:focus,
+    #userTypeSelectors select:focus,
+    .form-select:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 12px rgba(245, 197, 24, 0.5) !important;
+        transform: translateY(-1px);
+        background-color: rgba(35, 35, 35, 0.95) !important;
+        outline: none;
+    }
+
+#addonTypeSelect option,
+#userTypeSelectors option {
+    background-color: #1a1a1a;
+    color: #f5c518 !important;
+}
+
+/* ==========================================================================
+   5. TABLA DE COMPLEMENTOS (ADDONS)
+   ========================================================================== */
+#addonsTableContainer .table {
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    color: #fff;
+    border: none;
+}
+
+#addonsTableContainer thead th {
+    color: #f5c518;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    padding-bottom: 20px;
+}
+
+#addonsTableContainer tbody tr {
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+    #addonsTableContainer tbody tr:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+#addonsTableContainer tbody td {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    vertical-align: middle;
+}
+
+#addonsTableContainer tbody tr:hover td {
+    border-color: rgba(245, 197, 24, 0.4) !important;
+}
+
+#addonsTableContainer tbody tr td:first-child {
+    border-radius: 15px 0 0 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#addonsTableContainer tbody tr td:last-child {
+    border-radius: 0 15px 15px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.addon-img-thumbnail {
+    width: 85px !important;
+    height: 85px !important;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid transparent !important;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+#addonsTableContainer tbody tr:hover .addon-img-thumbnail {
+    border: 3px solid #f5c518 !important;
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.7) !important;
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   6. MAPA DE BUTACAS
+   ========================================================================== */
+.seat-map {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.row-label {
+    width: 20px;
+    font-weight: bold;
+}
+
+.seat {
+    width: 30px;
+    height: 30px;
+    background-color: #4CAF50;
+    margin: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+    .seat.available:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+    }
+
+    .seat.reserved {
+        background-color: #999;
+        cursor: not-allowed;
+    }
+
+    .seat.selected {
+        background-color: #ff9800;
+    }
+
+    .seat:nth-child(6), .seat:nth-child(18) {
+        margin-left: 50px;
+    }
+
+.screen {
+    width: 1000px;
+    display: inline-block;
+    padding: 12px 80px;
+    margin: 0 auto 25px auto;
+    background: linear-gradient(to bottom, #eee, #ccc);
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 3px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   7. BOTONES Y CONTROLES
+   ========================================================================== */
+.btn-continuar, .btn-cancelar {
+    background-color: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-continuar {
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
+    }
+
+.btn-cancelar {
+    border: 2px solid #e50914;
+    color: #e50914;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+    }
+
+/* Controles +/- de Addons */
+#addonsTableContainer .quit-btn, #addonsTableContainer .add-btn {
+    width: 38px;
+    height: 38px;
+    background: #1a1a1a;
+    border-radius: 8px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quit-btn {
+    border: 1px solid #ff444466 !important;
+    color: #ff4444;
+}
+
+.add-btn {
+    border: 1px solid #4CAF5066 !important;
+    color: #4CAF50;
+}
+
+.quit-btn:hover:not(:disabled) {
+    background: #ff4444;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+}
+
+.add-btn:hover {
+    background: #4CAF50;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+}
+
+.qty-input-custom {
+    width: 75px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #444 !important;
+    color: #f5c518 !important;
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem !important;
+    text-align: center;
+    border-radius: 6px !important;
+}
+
+.btn:disabled {
+    opacity: 0.1 !important;
+    filter: grayscale(1);
+}
+.container div.alert.custom-alert {
+    background-color: rgba(229, 9, 20, 0.2) !important; /* Más opacidad para que se vea el relleno */
+    border: 2px solid rgba(229, 9, 20, 0.6) !important;
+    color: #ff4444 !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.3) !important;
+    margin-top: 25px;
+    padding: 20px !important; /* Forzamos el relleno interno */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex !important; /* Asegura que el contenido y la X se alineen */
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-alert .btn-close {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff4444'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") !important;
+    background-color: transparent !important;
+    background-size: 12px; /* Un pelín más grande para que se vea mejor */
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10px;
+    height: 10px;
+    padding: 1rem;
+    opacity: 0.8;
+    border: none !important; /* Quitamos el borde del botón para que no ensucie */
+    box-shadow: none !important;
+}
+
+    .custom-alert .btn-close:hover {
+        opacity: 1;
+        transform: scale(1.2); /* Crece un poquito al pasar el ratón */
+        background-color: transparent !important;
+    }
+
+    .custom-alert .btn-close:focus {
+        box-shadow: none !important; /* Quita el aro azul de Bootstrap */
+    }

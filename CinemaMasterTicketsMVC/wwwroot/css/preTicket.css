@@ -1,0 +1,217 @@
+﻿.ticket-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: rgba(17, 17, 17, 0.9);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(245, 197, 24, 0.2);
+    border-radius: 24px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    position: relative;
+    padding: 20px;
+}
+
+    .ticket-container::before, .ticket-container::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 30px;
+        height: 30px;
+        background: #0a0a0a;
+        border-radius: 50%;
+    }
+
+    .ticket-container::before {
+        left: -15px;
+    }
+
+    .ticket-container::after {
+        right: -15px;
+    }
+
+.card-ticket {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1) !important;
+    color: #fff;
+}
+
+.section-title {
+    color: #f5c518 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.highlight-movie {
+    color: #f5c518;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.4);
+}
+
+.total-section {
+    background: rgba(245, 197, 24, 0.05) !important;
+    border-top: 2px solid #f5c518 !important;
+    margin-top: 20px;
+}
+
+.grand-total-amount {
+    color: #4CAF50;
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+}
+
+.alert-points {
+    background: rgba(0, 212, 255, 0.1) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #00d4ff !important;
+}
+
+.btn-info-neon {
+    background: transparent !important;
+    border: 1px solid #00d4ff !important;
+    color: #00d4ff !important;
+}
+
+.btn-pago {
+    border: 2px solid #4CAF50 !important;
+    background: transparent !important;
+    color: #4CAF50 !important;
+    font-weight: 700;
+}
+
+.table-ticket {
+    color: #ffffff !important;
+    margin-top: 15px;
+}
+
+    .table-ticket thead th {
+        color: #f5c518 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
+
+    .table-ticket tbody td {
+        color: #e0e0e0 !important;
+        padding: 10px 5px;
+        border: none !important;
+    }
+
+    
+    .table-ticket .ticket-info-value {
+        color: #4CAF50 !important; 
+        font-weight: bold;
+    }
+
+.price-highlight {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+.ticket-info-label {
+    color: #b3b3b3;
+    font-weight: 400;
+}
+
+/* El verde neón para todos los subtotales */
+.price-highlight {
+    color: #4CAF50 !important;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    font-weight: 800;
+}
+
+/* Título de la sección de pago alineado a la derecha */
+.total-section .section-title {
+    justify-content: flex-end;
+    border: none !important;
+}
+
+/* Estilo del separador */
+.ticket-divider {
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    margin: 15px 0;
+    opacity: 1;
+}
+
+/* --- CONTENEDOR DEL POSTER CON ESQUINAS CORTADAS --- */
+.movie-card-poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    clip-path: polygon( 15% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%, 0% 15% );
+    background: #000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+    /* --- IMAGEN DENTRO DEL CONTENEDOR --- */
+    .movie-card-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+/* Ligero brillo al pasar el ratón sobre el ticket */
+.card-ticket:hover .movie-card-poster {
+    border-color: #f5c518;
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Ajuste para que el texto no se pegue al póster en móviles */
+@media (max-width: 768px) {
+    .movie-card-poster {
+        margin-top: 20px;
+        max-width: 150px;
+    }
+}
+
+/* ==========================================================================
+   ESTILOS DE BOTONES (NORMAL Y HOVER)
+   ========================================================================== */
+
+/* --- BOTÓN: PROCEDER AL PAGO (VERDE NEÓN) --- */
+.btn-continuar {
+    background-color: transparent !important;
+    border: 2px solid #4CAF50 !important;
+    color: #4CAF50 !important;
+    font-weight: 700;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+    /* Efecto Hover Relleno Verde */
+    .btn-continuar:hover:hover {
+        background-color: #4CAF50 !important;
+        color: #fff !important;
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+        transform: translateY(-2px);
+    }
+
+/* --- BOTÓN: VOLVER ATRÁS (ROJO NEÓN) --- */
+.btn-cancelar {
+    background-color: transparent !important;
+    border: 2px solid #e50914 !important;
+    color: #e50914 !important;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+    /* Efecto Hover Relleno Rojo */
+    .btn-cancelar:hover{
+        background-color: #e50914 !important;
+        color: #fff !important;
+        box-shadow: 0 0 20px rgba(229, 9, 20, 0.8);
+        transform: translateY(-2px);
+    }
+
+/* Ajuste de margen y padding */
+.btn-cancelar, .btn-continuar {
+    padding: 10px 25px;
+    border-radius: 8px;
+    margin: 5px;
+}
