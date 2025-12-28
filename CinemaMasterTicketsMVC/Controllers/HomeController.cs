@@ -17,29 +17,29 @@ namespace CinemaMasterTicketsMVC.Controllers
             _db = db;
         }
 
+        //En el index de Home, directamente cargamos el contenido de las peliculas que ya tengan sesiones activas.
+        //Solo 10 ya que solo tendremos 10 salas
         public IActionResult Index()
         {
+            //Primero limpiamos todo el contenido de la Session para evitar residuos por si el usuario decide
+            //volver a la pagina de inicio desde algun punto de la compra.
             HttpContext.Session.Clear();
             var model = _db.Movies
-            .Include(m => m.Sessions)
-            .Where(m => m.BackdropUrl != null && m.Sessions.Any()) 
-            .OrderByDescending(m => m.AddedAt)
-            .Take(10)
-            .ToList();
+        .Include(m => m.Sessions) // Cargamos las sesiones
+        .Where(m =>
+            m.BackdropUrl != null &&
+            m.Sessions.Any(s =>
+                s.Status == "Active" &&
+                s.StartTime > DateTime.Now) //Aqui filtramos para que solo aparezcan las sesiones posteriores a la fecha actual
+        )
+        .OrderByDescending(m => m.AddedAt)
+        .Take(10)
+        .ToList();
 
             return View(model);
         }
 
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        
     }
 }

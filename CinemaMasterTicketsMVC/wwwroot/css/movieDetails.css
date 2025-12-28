@@ -1,5 +1,5 @@
 ﻿/* 1. Fondo tenue a pantalla completa */
-.movie-backdrop-fixed {
+/*.movie-backdrop-fixed {
     position: fixed;
     top: 0;
     left: 0;
@@ -10,19 +10,19 @@
     filter: brightness(0.2) blur(8px);
     z-index: -1;
     transform: scale(1.1);
-}
+}*/
 
 /* 2. Contenedor centrado */
-.movie-details-container {
+/*.movie-details-container {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     padding-top: 80px;
     padding-bottom: 40px;
-}
+}*/
 
 /* 3. Tarjeta estilo Cristal (Glassmorphism) */
-.movie-glass-card {
+/*.movie-glass-card {
     background: rgba(20, 20, 20, 0.8);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -32,10 +32,10 @@
     width: 100%;
     overflow: hidden;
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
+}*/
 
 /* 4. Sección Izquierda (Póster) */
-.movie-poster-section {
+/*.movie-poster-section {
     flex: 0 0 350px;
     padding: 30px;
 }
@@ -44,10 +44,10 @@
     width: 100%;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
+}*/
 
 /* 5. Sección Derecha (Info) */
-.movie-info-section {
+/*.movie-info-section {
     flex: 1;
     padding: 50px;
     color: #fff;
@@ -84,10 +84,10 @@
     letter-spacing: 1px;
     color: #f5c518;
     background: rgba(245, 197, 24, 0.05);
-}
+}*/
 
 /* 7. Sinopsis y Sesiones */
-.movie-synopsis h3, .movie-sessions h3 {
+/*.movie-synopsis h3, .movie-sessions h3 {
     font-size: 1.2rem;
     text-transform: uppercase;
     color: #f5c518;
@@ -146,10 +146,10 @@
         color: #141414;
         transform: translateY(-2px);
         box-shadow: 0 5px 10px rgba(245, 197, 24, 0.4);
-    }
+    }*/
 
 /* 9. Tablas de sesiones */
-.sessions-tables {
+/*.sessions-tables {
     margin-top: 20px;
     width: 100%;
     overflow-x: auto;
@@ -167,10 +167,10 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     display: none;
     transition: all 0.3s ease;
-}
+}*/
 
     /* Cabecera */
-    .sessions-table th {
+    /*.sessions-table th {
         background: rgba(245, 197, 24, 0.2);
         color: #f5c518;
         font-weight: bold;
@@ -179,12 +179,12 @@
         letter-spacing: 1px;
         padding: 15px;
         border-bottom: 1px solid rgba(245,197,24,0.3);
-    }
+    }*/
 
     /* Celdas */
-    .sessions-table td {
-        position: relative; /* necesario para el ::before */
-        z-index: 1;
+    /*.sessions-table td {
+        position: relative;*/ /* necesario para el ::before */
+        /*z-index: 1;
     }
 
     .sessions-table tr:hover td:first-child::before {
@@ -197,10 +197,10 @@
         background: linear-gradient(to bottom, #e50914, #ff1a2c);
         border-radius: 3px 0 0 3px;
         z-index: 0;
-    }
+    }*/
 
     /* Botón comprar dentro de la tabla */
-    .sessions-table a.btn {
+   /* .sessions-table a.btn {
         padding: 6px 15px;
         border-radius: 6px;
         font-weight: bold;
@@ -216,9 +216,26 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
         }
+*/
+    /*.sessions-table .btn-primary {
+        padding: 6px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        background: transparent;
+        color: #00d4ff;
+        border: 2px solid #00d4ff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
 
+        .sessions-table .btn-primary:hover {
+            background: #00d4ff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.7);
+        }*/
     /* Bordes redondeados menos exagerados */
-    .sessions-table tr:first-child th:first-child {
+    /*.sessions-table tr:first-child th:first-child {
         border-top-left-radius: 6px;
     }
 
@@ -232,10 +249,10 @@
 
     .sessions-table tr:last-child td:last-child {
         border-bottom-right-radius: 6px;
-    }
+    }*/
 
 /* 10. Responsivo */
-@media (max-width: 900px) {
+/*@media (max-width: 900px) {
     .movie-glass-card {
         flex-direction: column;
         align-items: center;
@@ -266,5 +283,264 @@
     .day-button {
         padding: 6px 10px;
         font-size: 0.9rem;
+    }
+}
+
+.btn-cancelar {
+    border: 2px solid #e50914;
+    color: #e50914;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+    }*/
+/* ==========================================================================
+   1. FONDO Y CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.movie-backdrop-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.2) blur(8px);
+    z-index: -1;
+    transform: scale(1.1);
+}
+
+.movie-details-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 80px 20px 40px;
+}
+
+/* ==========================================================================
+   2. TARJETA PRINCIPAL (GLASSMORPHISM)
+   ========================================================================== */
+.movie-glass-card {
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: flex;
+    max-width: 1100px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* Sección Izquierda (Póster) */
+.movie-poster-section {
+    flex: 0 0 350px;
+    padding: 30px;
+}
+
+.movie-poster-img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Sección Derecha (Info) */
+.movie-info-section {
+    flex: 1;
+    padding: 50px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   3. TEXTOS Y METADATOS
+   ========================================================================== */
+.movie-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #f5c518;
+}
+
+.movie-metadata {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: #ccc;
+}
+
+.movie-genres-list {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.genre-item {
+    border: 1px solid rgba(245, 197, 24, 0.5);
+    padding: 5px 15px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #f5c518;
+    background: rgba(245, 197, 24, 0.05);
+}
+
+.movie-synopsis h3, .movie-sessions h3 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: #f5c518;
+    margin-bottom: 15px;
+}
+
+.movie-synopsis p {
+    line-height: 1.6;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+}
+
+/* ==========================================================================
+   4. BOTONES (ESTILO NEÓN UNIFICADO)
+   ========================================================================== */
+/* Base común para botones tipo neón (Volver y Comprar) */
+.btn-cancelar, .sessions-table .btn-primary {
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+    background: transparent;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Variante ROJA (Volver / Cancelar) */
+.btn-cancelar {
+    border: 2px solid #e50914;
+    color: #e50914;
+    margin-top: 20px;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914;
+        color: #fff;
+        box-shadow: 0 0 15px rgba(229, 9, 20, 0.8);
+    }
+
+/* Variante AZUL NEÓN (Comprar Entradas) */
+.sessions-table .btn-primary {
+    border: 2px solid #00d4ff;
+    color: #00d4ff;
+}
+
+    .sessions-table .btn-primary:hover:not(:disabled) {
+        background: #00d4ff;
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.7);
+    }
+
+/* Botones de Días (Filtros) */
+.day-button {
+    padding: 8px 16px;
+    border: 1px solid #f5c518;
+    background: rgba(245, 197, 24, 0.05);
+    color: #f5c518;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .day-button:hover {
+        background: #f5c518;
+        color: #141414;
+        box-shadow: 0 5px 10px rgba(245, 197, 24, 0.4);
+    }
+
+/* ==========================================================================
+   5. TABLAS DE SESIONES
+   ========================================================================== */
+.sessions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(10px);
+    display: none; /* Se activa por JS */
+}
+
+    .sessions-table th {
+        background: rgba(245, 197, 24, 0.2);
+        color: #f5c518;
+        padding: 15px;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        border-bottom: 1px solid rgba(245,197,24,0.3);
+    }
+
+    .sessions-table td {
+        padding: 12px;
+        color: #fff;
+        vertical-align: middle;
+    }
+
+    /* Efecto de línea roja al hacer hover en la fila */
+    .sessions-table tr:hover td:first-child::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(to bottom, #e50914, #ff1a2c);
+        border-radius: 3px 0 0 3px;
+    }
+
+    /* Respetar estado deshabilitado (Sala Llena) */
+    .sessions-table .btn:disabled {
+        background: #6c757d !important;
+        border-color: #6c757d !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        transform: none !important;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+/* ==========================================================================
+   6. RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 900px) {
+    .movie-glass-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .movie-poster-section {
+        flex: 1;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .movie-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .sessions-table th, .sessions-table td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .movie-info-section {
+        padding: 30px;
     }
 }

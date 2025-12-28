@@ -110,19 +110,23 @@
                         </table>
                     }
                 </div>
-                <a asp-controller="Movie" asp-action="BackToHome" class="btn btn-secondary">
+                <a asp-controller="Movie" asp-action="BackToHome" class="btn btn-cancelar">
                     <i class="bi bi-arrow-left"></i> Volver a la cartelera
                 </a>
             </div>
         </div>
     </div>
 </div>
-@* Script JS para activar o desactivar la tabla cuando se pulse un dia *@
+@* Script JS para activar o desactivar la tabla cuando se pulse un dia.
+Como el JS es pequeño, se introduce aqui directamente*@
 @section Scripts {
     <script>
         const buttons = document.querySelectorAll('.day-button');
         const tables = document.querySelectorAll('.sessions-table');
-
+        // La logica es sencilla, se capturan los elementos de los botones y las tablas.
+        //Si al hacer click en el boton, la fecha contenida en el "data" del boton coincide
+        //con la fecha contenida en el dataset de la tabla,
+        //se pinta la tabla, si no, no (no se suele dar el caso).
         buttons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const selectedDay = btn.dataset.day;

@@ -1,0 +1,182 @@
+﻿/* ==========================================================================
+   1. ENCABEZADO Y TÍTULOS (AMARILLO CORPORATIVO)
+   ========================================================================== */
+.payment-main-container {
+    background: rgba(10, 10, 10, 0.9);
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgba(245, 197, 24, 0.1);
+    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+.highlight-gold {
+    color: #f5c518 !important;
+    text-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+/* ==========================================================================
+   2. ESTRUCTURA DE LAS TARJETAS DE PAGO
+   ========================================================================== */
+.payment-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.35s ease;
+    margin-bottom: 20px;
+}
+
+.card-content {
+    padding: 30px 25px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.text-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+}
+
+.payment-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.method-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    position: relative;
+    padding-bottom: 8px;
+    display: block;
+}
+
+    .method-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 0;
+        border-radius: 6px;
+        transition: width 0.4s ease;
+    }
+
+.method-desc {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 5px;
+    display: block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+}
+
+.payment-card:hover .method-desc {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   3. OPCIÓN TARJETA (MORADO NEÓN)
+   ========================================================================== */
+.card-visa input:checked + .card-content {
+    background: rgba(188, 19, 254, 0.15) !important;
+}
+
+.card-visa:has(input:checked),
+.card-visa input:checked + .card-content {
+    border: 2px solid #bc13fe !important;
+    box-shadow: 0 0 25px rgba(188, 19, 254, 0.5) !important;
+}
+
+    .card-visa input:checked + .card-content .method-title,
+    .card-visa input:checked + .card-content .icon-box,
+    .card-visa input:checked + .card-content .method-desc {
+        color: #bc13fe !important;
+    }
+
+        .card-visa input:checked + .card-content .method-title::after {
+            width: 100% !important;
+            background: #bc13fe !important;
+            box-shadow: 0 0 15px #bc13fe;
+        }
+
+/* ==========================================================================
+   4. OPCIÓN EFECTIVO (AZUL NEÓN) - ¡AZUL FORZADO!
+   ========================================================================== */
+.card-cash input:checked + .card-content {
+    background: rgba(0, 212, 255, 0.15) !important;
+}
+
+.card-cash:has(input:checked),
+.card-cash input:checked + .card-content {
+    border: 2px solid #00d4ff !important;
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.5) !important;
+}
+
+    .card-cash input:checked + .card-content .method-title,
+    .card-cash input:checked + .card-content .icon-box,
+    .card-cash input:checked + .card-content .method-desc {
+        color: #00d4ff !important;
+    }
+
+        .card-cash input:checked + .card-content .method-title::after {
+            width: 100% !important;
+            background: #00d4ff !important;
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+/* ==========================================================================
+   5. BOTONES DE ACCIÓN (VERDE Y ROJO NEÓN)
+   ========================================================================== */
+
+/* Confirmar (Verde) */
+.btn-continuar {
+    background-color: transparent !important;
+    border: 2px solid #4CAF50 !important;
+    color: #4CAF50 !important;
+    font-weight: 900;
+    padding: 10px 25px;
+    border-radius: 8px;
+    margin: 5px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50 !important;
+        color: #fff !important;
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+        transform: translateY(-2px);
+    }
+
+/* Volver (Rojo) */
+.btn-cancelar {
+    background-color: transparent !important;
+    border: 2px solid #e50914 !important;
+    color: #e50914 !important;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-radius: 8px;
+    margin: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914 !important;
+        color: #fff !important;
+        box-shadow: 0 0 20px rgba(229, 9, 20, 0.8);
+        transform: translateY(-2px);
+    }

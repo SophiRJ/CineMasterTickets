@@ -1,0 +1,282 @@
+﻿
+/* ==========================================================================
+   ESTILOS GENERALES Y CONTENEDORES
+   ========================================================================== */
+.addons-summary,
+.addons-total {
+    background: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    padding: 20px;
+}
+
+/* ==========================================================================
+   CABECERA DE PELÍCULA Y TEXTOS DE PRECIO
+   ========================================================================== */
+.movie-header {
+    text-align: center;
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    margin-bottom: 1.5rem;
+    padding: 30px;
+    background: linear-gradient(to bottom, rgba(245, 197, 24, 0.1), transparent);
+}
+
+.movie-header {
+    text-align: center;
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    margin-bottom: 1.5rem;
+    padding: 30px;
+    background: linear-gradient(to bottom, rgba(245, 197, 24, 0.1), transparent);
+    /* ESQUINAS REDONDEADAS */
+    border-radius: 20px 20px 0 0; /* 20px arriba, 0 abajo */
+    /* Aseguramos que el degradado respete el redondeado */
+    overflow: hidden;
+}
+
+.movie-datetime {
+    font-size: 1.25rem;
+    color: #b3b3b3;
+    font-weight: 500;
+    margin: 0;
+}
+
+.movie-room {
+    font-size: 1.25rem;
+    color: #ff9800;
+    font-weight: 600;
+    margin: 0;
+}
+
+#grandTotal,
+.price-total,
+.total-green {
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    font-weight: 800;
+}
+
+.price-highlight {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #4CAF50;
+    text-shadow: 0 0 12px rgba(76, 175, 80, 0.6);
+}
+
+/* ==========================================================================
+   SELECTORES Y ETIQUETAS (FILTRO)
+   ========================================================================== */
+.label-select {
+    color: #f5c518 !important;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.mb-3:hover .label-select {
+    text-shadow: 0 0 15px rgba(245, 197, 24, 0.8);
+    transform: translateX(5px);
+}
+
+#addonTypeSelect,
+.form-select {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    backdrop-filter: blur(10px);
+    color: #f5c518 !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f5c518' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+    #addonTypeSelect:hover,
+    .form-select:hover,
+    #addonTypeSelect:focus,
+    .form-select:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 12px rgba(245, 197, 24, 0.5) !important;
+        transform: translateY(-1px);
+        background-color: rgba(35, 35, 35, 0.95) !important;
+        outline: none;
+    }
+
+    #addonTypeSelect option {
+        background-color: #1a1a1a;
+        color: #f5c518 !important;
+    }
+
+/* ==========================================================================
+   TABLA DE COMPLEMENTOS (ADDONS)
+   ========================================================================== */
+#addonsTableContainer .table {
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    color: #fff;
+    border: none;
+}
+
+#addonsTableContainer thead th {
+    color: #f5c518;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    border: none;
+    padding-bottom: 20px;
+}
+
+#addonsTableContainer tbody tr {
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+    #addonsTableContainer tbody tr:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+#addonsTableContainer tbody td {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    vertical-align: middle;
+}
+
+#addonsTableContainer tbody tr:hover td {
+    border-color: rgba(245, 197, 24, 0.4) !important;
+}
+
+#addonsTableContainer tbody tr td:first-child {
+    border-radius: 15px 0 0 15px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#addonsTableContainer tbody tr td:last-child {
+    border-radius: 0 15px 15px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Imágenes de Addons */
+.addon-img-thumbnail {
+    width: 85px !important;
+    height: 85px !important;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 3px solid transparent !important;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+#addonsTableContainer tbody tr:hover .addon-img-thumbnail {
+    border: 3px solid #f5c518 !important;
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.7) !important;
+    transform: scale(1.05);
+}
+
+.addonTotal {
+    font-weight: 800;
+    color: #ff9800;
+    font-size: 1.2rem;
+}
+
+/* ==========================================================================
+   BOTONES Y CONTROLES
+   ========================================================================== */
+.btn-continuar,
+.btn-cancelar {
+    background-color: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-continuar {
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(76, 175, 80, 0.8);
+    }
+
+.btn-cancelar {
+    border: 2px solid #e50914;
+    color: #e50914;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914;
+        color: #fff;
+        box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+    }
+
+/* Controles de Cantidad (+/-) */
+#addonsTableContainer .quit-btn,
+#addonsTableContainer .add-btn {
+    width: 38px;
+    height: 38px;
+    background: #1a1a1a;
+    border-radius: 8px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#addonsTableContainer .quit-btn {
+    border: 1px solid #ff444466 !important;
+    color: #ff4444;
+}
+
+#addonsTableContainer .add-btn {
+    border: 1px solid #4CAF5066 !important;
+    color: #4CAF50;
+}
+
+#addonsTableContainer .quit-btn:hover:not(:disabled) {
+    background: #ff4444;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+}
+
+#addonsTableContainer .add-btn:hover {
+    background: #4CAF50;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.7);
+}
+
+.qty-input-custom {
+    width: 75px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #444 !important;
+    color: #f5c518 !important;
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem !important;
+    text-align: center;
+    border-radius: 6px !important;
+}
+
+.btn:disabled {
+    opacity: 0.1 !important;
+    filter: grayscale(1);
+}
+
