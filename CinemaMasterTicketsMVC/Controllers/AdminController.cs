@@ -330,9 +330,25 @@ namespace CinemaMasterTicketsMVC.Controllers
 
         public async Task<IActionResult> GetAddons()
         {
-            var addons = await _db.AddOns.ToListAsync();
+            // Cargamos los AddOns incluyendo la cuenta de cuántos tickets tienen asociados
+            var addons = await _db.AddOns
+                .Include(a => a.TicketAddOns)
+                .ToListAsync();
 
             return View(addons);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken] 
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var addon = await _db.AddOns.FindAsync(id);
+            if (addon == null) return Json(new { success = false, message = "AddOn no encontrado" });
+
+            addon.IsActive = !addon.IsActive;
+            _db.Update(addon); // Aseguramos que EF marque el cambio
+            await _db.SaveChangesAsync();
+
+            return Json(new { success = true, newState = addon.IsActive });
         }
 
         public IActionResult AddAddon()
@@ -361,13 +377,20 @@ namespace CinemaMasterTicketsMVC.Controllers
                                          Value = a.ToString(),
                                          Text = a.ToString()
                                      }).ToList();
+            // --- Validación de nombre duplicado ---
+            bool existeNombre = _db.AddOns.Any(a => a.AddOnName!.ToLower() == addOn.AddOnName!.ToLower());
+            if (existeNombre)
+            {
+                ModelState.AddModelError("AddOnName", "Ya existe un AddOn con este nombre.");
+            }
 
             if (ModelState.IsValid)
             {
                 if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
                 {
                     // Crear ruta de la imagen
-                    var fileName = Path.GetFileName(addOn.AddOnImageFile.FileName);
+                    var extension = Path.GetExtension(addOn.AddOnImageFile.FileName);
+                    var fileName = Guid.NewGuid().ToString() + extension;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
 
                     // Guardar archivo en wwwroot/img/addons
@@ -424,6 +447,13 @@ namespace CinemaMasterTicketsMVC.Controllers
                     Text = a.ToString()
                 }).ToList();
 
+            // --- Validación de nombre duplicado (excluyendo el actual) ---
+            bool existeNombre = _db.AddOns.Any(a => a.AddOnName!.ToLower() == addOn.AddOnName!.ToLower() && a.AddOnId != id);
+            if (existeNombre)
+            {
+                ModelState.AddModelError("AddOnName", "Otro producto ya utiliza este nombre.");
+            }
+
             if (!ModelState.IsValid)
                 return View(addOn);
 
@@ -448,8 +478,9 @@ namespace CinemaMasterTicketsMVC.Controllers
                 }
 
 
-                //Guardar nueva imagen
-                var fileName = Path.GetFileName(addOn.AddOnImageFile.FileName);
+                // --- Uso de GUID para nombre único ---
+                var extension = Path.GetExtension(addOn.AddOnImageFile.FileName);
+                var fileName = Guid.NewGuid().ToString() + extension;
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
 
                 using var stream = new FileStream(filePath, FileMode.Create);
@@ -464,29 +495,40 @@ namespace CinemaMasterTicketsMVC.Controllers
         }
         public async Task<IActionResult> DeleteAddOn(int id)
         {
-            var addOn = await _db.AddOns.FindAsync(id);
+            // Usamos Include para traer la colección de tickets
+            var addOn = await _db.AddOns
+                .Include(a => a.TicketAddOns)
+                .FirstOrDefaultAsync(m => m.AddOnId == id);
+
             if (addOn == null)
                 return NotFound();
 
             return View(addOn);
         }
+
+        // POST: Admin/DeleteAddOn/5
         [HttpPost, ActionName("DeleteAddOn")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var addOn = await _db.AddOns.FindAsync(id);
-            if (addOn == null)
-                return NotFound();
+            var addOn = await _db.AddOns
+                .Include(a => a.TicketAddOns)
+                .FirstOrDefaultAsync(m => m.AddOnId == id);
 
-            // (Opcional) borrar imagen física
+            if (addOn == null) return NotFound();
+
+            // --- DOBLE CONTROL DE SEGURIDAD ---
+            if (addOn.TicketAddOns.Any())
+            {
+                // Si justo alguien compró uno, detenemos el borrado y mandamos error a la vista
+                ModelState.AddModelError("", "No se puede eliminar: este AddOn acaba de registrar una venta.");
+                return View(addOn);
+            }
+
+            // Si no tiene tickets, procedemos al borrado físico
             if (!string.IsNullOrEmpty(addOn.AddOnImage))
             {
-                var imagePath = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    addOn.AddOnImage
-                );
-
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", addOn.AddOnImage);
                 if (System.IO.File.Exists(imagePath))
                     System.IO.File.Delete(imagePath);
             }

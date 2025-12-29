@@ -1,0 +1,111 @@
+﻿/* ==========================================================================
+   ESTILOS DE AUTENTICACIÓN (LOGIN & REGISTRO) - TEMA CINE DARK
+   ========================================================================== */
+
+.auth-container {
+    padding: 60px 15px;
+    /* Fondo radial para dar profundidad */
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+    min-height: calc(100vh - 56px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* El contenedor principal con efecto Glassmorphism */
+.auth-box.addons-summary {
+    width: 100%;
+    max-width: 650px;
+    padding: 40px !important;
+    background: rgba(17, 17, 17, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+/* Título estilo cartelera de cine */
+.movie-title {
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Labels arriba del input con brillo amarillo */
+.label-select {
+    color: #f5c518 !important;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Efecto de movimiento al pasar el ratón por el campo */
+.mb-3:hover .label-select,
+.col-md-6:hover .label-select {
+    transform: translateX(8px);
+}
+
+/* Estilo de los campos de texto */
+.form-control {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    color: #fff !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 10px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 12px rgba(245, 197, 24, 0.5) !important;
+        background-color: rgba(35, 35, 35, 0.95) !important;
+        outline: none;
+    }
+
+/* Botón de acción principal (Verde Neón) */
+.btn-continuar {
+    border: 2px solid #4CAF50 !important;
+    color: #4CAF50 !important;
+    background: transparent;
+    font-weight: 700;
+    border-radius: 8px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50 !important;
+        color: #fff !important;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+        transform: translateY(-2px);
+    }
+
+/* Alertas de error personalizadas */
+.custom-alert {
+    background-color: rgba(229, 9, 20, 0.2) !important;
+    border: 1px solid rgba(229, 9, 20, 0.6) !important;
+    color: #ff4444 !important;
+    border-radius: 10px;
+    padding: 12px !important;
+    font-size: 0.9rem;
+}
+
+/* Estilo para links secundarios */
+.auth-box a {
+    transition: color 0.3s ease;
+}
+
+    .auth-box a:hover {
+        color: #f5c518 !important;
+    }
+
+/* Ajuste para el checkbox de 'Recordarme' */
+.form-check-input:checked {
+    background-color: #f5c518;
+    border-color: #f5c518;
+}

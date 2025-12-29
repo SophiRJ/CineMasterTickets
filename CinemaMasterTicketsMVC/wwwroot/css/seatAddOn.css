@@ -355,9 +355,15 @@
     border-radius: 6px !important;
 }
 
-.btn:disabled {
+/*.btn:disabled {
     opacity: 0.1 !important;
     filter: grayscale(1);
+}*/
+.btn:disabled {
+    opacity: 0.5 !important; /* Subimos la opacidad de 0.1 a 0.5 */
+    filter: grayscale(0.5); /* Un gris más suave para que se vea el color base */
+    cursor: not-allowed;
+    border-color: rgba(255,255,255,0.1) !important;
 }
 .container div.alert.custom-alert {
     background-color: rgba(229, 9, 20, 0.2) !important; /* Más opacidad para que se vea el relleno */
