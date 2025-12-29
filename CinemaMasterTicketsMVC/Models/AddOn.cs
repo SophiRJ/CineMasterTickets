@@ -28,6 +28,9 @@ namespace CinemaMasterTicketsMVC.Models
         [Required(ErrorMessage = "El tipo es obligatorio")]
         public AddOnType Type { get; set; }
 
+        [Display(Name = "¿Está Activo?")]
+        public bool IsActive { get; set; } = false; // Por defecto inactivo
+
         public virtual ICollection<TicketAddOn> TicketAddOns { get; set; } = new List<TicketAddOn>();
     }
 }

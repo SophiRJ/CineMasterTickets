@@ -38,3 +38,215 @@
 .settings-card {
     background: linear-gradient(135deg, #8360c3, #2ebf91);
 }
+
+
+/*========== GESTION de USUARIOS====================*/
+/* Paleta de colores:
+   Negro Fondo: #0f0f0f
+   Rojo Acento: #e50914 (estilo Netflix/Cine)
+   Amarillo Acento: #f5c518 (estilo IMDb/Tickets)
+*/
+
+body {
+    background-color: #0f0f0f;
+}
+
+/* Contenedores con efecto cristal */
+.management-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card.bg-dark {
+    background: rgba(25, 25, 25, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+/* Cabeceras de tarjetas */
+.card-header {
+    padding: 1.2rem 1.5rem !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.border-secondary {
+    border-color: rgba(245, 197, 24, 0.2) !important;
+}
+
+/* Estilos de Tabla */
+.table {
+    margin-bottom: 0;
+    color: #e0e0e0 !important;
+}
+
+    .table thead th {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #888;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+        padding: 15px !important;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.03) !important;
+        }
+
+    .table td {
+        padding: 12px 15px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+/* Badges y Puntos */
+.badge.bg-info {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+    color: #0dcaf0 !important;
+    border: 1px solid #0dcaf0;
+}
+
+.text-warning-points {
+    color: #f5c518;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+}
+
+/* Botones Personalizados */
+.btn-warning {
+    background-color: #f5c518;
+    border: none;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-warning:hover {
+        background-color: #d4a912;
+        box-shadow: 0 0 15px rgba(245, 197, 24, 0.4);
+        transform: translateY(-2px);
+    }
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Animación de eliminación (para el AJAX) */
+.row-fade-out {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.5s ease;
+}
+/* ==========================================================================
+   ESTILOS DE GESTIÓN DE USUARIOS (TEMA CINE DARK)
+   ========================================================================== */
+
+/* Contenedor con efecto cristal (Glassmorphism) */
+.addons-summary {
+    background: rgba(17, 17, 17, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    padding: 30px;
+}
+
+/* Títulos con brillo amarillo */
+.movie-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f5c518;
+    text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    text-transform: uppercase;
+}
+
+/* Etiquetas Amarillas Neón */
+.label-select {
+    color: #f5c518 !important;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por los grupos del formulario */
+.mb-3:hover .label-select {
+    transform: translateX(8px);
+    text-shadow: 0 0 15px rgba(245, 197, 24, 0.8);
+}
+
+/* Inputs y Selectores oscuros con borde brillante */
+.form-select, .form-control {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    color: #f5c518 !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 10px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+    .form-select:focus, .form-control:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 12px rgba(245, 197, 24, 0.5) !important;
+        background-color: rgba(35, 35, 35, 0.95) !important;
+        outline: none;
+    }
+
+/* Botones Neón */
+.btn-continuar {
+    border: 2px solid #4CAF50 !important;
+    color: #4CAF50 !important;
+    background: transparent;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .btn-continuar:hover {
+        background-color: #4CAF50 !important;
+        color: #fff !important;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+    }
+
+.btn-cancelar {
+    border: 2px solid #e50914 !important;
+    color: #e50914 !important;
+    background: transparent;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-cancelar:hover {
+        background-color: #e50914 !important;
+        color: #fff !important;
+        box-shadow: 0 0 15px rgba(229, 9, 20, 0.8);
+    }
+
+/* Estilo para los puntos de fidelidad en la tabla */
+.text-warning-points {
+    color: #f5c518;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+}
+
+/* Tablas dentro de los contenedores de usuarios */
+.table {
+    color: #fff !important;
+}
+
+.table-hover tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}

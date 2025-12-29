@@ -1,51 +1,70 @@
 ﻿@model CinemaMasterTicketsMVC.ViewModels.CreateEmployeeBoxOficceViewModel
 
+@section Styles {
+   
+    <link rel="stylesheet" href="~/css/adminHome.css" />
+}
+
 @{
     ViewData["Title"] = "Crear Empleado";
 }
 
-<h2>Crear Empleado</h2>
+<h2 class="text-light mb-4 movie-title">Nuevo Miembro del Staff</h2>
 
-<form asp-controller="Admin" asp-action="CreateEmployee" method="post">
-   
+<div class="addons-summary">
+    @* Efecto cristal y blur *@
+    <form asp-controller="Admin" asp-action="CreateEmployee" method="post">
 
-    <div class="mb-3">
-        <label asp-for="Employee.Firstname" class="form-label"></label>
-        <input asp-for="Employee.Firstname" class="form-control" />
-        <span asp-validation-for="Employee.Firstname" class="text-danger"></span>
-    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Employee.Firstname" class="label-select">Nombre</label>
+                <input asp-for="Employee.Firstname" class="form-control form-select" placeholder="Escribe el nombre..." />
+                <span asp-validation-for="Employee.Firstname" class="text-danger small"></span>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="Employee.Lastname" class="form-label"></label>
-        <input asp-for="Employee.Lastname" class="form-control" />
-        <span asp-validation-for="Employee.Lastname" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Employee.Lastname" class="label-select">Apellidos</label>
+                <input asp-for="Employee.Lastname" class="form-control form-select" placeholder="Escribe los apellidos..." />
+                <span asp-validation-for="Employee.Lastname" class="text-danger small"></span>
+            </div>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Employee.Email" class="form-label"></label>
-        <input asp-for="Employee.Email" class="form-control" />
-        <span asp-validation-for="Employee.Email" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label asp-for="Employee.Email" class="label-select">Correo Electrónico</label>
+            <input asp-for="Employee.Email" class="form-control form-select" placeholder="ejemplo@cine.com" />
+            <span asp-validation-for="Employee.Email" class="text-danger small"></span>
+        </div>
 
-    <div class="mb-3">
-        <label asp-for="Employee.DNI" class="form-label"></label>
-        <input asp-for="Employee.DNI" class="form-control" />
-        <span asp-validation-for="Employee.DNI" class="text-danger"></span>
-    </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Employee.DNI" class="label-select">DNI / Identificación</label>
+                <input asp-for="Employee.DNI" class="form-control form-select" placeholder="00000000X" />
+                <span asp-validation-for="Employee.DNI" class="text-danger small"></span>
+            </div>
 
-    <div class="mb-3">
-        <label asp-for="Employee.BoxOfficeId" class="form-label">Taquilla</label>
-        <select asp-for="Employee.BoxOfficeId"
-                asp-items="Model.BoxOffices"
-                class="form-select">
-            <option value="">-- Selecciona una taquilla --</option>
-        </select>
-        <span asp-validation-for="Employee.BoxOfficeId" class="text-danger"></span>
-    </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Employee.BoxOfficeId" class="label-select">Asignar Taquilla</label>
+                <select asp-for="Employee.BoxOfficeId"
+                        asp-items="Model.BoxOffices"
+                        class="form-select">
+                    <option value="">-- Selecciona una taquilla --</option>
+                </select>
+                <span asp-validation-for="Employee.BoxOfficeId" class="text-danger small"></span>
+            </div>
+        </div>
 
-    <button type="submit" class="btn btn-success">Crear Empleado</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+        <hr class="border-secondary opacity-25 my-4">
+
+        <div class="d-flex gap-3 justify-content-end">
+            <a asp-action="Index" class="btn btn-cancelar px-4 py-2">
+                <i class="fas fa-times me-2"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-continuar px-4 py-2">
+                <i class="fas fa-user-check me-2"></i>Crear Empleado
+            </button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

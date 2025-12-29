@@ -51,7 +51,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         public async Task<IActionResult> UploadPhoto(Customer model)
         {
             var user = await _userManager.GetUserAsync(User);
-            var customer = await _db.Customers.FirstAsync(c => c.Email == user.Email);
+            var customer = await _db.Customers.FirstAsync(c => c.Email == user!.Email);
 
             // Verificamos que el archivo exista y no esté vacío
             if (model.ProfileImageFile != null && model.ProfileImageFile.Length > 0)
@@ -72,7 +72,7 @@ namespace CinemaMasterTicketsMVC.Controllers
 
                 // Asegurar que la carpeta existe
                 var directory = Path.GetDirectoryName(filePath);
-                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory!);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -136,7 +136,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         public async Task<IActionResult> Edit()
         {
             var user = await _userManager.GetUserAsync(User);
-            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user!.Email);
 
             if (customer == null) return NotFound();
 
@@ -149,7 +149,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         public async Task<IActionResult> Edit(Customer model)
         {
             var user = await _userManager.GetUserAsync(User);
-            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
+            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user!.Email);
 
             if (customer == null) return NotFound();
 
@@ -189,9 +189,9 @@ namespace CinemaMasterTicketsMVC.Controllers
         [Authorize]
         public async Task<IActionResult> UnsubscribeConfirmed()
         {
-            var userEmail = User.Identity.Name;
+            var userEmail = User!.Identity!.Name;
             var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == userEmail);
-            var user = await _userManager.FindByEmailAsync(userEmail);
+            var user = await _userManager.FindByEmailAsync(userEmail!);
 
             if (customer == null || user == null) return NotFound();
 

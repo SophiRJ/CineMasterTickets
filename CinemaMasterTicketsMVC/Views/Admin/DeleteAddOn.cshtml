@@ -1,28 +1,60 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model CinemaMasterTicketsMVC.Models.AddOn
+﻿@model CinemaMasterTicketsMVC.Models.AddOn
 
-@*Conexion a su archivo de estilos  *@
 @section Styles {
-    <link rel="stylesheet" href="~/css/addons.css" />
+    <link rel="stylesheet" href="~/css/seatAddOn.css" />
 }
 
-<h2>Eliminar AddOn</h2>
+<h2 class="text-danger movie-title">Eliminar Complemento</h2>
 
-<p>¿Estás seguro de que deseas eliminar este AddOn?</p>
+<div asp-validation-summary="ModelOnly" class="alert custom-alert"></div>
 
-<p><strong>@Model.AddOnName</strong></p>
+@{
+    bool tieneVentas = Model.TicketAddOns.Any();
+}
 
-@if (!string.IsNullOrEmpty(Model.AddOnImage))
+@if (tieneVentas)
 {
-    <img src="~/@Model.AddOnImage" width="120" />
+    <div class="alert custom-alert flex-column align-items-start mb-4">
+        <h4 class="text-danger"><i class="bi bi-exclamation-triangle"></i> ¡Acción Bloqueada!</h4>
+        <p class="mb-0">
+            Este AddOn tiene <strong>@Model.TicketAddOns.Count</strong> ventas registradas.
+            No se puede eliminar para mantener la integridad de los tickets.
+        </p>
+    </div>
+}
+else
+{
+    <p class="label-select fs-5">¿Estás seguro de que deseas eliminar permanentemente este producto?</p>
 }
 
-<form asp-action="DeleteAddOn" method="post">
-    <input type="hidden" asp-for="AddOnId" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a asp-action="GetAddons" class="btn btn-secondary">Cancelar</a>
-</form>
+<div class="addons-summary p-4">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            @if (!string.IsNullOrEmpty(Model.AddOnImage))
+            {
+                <img src="~/@Model.AddOnImage" class="addon-img-thumbnail" style="width: 120px;" />
+            }
+        </div>
+        <div class="col">
+            <h3 class="text-light mb-1">@Model.AddOnName</h3>
+            <p class="price-highlight mb-0">@Model.Price.ToString("C")</p>
+        </div>
+    </div>
+
+    <form asp-action="DeleteAddOn" method="post" class="mt-4">
+        <input type="hidden" asp-for="AddOnId" />
+
+        <div class="d-flex gap-3 align-items-center">
+            @if (tieneVentas)
+            {
+                <button type="submit" class="btn btn-cancelar opacity-50" disabled>Eliminar</button>
+                <span class="text-warning small fst-italic">Usa "Desactivar" en la lista principal</span>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-cancelar">Confirmar Eliminación</button>
+            }
+            <a asp-action="GetAddons" class="btn btn-continuar">Cancelar y Volver</a>
+        </div>
+    </form>
+</div>

@@ -2,52 +2,114 @@
 @model IEnumerable<AddOn>
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/addons.css" />
+    @* Usamos el CSS de tu compañero *@
+    <link rel="stylesheet" href="~/css/seatAddOn.css" />
 }
 
 @{
     ViewData["Title"] = "Lista de AddOns";
 }
 
-<h2 class="text-light mb-4">Lista de AddOns</h2>
+<h2 class="text-light mb-4 movie-title">Gestión de AddOns</h2>
 
-<div class="mb-3 d-flex justify-content-between">
-    <a asp-action="AddAddon" class="btn btn-success">Agregar AddOn</a>
-    <a asp-action="Home" asp-controller="Admin" class="btn btn-secondary">Volver al Panel</a>
+<div class="mb-4 d-flex justify-content-between">
+    @* Cambiamos el verde por el estilo de "Continuar" del compañero *@
+    <a asp-action="AddAddon" class="btn btn-continuar">Agregar Nuevo AddOn</a>
+    @* Usamos el estilo "Cancelar" para volver *@
+    <a asp-action="Home" asp-controller="Admin" class="btn btn-cancelar">Volver al Panel</a>
 </div>
 
-<table class="table table-bordered text-light">
-    <thead class="thead-dark">
-        <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Tipo</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var addon in Model)
-        {
-            <tr>
-                <td>
-                    @if (!string.IsNullOrEmpty(addon.AddOnImage))
-                    {
-                        <img src="~/@addon.AddOnImage" alt="@addon.AddOnName" style="width:100px; height:auto;" />
-                    }
-                    else
-                    {
-                        <span>No hay imagen</span>
-                    }
-                </td>
-                <td>@addon.AddOnName</td>
-                <td>@addon.Price.ToString("C")</td>
-                <td>@addon.Type.ToString()</td>
-                <td>
-                    <a asp-action="EditAddOn" asp-route-id="@addon.AddOnId" class="btn btn-primary btn-sm">Editar</a>
-                    <a asp-action="DeleteAddOn" asp-route-id="@addon.AddOnId" class="btn btn-danger btn-sm">Borrar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@Html.AntiForgeryToken()
+
+@* --- SECCIÓN DE ACTIVOS --- *@
+<div class="card bg-dark border-success mb-5 addons-summary">
+    <div class="card-header text-success border-bottom border-success">
+        <h3 class="mb-0">AddOns Activos</h3>
+    </div>
+    <div class="card-body" id="addonsTableContainer">
+        <table class="table table-dark table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Precio</th> @* Columna nueva *@
+                    <th class="text-center">Tickets</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var addon in Model.Where(a => a.IsActive))
+                {
+                    bool tieneTickets = addon.TicketAddOns.Any();
+                    <tr>
+                        <td>
+                            <img src="~/@addon.AddOnImage" alt="img" class="addon-img-thumbnail" style="width:50px;" />
+                        </td>
+                        <td class="fw-bold">@addon.AddOnName</td>
+                        <td class="price-highlight">@addon.Price.ToString("C")</td> @* Precio resaltado *@
+                        <td class="text-center">
+                            <span class="badge bg-dark border border-info text-info">@addon.TicketAddOns.Count</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                @if (tieneTickets)
+                                {
+                                    <button class="btn btn-outline-primary btn-sm" disabled>Editar</button>
+                                    <button class="btn btn-outline-danger btn-sm" disabled>Borrar</button>
+                                }
+                                else
+                                {
+                                    <a asp-action="EditAddOn" asp-route-id="@addon.AddOnId" class="btn btn-primary btn-sm">Editar</a>
+                                    <a asp-action="DeleteAddOn" asp-route-id="@addon.AddOnId" class="btn btn-danger btn-sm">Borrar</a>
+                                }
+                                <button type="button" class="btn btn-warning btn-sm btn-toggle" data-id="@addon.AddOnId">
+                                    Desactivar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@* --- SECCIÓN DE INACTIVOS --- *@
+<div class="card bg-dark border-secondary addons-summary">
+    <div class="card-header text-secondary border-bottom border-secondary">
+        <h3 class="mb-0">AddOns Inactivos</h3>
+    </div>
+    <div class="card-body" id="addonsTableContainer">
+        <table class="table table-dark table-hover mb-0">
+            <tbody>
+                @foreach (var addon in Model.Where(a => !a.IsActive))
+                {
+                    <tr>
+                        <td style="width: 80px;">
+                            <img src="~/@addon.AddOnImage" style="width:40px; opacity: 0.5;" class="addon-img-thumbnail" />
+                        </td>
+                        <td class="text-secondary">@addon.AddOnName</td>
+                        <td class="text-muted">@addon.Price.ToString("C")</td> @* Precio en inactivos *@
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm btn-toggle" data-id="@addon.AddOnId">
+                                    Activar
+                                </button>
+                                <a asp-action="EditAddOn" asp-route-id="@addon.AddOnId" class="btn btn-primary btn-sm">Editar</a>
+
+                                @if (!addon.TicketAddOns.Any())
+                                {
+                                    <a asp-action="DeleteAddOn" asp-route-id="@addon.AddOnId" class="btn btn-danger btn-sm">Borrar</a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/addons.js"></script>
+}

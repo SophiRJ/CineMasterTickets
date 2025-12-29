@@ -7,7 +7,38 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/ticket.css" asp-append-version="true" />
 }
+@* envolver este div en otro que para mostrar el ticket con una marca de agua -> muestra *@
+@* <div class="watermark-wrapper">
+    <div class="content">
+        <p>Este es un texto que aparecerá debajo de la marca de agua.</p>
+        <p>Más contenido aquí...</p>
+    </div>
+    <div class="watermark">MUESTRA</div>
+</div>
 
+<style>
+    .watermark-wrapper {
+        position: relative; /* Needed to position the watermark on top /
+    }
+
+    .content {
+      padding: 20px;
+      background-color: white;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 4rem;
+      color: rgba(128, 128, 128, 0.2); / grey and semi-transparent /
+      pointer-events: none; / allows clicks through /
+      user-select: none;    / prevents text selection /
+      white-space: nowrap;
+      z-index: 1000;        / ensures it floats on top */
+    }
+</style> *@
 <div class="container my-5 main-ticket-wrapper">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -49,7 +80,7 @@
                         <span class="h5">TOTAL:</span>
                         <span class="h5 fw-bold">@Model.TotalGeneral.ToString("0.00") €</span>
                     </div>
-
+                    
                     <div class="text-center mt-4 qr-container">
                         <div id="qrcode" data-ticket-id="@ViewBag.TicketId"></div>
                         <p class="small mt-2">ID: #@ViewBag.TicketId</p>

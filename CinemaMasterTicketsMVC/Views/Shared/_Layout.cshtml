@@ -35,13 +35,13 @@
                         @if (User.IsInRole("Customer") )
                              {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customer</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Perfil Cliente</a>
                             </li>
                         }
                         @if (User.IsInRole("Employee") )
                              {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Perfil Empleado</a>
                             </li>
                         }
                     </ul>
