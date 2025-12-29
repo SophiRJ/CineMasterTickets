@@ -163,20 +163,7 @@ const cancelSession = (sessionId, movieId) => {
         .then(() => loadSessions(movieId));
 };
 
-//const deleteMovieFromSessions = () => {
-//    if (!confirm("¿Eliminar película?")) return;
 
-//    fetch("/Cartelera/DeleteMovie", {
-//        method: "POST",
-//        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-//        body: `movieId=${currentMovieId}`
-//    })
-//        .then(r => {
-//            if (!r.ok) throw new Error();
-//            location.reload();
-//        })
-//        .catch(() => alert("No se puede borrar la película"));
-//};
 const deleteMovieFromSessions = (movieId) => {
     if (!confirm("¿Eliminar película?")) return;
 

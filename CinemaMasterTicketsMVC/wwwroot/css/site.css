@@ -22,12 +22,12 @@ body {
 }
 
 .background-icon {
-    position: fixed; /* Queda fijo en pantalla */
-    top: 40px; /* Separado del borde superior */
-    left: 40px; /* Separado del borde izquierdo */
-    font-size: 500px; /* Tamaño más moderado */
-    color: rgba(128, 128, 128, 0.03); /* Gris sutil, misma opacidad que antes */
-    z-index: 0; /* Detrás de todo */
-    pointer-events: none; /* No bloquea clicks */
+    position: fixed;
+    top: 40px; 
+    left: 40px;
+    font-size: 500px;
+    color: rgba(128, 128, 128, 0.03);
+    z-index: 0;
+    pointer-events: none;
     transition: transform 0.1s linear;
 }

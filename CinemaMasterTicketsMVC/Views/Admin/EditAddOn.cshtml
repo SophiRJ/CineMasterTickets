@@ -3,7 +3,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/seatAddOn.css" />
 }
-
+@* Vista para editar un AddOn *@
 @{
     ViewData["Title"] = "Editar AddOn";
 }
@@ -11,6 +11,7 @@
 <h2 class="text-light mb-4 movie-title">Modificar Complemento</h2>
 
 <div class="addons-summary">
+    @* Formulario para la edición de un AddOn *@
     <form asp-action="EditAddOn" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="AddOnId" />
 
@@ -21,29 +22,29 @@
                     <input asp-for="AddOnName" class="form-control form-select" />
                     <span asp-validation-for="AddOnName" class="text-danger"></span>
                 </div>
-
+                @* Campo para el precio *@
                 <div class="mb-3">
                     <label asp-for="Price" class="label-select">Precio (€)</label>
                     <input asp-for="Price" type="number" step="0.01" class="form-control form-select" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-
+                @* Selector de categoria *@
                 <div class="mb-3">
                     <label asp-for="Type" class="label-select">Categoría</label>
                     <select asp-for="Type" asp-items="ViewBag.AddOnTypes" class="form-select"></select>
                 </div>
             </div>
-
+            @* Input que muestra la imagen actual y que permite guardar una nueva en caso de editarla *@
             <div class="col-md-4 text-center">
                 <label class="label-select">Imagen Actual</label>
                 @if (!string.IsNullOrEmpty(Model.AddOnImage))
                 {
-                    <img src="~/@Model.AddOnImage" class="addon-img-thumbnail mb-3" style="width: 150px; height: 150px;" />
+                    <img src="~/@Model.AddOnImage" class="addon-img-thumbnail addon-img-edit-preview mb-3" />
                 }
                 <input asp-for="AddOnImageFile" type="file" class="form-control form-select" />
             </div>
         </div>
-
+        @* Botones para acualizar o volver *@
         <div class="d-flex gap-3 mt-4">
             <button type="submit" class="btn btn-continuar p-2 px-4">Actualizar Cambios</button>
             <a asp-action="GetAddons" class="btn btn-cancelar p-2 px-4">Volver</a>

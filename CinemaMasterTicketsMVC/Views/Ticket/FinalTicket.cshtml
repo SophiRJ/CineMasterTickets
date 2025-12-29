@@ -1,5 +1,7 @@
 ﻿@model CinemaMasterTicketsMVC.ViewModels.TicketViewModel
-
+@* Vista para mostrar el ticket Final con estilo de Ticket de compra, junto con un QR y la posibilidad
+    de impirimirlo por pantalla
+*@
 @{
     ViewData["Title"] = "¡Compra Confirmada!";
 }
@@ -7,47 +9,18 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/ticket.css" asp-append-version="true" />
 }
-@* envolver este div en otro que para mostrar el ticket con una marca de agua -> muestra *@
-@* <div class="watermark-wrapper">
-    <div class="content">
-        <p>Este es un texto que aparecerá debajo de la marca de agua.</p>
-        <p>Más contenido aquí...</p>
-    </div>
-    <div class="watermark">MUESTRA</div>
-</div>
 
-<style>
-    .watermark-wrapper {
-        position: relative; /* Needed to position the watermark on top /
-    }
-
-    .content {
-      padding: 20px;
-      background-color: white;
-    }
-
-    .watermark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-30deg);
-      font-size: 4rem;
-      color: rgba(128, 128, 128, 0.2); / grey and semi-transparent /
-      pointer-events: none; / allows clicks through /
-      user-select: none;    / prevents text selection /
-      white-space: nowrap;
-      z-index: 1000;        / ensures it floats on top */
-    }
-</style> *@
 <div class="container my-5 main-ticket-wrapper">
     <div class="row justify-content-center">
         <div class="col-md-6">
+            @* Titulo del ticket *@
             <div class="card ticket-visual">
                 <div class="card-header text-center">
                     <h2 class="display-6">CINEMA MASTER TICKETS</h2>
+                    @* Fecha de compra *@
                     <p class="small">@DateTime.Now.ToString("f")</p>
                 </div>
-
+                @* Titulo de película, ´Sala y hora de la sesión *@
                 <div class="card-body">
                     <div class="text-center mb-4">
                         <h3 class="fw-bold">@Model.MovieTitle</h3>
@@ -55,12 +28,12 @@
                     </div>
 
                     <hr />
-
+                    @* Conjunto de asientos comprados (nombres) *@
                     <div class="d-flex justify-content-between">
                         <span>ASIENTOS:</span>
                         <span class="fw-bold">@string.Join(", ", Model.SelectedSeats)</span>
                     </div>
-
+                    @* Si tiene complementos se muestran aquí *@
                     @if (Model.Addons.Any())
                     {
                         <hr />
@@ -75,17 +48,22 @@
                     }
 
                     <hr />
-
+                    @* Total del ticket *@
                     <div class="d-flex justify-content-between total-row">
                         <span class="h5">TOTAL:</span>
                         <span class="h5 fw-bold">@Model.TotalGeneral.ToString("0.00") €</span>
                     </div>
-                    
+                    @* Método de pago *@
+                    <div class="d-flex justify-content-between mt-2 text-muted small">
+                        <span>MÉTODO DE PAGO:</span>
+                        <span class="fw-bold text-uppercase">@ViewBag.MetodoPago</span>
+                    </div>
+                    @* Id del ticket que simula el Nº de ticket *@
                     <div class="text-center mt-4 qr-container">
                         <div id="qrcode" data-ticket-id="@ViewBag.TicketId"></div>
                         <p class="small mt-2">ID: #@ViewBag.TicketId</p>
                     </div>
-                    @* --- NUEVA SECCIÓN DE AVISO LEGAL DENTRO DEL TICKET --- *@
+                    @* --- Aviso legal para mostrar al usuario que el ticket es ficticio (dentro del ticket) --- *@
                     <div class="educational-disclaimer mt-4">
                         <p class="mb-0 text-uppercase fw-bold">Sin Validez Comercial</p>
                         <p class="small">
@@ -100,13 +78,15 @@
                 </div>
             </div>
 
-            @* --- AVISO FUERA DEL TICKET (Para cumplimiento normativo en la web) --- *@
+            @* --- Aviso legal para mostrar al usuario que el ticket es ficticio (fuera del ticket) --- *@
+
             <div class="alert alert-warning mt-4 action-buttons" role="alert">
                 <i class="bi bi-info-circle-fill"></i>
                 <strong>Aviso Académico:</strong> Esta aplicación es un simulador desarrollado con fines didácticos.
                 Los datos mostrados, marcas y sesiones son ficticios. Cinema Master Tickets es una marca inventada.
             </div>
-                
+            @* --- Función para imprimir el ticket por pantalla en el boton de Imrpimir ticket --- *@
+
             <div class="text-center mt-4 action-buttons">
                 <button onclick="window.print();" class="btn btn-primary">
                     <i class="bi bi-printer"></i> Imprimir Ticket
@@ -116,115 +96,14 @@
         </div>
     </div>
 </div>
+@* Empleo de los js de la generación de Qr y de la librería bwip para el empleo de Qrs *@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bwip-js@3.0.4/dist/bwip-js-min.js"></script>
     <script src="~/js/ticket-qr.js" asp-append-version="true"></script>
 }
 
-@* @model CinemaMasterTicketsMVC.ViewModels.TicketViewModel
 
-@{
-    ViewData["Title"] = "¡Compra Confirmada!";
-}
-@section Styles {
-    <link rel="stylesheet" href="~/css/ticket.css" asp-append-version="true" />
-}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-success text-white text-center py-4">
-                    <i class="bi bi-check-circle-fill fs-1"></i>
-                    <h2 class="mt-2">¡Gracias por su compra!</h2>
-                    <p class="mb-0">Su entrada ha sido procesada correctamente</p>
-                </div>
+@* Para la impresion de las secciones de la pantalla que nos interesan se emplean
+Media Querys en el css, en los cuales se indica que elementos son los que deben imprimirse y cuales no *@
 
-                <div class="card-body p-5">
-                    <div class="d-flex justify-content-between border-bottom pb-3 mb-4">
-                        <div>
-                            <h6 class="text-muted text-uppercase small">Nº de Ticket</h6>
-                            <h4 class="fw-bold">#@ViewBag.TicketId</h4>
-                        </div>
-                        <div class="text-end">
-                            <h6 class="text-muted text-uppercase small">Fecha de Compra</h6>
-                            <p class="mb-0">@ViewBag.FechaCompra</p>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-sm-7">
-                            <h3 class="text-primary fw-bold">@Model.MovieTitle</h3>
-                            <p class="fs-5 mb-1">Sala @Model.RoomNumber</p>
-                            <p class="text-muted">@Model.SessionTime</p>
-                        </div>
-                        <div class="col-sm-5 text-sm-end">
-                            <h6 class="text-muted text-uppercase small">Asientos</h6>
-                            <p class="fw-bold fs-5">@string.Join(", ", Model.SelectedSeats)</p>
-                        </div>
-                    </div>
-
-                    @if (Model.Addons.Any())
-                    {
-                        <div class="bg-light p-3 rounded mb-4">
-                            <h6 class="text-muted text-uppercase small mb-2">Complementos (Addons)</h6>
-                            @foreach (var item in Model.Addons)
-                            {
-                                <div class="d-flex justify-content-between small">
-                                    <span>@item.Quantity x @item.Name</span>
-                                    <span>@((item.Quantity * item.UnitPrice).ToString("0.00")) €</span>
-                                </div>
-                            }
-                        </div>
-                    }
-
-                    <div class="border-top pt-3">
-                        <div class="d-flex justify-content-between">
-                            <span>Subtotal:</span>
-                            <span>@((Model.SeatsSubtotal + Model.AddonsTotal).ToString("0.00")) €</span>
-                        </div>
-                        @if (Model.DescuentoPuntos > 0)
-                        {
-                            <div class="d-flex justify-content-between text-danger">
-                                <span>Descuento aplicado:</span>
-                                <span>-@Model.DescuentoPuntos.ToString("0.00") €</span>
-                            </div>
-                        }
-                        <div class="d-flex justify-content-between mt-2 pt-2 border-top">
-                            <h4 class="fw-bold">TOTAL PAGADO:</h4>
-                            <h4 class="fw-bold text-success">@Model.TotalGeneral.ToString("0.00") €</h4>
-                        </div>
-                        <div class="mt-2 text-muted small">
-                            <i class="bi bi-wallet2"></i> Método de pago: <strong>@ViewBag.MetodoPago</strong>
-                        </div>
-                    </div>
-                    <div class="text-center mt-5 border-top pt-4">
-                        <div id="qrcode"
-                             data-ticket-id="@ViewBag.TicketId"
-                             class="d-inline-block p-2 bg-white border">
-                        </div>
-                        <p class="text-muted small mt-2">Escanee este código en la entrada de la sala</p>
-                    </div>
-                </div>
-
-                <div class="card-footer bg-light text-center py-3">
-                    <button onclick="window.print();" class="btn btn-outline-dark btn-sm me-2">
-                        <i class="bi bi-printer"></i> Imprimir Ticket
-                    </button>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-sm">
-                        Finalizar y Salir
-                    </a>
-                </div>
-            </div>
-
-            <p class="text-center mt-4 text-muted small">
-                Se ha enviado una copia de este ticket a <strong>@User.Identity.Name</strong>
-            </p>
-        </div>
-    </div>
-</div>
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-    <script src="~/js/ticket-qr.js" asp-append-version="true"></script>
-} *@

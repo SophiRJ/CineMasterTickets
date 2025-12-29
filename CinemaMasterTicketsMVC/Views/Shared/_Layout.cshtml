@@ -18,8 +18,11 @@
     </div>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CinemaMasterTicketsMVC</a>
+            <div class="container-fluid p-0">
+               
+                <a class="navbar-brand m-0 p-0" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/logo/LogoSuperior.PNG" alt="Cinema Master Tickets" class="nav-logo">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -56,9 +59,40 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer-cinema mt-auto py-4">
         <div class="container">
-            &copy; 2025 - CinemaMasterTicketsMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                    <h5 class="highlight-gold mb-0">CINEMA MASTER TICKETS</h5>
+                    <p class="small text-muted mb-0">&copy; @DateTime.Now.Year - Proyecto Educativo</p>
+                </div>
+
+                <div class="col-md-4 text-center mb-3 mb-md-0">
+                    <div class="tmdb-attribution">
+                        <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg"
+                             alt="TMDB Logo" class="tmdb-logo mb-2" />
+                        <p class="tmdb-text">
+                            This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-center text-md-end">
+                    <div class="footer-links">
+                        <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none small me-3">Privacidad</a>
+                        <span class="text-muted small">|</span>
+                        <a asp-controller="Home" asp-action="Legal" class="text-muted text-decoration-none small me-3">Terminos Legales</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-secondary my-3" />
+            <div class="text-center">
+                <p class="disclaimer-text">
+                    <i class="bi bi-exclamat-triangle-fill me-1"></i>
+                    <strong>Aviso:</strong> Esta es una aplicación de simulación con fines puramente académicos. No se realizan transacciones reales.
+                </p>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

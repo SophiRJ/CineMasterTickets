@@ -7,30 +7,31 @@
 @{
     ViewData["Title"] = "Agregar AddOn";
 }
-
+@* Titulo *@
 <h2 class="text-light mb-4 movie-title">Nuevo Complemento</h2>
 
 <div class="addons-summary">
-    @* Contenedor con blur y bordes redondeados *@
+    @* Formulario para la creación del complemento(AddOn). Cada elemento incluye su propiedad de validación *@
     <form asp-action="AddAddon" method="post" enctype="multipart/form-data">
+        @* Input para meter el nombre *@
         <div class="mb-3">
             <label asp-for="AddOnName" class="label-select">Nombre del Producto</label>
             <input asp-for="AddOnName" class="form-control form-select" placeholder="Ej: Palomitas Gigantes" />
             <span asp-validation-for="AddOnName" class="text-danger"></span>
         </div>
-
+        @* Input para meter el precio *@
         <div class="mb-3">
             <label asp-for="Price" class="label-select">Precio (€)</label>
             <input asp-for="Price" type="number" step="0.01" min="0.01" class="form-control form-select" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
-
+        @* Select para meter el tipo de addon (la categoría) *@
         <div class="mb-3">
             <label asp-for="Type" class="label-select">Categoría</label>
             <select asp-for="Type" asp-items="ViewBag.AddOnTypes" class="form-select"></select>
             <span asp-validation-for="Type" class="text-danger"></span>
         </div>
-
+        @* Input para seleccionar la imagen del complemento *@
         <div class="mb-4">
             <label asp-for="AddOnImageFile" class="label-select">Imagen del AddOn</label>
             <input asp-for="AddOnImageFile" type="file" class="form-control form-select" />
@@ -43,7 +44,7 @@
         </div>
     </form>
 </div>
-
+@* Script para mostrar lso errores de validacion en caso de que los haya *@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

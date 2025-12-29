@@ -24,7 +24,7 @@ namespace CinemaMasterTicketsMVC.Models
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
         public int BoxOfficeId { get; set; }
-        // --- NUEVOS CAMPOS ---
+        
         public string? ProfileImage { get; set; } // Ruta en BD
 
         [NotMapped]
@@ -38,7 +38,7 @@ namespace CinemaMasterTicketsMVC.Models
             .Where(t => t.PurchasedAt.HasValue && t.PurchasedAt.Value.Date == DateTime.Today)
             .OrderByDescending(t => t.PurchasedAt) ?? Enumerable.Empty<Ticket>();
 
-        // ---------------------
+        
 
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public BoxOffice? BoxOffice { get; set; }
