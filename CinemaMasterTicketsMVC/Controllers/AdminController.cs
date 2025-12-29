@@ -241,19 +241,31 @@ namespace CinemaMasterTicketsMVC.Controllers
                     //Hacemos una lista de las pelis con el resultado anterior para poder manejarla en la View
                     var movies = ((IEnumerable<dynamic>)apiData!.results).Take(pageSize).ToList();
 
-                    //El movimiento siguiente es importante e interesante:
+                    //El movimiento siguiente es interesante:
                     //Por cada pelicula se van pidiendo los detalles necesarios que no encontramos en la llamada
                     //de la URL normal (hay que hacer una segunda llamada para acceder a datos como el director o la 
                     //duracion de la pelicula).
+
+                    // Obtenemos los IDs de las películas que YA están en nuestra base de datos
+                    var existingMovieIds = await _db.Movies
+                        .Select(m => m.MovieAPIId)
+                        .ToListAsync();
+
                     foreach (var movie in movies)
                     {
                         try
                         {
+                            //Creamos esta variable isAdded, donde vamos a contener una pequeña consulta a la lista de Ids de 
+                            //la API, para saber si contiene el id o no (lo usaremos en la vista como bool)
+                            bool isAdded = existingMovieIds.Contains(movie.id.ToString());
+                            //Se lo pasamos al listado dinamico para utilizarlo en la vista (se guarda como JValue, habra que castearlo
+                            //en la vista si no queremos que de fallo de lectura.
+                            movie.IsAlreadyInDb = isAdded;
                             //Llamada a la url para los detalles de la pelicula con GetAsync
                             string detailUrl = $"https://api.themoviedb.org/3/movie/{movie.id}?api_key={apiKey}&language=es-ES&append_to_response=credits";
                             var detailResponse = await httpClient.GetAsync(detailUrl);
 
-                            //Si la llamada tieene exito...
+                            //Si la llamada tiene exito...
                             if (detailResponse.IsSuccessStatusCode)
                             {
                                 //Recogemos el contenido de la respuesta que vuelve en JSON y lo deserializamos
@@ -496,7 +508,5 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return RedirectToAction(nameof(GetAddons));
         }
-
-
     }
 }
