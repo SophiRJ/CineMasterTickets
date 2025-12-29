@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CinemaMasterTicketsMVC.Controllers
 {
+    //Solo permitimos el acceso a usuarios que sean Empleados o Administradores
     [Authorize(Roles = "Employee,Admin")]
     public class EmployeeController : Controller
     {
@@ -19,13 +20,18 @@ namespace CinemaMasterTicketsMVC.Controllers
             _db = db;
             _userManager = userManager;
         }
+
+        // Este metodo muestra el perfil del empleado.
+        // Si recibe un id es el Admin consultando a un empleado específico.
+        //Si no recibe nada el empleado está viendo su propio perfil
         public async Task<IActionResult> Index(int? id)
         {
             Employee? employee;
 
             if (id.HasValue)
             {
-                // El Admin está consultando un perfil específico
+                // El Admin esta consultando un perfil
+                //se busca al empleado por id y se incluye tickets y taquilla
                 employee = await _db.Employees
                     .Include(e => e.BoxOffice)
                     .Include(e => e.Tickets)
@@ -33,7 +39,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             }
             else
             {
-                // El empleado logueado entra a su propio panel
+                // El empleado logueado entra a su propio perfil
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null) return NotFound();
 
@@ -48,7 +54,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View(employee);
         }
 
-
+        //Metodo para procesar la subida de la foto de perfil
+        //Solo el empleado puede ejecutar esta accion 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employee")]
@@ -59,22 +66,22 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             if (employee != null && ProfileImageFile != null && ProfileImageFile.Length > 0)
             {
-                // 1. Definir carpeta y asegurar que existe
+                // Definimos carpeta y nos aseguramos que existe que existe, si no existe se creara.
                 string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/employees");
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
 
-                // 2. Generar nombre único
+                //Generamos nombre unico para que no haya conflictos de duplicados
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(ProfileImageFile.FileName);
                 string fullPath = Path.Combine(folderPath, fileName);
 
-                // 3. Guardar el archivo
+                // Guardamos el archivo
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     await ProfileImageFile.CopyToAsync(stream);
                 }
 
-                // 4. Borrar foto anterior si no es la de por defecto
+                //Borramos la foto anterior
                 if (!string.IsNullOrEmpty(employee.ProfileImage))
                 {
                     var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", employee.ProfileImage);
@@ -82,7 +89,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                         System.IO.File.Delete(oldPath);
                 }
 
-                // 5. Actualizar la ruta en la base de datos
+                // Actualizamos la ruta relativa en la base de datos para mostrarla luego en la vista
                 employee.ProfileImage = "img/employees/" + fileName;
                 await _db.SaveChangesAsync();
 
@@ -91,33 +98,36 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        //Este metodo devuelve la vista para editar los datos del empleado
         
         [Authorize(Roles = "Employee,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             Employee? employee = null;
 
-            // 1. DETERMINAR QUÉ EMPLEADO BUSCAR
+            // Validamos que que perfil cargar segun quien este navegando o Admin o empleado
             if (id.HasValue && User.IsInRole("Admin"))
             {
-                // Si hay ID y soy Admin, busco al empleado por ese ID
+                // Si hay id y soy Admin, se busca al empleado por el id
                 employee = await _db.Employees.FindAsync(id.Value);
             }
             else
             {
-                // Si no hay ID (o soy empleado), busco MI PROPIO perfil por mi Email
+                // Si es empleado se busca su perfil mediante su email
                 var user = await _userManager.GetUserAsync(User);
-                employee = await _db.Employees.FirstOrDefaultAsync(e => e.Email == user.Email);
+                employee = await _db.Employees.FirstOrDefaultAsync(e => e.Email == user!.Email);
             }
 
             if (employee == null) return NotFound();
 
-            //Prepara el view model para el BoxOffice
+            //Prepara la lista de taquillas disponibles para el dropdown
             var boxOficceDisplay = _db.BoxOffices.Select(b => new
             {
                 id = b.BoxOfficeId,
                 value = b.BoxOfficeName
             });
+            //Creamos el viewmodel que contiene al empleado y la lista de taquillas
             var model = new CreateEmployeeBoxOficceViewModel
             {
                 Employee= employee,
@@ -127,27 +137,27 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View(model);
         }
 
+        //Este metodo guarda los cambios que devuelve la vista con el formulario de edicion 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CreateEmployeeBoxOficceViewModel model)
         {
-            // Buscamos la entidad real en la DB para no perder datos que no están en el form (como la imagen)
-            var employeeInDb = await _db.Employees.FindAsync(model.Employee.EmployeeId);
+            // Buscamos al empleado en la base de datos 
+            var employeeInDb = await _db.Employees.FindAsync(model.Employee!.EmployeeId);
             if (employeeInDb == null) return NotFound();
 
-            // Actualizamos solo los campos permitidos (Pattern de Customer)
+            //Actualizamos los campos permitidos
             employeeInDb.Firstname = model.Employee.Firstname;
             employeeInDb.Lastname = model.Employee.Lastname;
             employeeInDb.DNI = model.Employee.DNI;
 
-            // Solo el Admin puede cambiar la taquilla
+            // Este campo que es la taquilla del empleado solo puede ser cambiada por el administrador
             if (User.IsInRole("Admin"))
             {
                 employeeInDb.BoxOfficeId = model.Employee.BoxOfficeId;
             }
 
-            // Como solo actualizamos campos específicos de la entidad trackeada, 
-            // no necesitamos validar ProfileImageFile ni campos que no enviamos.
+            // Si el modelo es valido
             if (ModelState.IsValid)
             {
                 _db.Update(employeeInDb);
@@ -155,17 +165,14 @@ namespace CinemaMasterTicketsMVC.Controllers
                 TempData["Message"] = "Datos actualizados correctamente.";
                 if (User.IsInRole("Admin"))
                 {
-                    // Si eres Admin, vuelve a la lista general de empleados 
-                    // (Asegúrate de que esta acción existe, ej: List o AdminIndex)
+                    // Si le enviamos a la lista de empleados y clientes
                     return RedirectToAction("Index", "Admin");
-                    // O si tu lista está en el mismo controller pero en otra acción:
-                    // return RedirectToAction(nameof(List));
                 }
-
+                //Si el empleado se edito a si mismo vulve a su perfil
                 return RedirectToAction(nameof(Index));
             }
 
-            // Si hay error de validación, recargar lista
+            // Si hay error de validacion recargamos la lista de las taquillas 
             var boxOficceDisplay = _db.BoxOffices.Select(b => new { id = b.BoxOfficeId, value = b.BoxOfficeName });
             model.BoxOffices = new SelectList(boxOficceDisplay, "id", "value", model.Employee.BoxOfficeId);
 

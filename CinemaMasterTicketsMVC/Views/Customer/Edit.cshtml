@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Editar Perfil";
 }
-
+@* referenciamos el archivo css *@
 @section Styles {
     <link rel="stylesheet" href="~/css/profile-edit.css" />
 }
@@ -21,11 +21,13 @@
                 </div>
 
                 <div class="card-body p-4">
+                    @* Formulario de edicion *@
                     <form asp-action="Edit" method="post">
                         <input type="hidden" asp-for="Email" />
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                @* Campo para rellenar el Nombre *@
                                 <label asp-for="FirstName" class="form-label cinema-label">Nombre</label>
                                 <div class="input-group cinema-input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -35,6 +37,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
+                                @* Campo para rellenar el Apellido *@
                                 <label asp-for="LastName" class="form-label cinema-label">Apellido</label>
                                 <div class="input-group cinema-input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -45,25 +48,31 @@
                         </div>
 
                         <div class="mb-3">
+                            @* Campo para rellenar la direccion *@
                             <label asp-for="Address" class="form-label cinema-label">Dirección</label>
                             <div class="input-group cinema-input-group">
                                 <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                                 <input asp-for="Address" class="form-control cinema-input" placeholder="Calle, número, piso..." />
                             </div>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-4">
+                            @* Campo para rellenar la ciudad *@
                             <label asp-for="City" class="form-label cinema-label">Ciudad</label>
                             <div class="input-group cinema-input-group">
                                 <span class="input-group-text"><i class="fas fa-city"></i></span>
                                 <input asp-for="City" class="form-control cinema-input" placeholder="Tu ciudad" />
                             </div>
+                            <span asp-validation-for="City" class="text-danger small"></span>
                         </div>
 
                         <div class="d-grid gap-2">
+                            @* Boton para enviar el formulario *@
                             <button type="submit" class="btn btn-cinema-save py-2 shadow-sm rounded-pill">
                                 <i class="fas fa-save me-2"></i>Guardar Cambios
                             </button>
+
                             <a asp-action="Index" class="btn btn-cinema-cancel rounded-pill py-2 border-0">
                                 <i class="fas fa-times me-2"></i>Cancelar
                             </a>

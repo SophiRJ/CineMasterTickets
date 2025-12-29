@@ -64,23 +64,25 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+            [EmailAddress(ErrorMessage = "La dirección de correo electrónico no es válida.")]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
             [DataType(DataType.Password)]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "¿Recordarme?")]
             public bool RememberMe { get; set; }
         }
 
@@ -109,31 +111,36 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                // Intentamos iniciar sesión. lockoutOnFailure: false indica que no bloquearemos la cuenta tras X fallos.
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("Usuario autenticado correctamente.");
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
+                    // Redirigir a la página de doble factor de autenticación
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
+
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning("La cuenta de usuario ha sido bloqueada.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    // Este mensaje aparece en la parte superior del formulario
+                    // cuando el correo o la contraseña no coinciden con la base de datos.
+                    ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido. Revisa tus credenciales.");
                     return Page();
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Si llegamos aquí, algo falló en las validaciones de formato (ModelState), volvemos a mostrar el formulario
             return Page();
         }
     }

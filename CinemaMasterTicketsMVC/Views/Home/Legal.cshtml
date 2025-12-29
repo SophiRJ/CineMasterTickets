@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Aviso Legal";
+}
+@section Styles {
+    @* Enlazamos el archivo de estilos *@
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+<div class="privacy-page container py-5 text-light">
+
+    <h1 class="privacy-title">Aviso Legal</h1>
+
+    <!-- IDENTIFICACIÓN DEL PROYECTO -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Identificación del proyecto</h4>
+        <p>
+            <strong>CinemaMasterTicketsMVC</strong> es una aplicación web desarrollada como uno de los
+            proyectos académicos del <strong>Máster de Desarrollo Full Stack y Arquitecturas Cloud</strong>.
+        </p>
+        <p>
+            El objetivo del proyecto es demostrar conocimientos técnicos en desarrollo web,
+            arquitectura de aplicaciones, autenticación de usuarios y consumo de APIs externas.
+        </p>
+    </div>
+
+    <!-- AUTORES -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Autores del proyecto</h4>
+        <p>
+            Este proyecto ha sido desarrollado por estudiantes del Máster de Desarrollo Full Stack
+            y Arquitecturas Cloud.
+        </p>
+        <ul>
+            <li>Autor 1 Ruben Gomez-Lobo Fuentes</li>
+            <li>Autor 2 Sofia Nahir Rojas Jorge</li>
+            
+        </ul>
+    </div>
+
+    <!-- CENTRO EDUCATIVO -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Centro educativo</h4>
+        <p>
+            Proyecto desarrollado en el <strong>Centro Educativo Tajamar</strong>,
+            como parte de la formación académica impartida en dicho centro.
+        </p>
+        <p>
+            Ubicación: <strong>Madrid, España</strong>.
+        </p>
+    </div>
+
+    <!-- NATURALEZA DEL PROYECTO -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Naturaleza del proyecto</h4>
+        <ul>
+            <li>Proyecto académico y educativo.</li>
+            <li>Sin ánimo de lucro.</li>
+            <li>No destinado a uso comercial.</li>
+            <li>Las funcionalidades de compra son simuladas.</li>
+        </ul>
+    </div>
+
+    <!-- PROPIEDAD INTELECTUAL -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Propiedad intelectual</h4>
+        <p>
+            El código fuente, diseño visual y estructura de la aplicación pertenecen
+            a los autores del proyecto y se utilizan exclusivamente con fines educativos.
+        </p>
+        <p>
+            Las imágenes, títulos, descripciones y datos relacionados con películas y series
+            se obtienen a través de la API pública de
+            <strong>The Movie Database (TMDB)</strong>.
+        </p>
+
+        <div class="privacy-note">
+            Este proyecto no está afiliado, patrocinado ni respaldado por TMDB.
+            Todo el contenido obtenido desde su API se utiliza conforme a sus términos de uso
+            y únicamente con fines informativos y educativos.
+        </div>
+    </div>
+
+    <!-- LIMITACIÓN DE RESPONSABILIDAD -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Limitación de responsabilidad</h4>
+        <p>
+            Los autores no se hacen responsables del uso indebido de la aplicación ni de los datos
+            introducidos por los usuarios.
+        </p>
+        <p>
+            El usuario es responsable de no introducir información personal real ni datos sensibles.
+        </p>
+    </div>
+
+    <!-- ENLACES EXTERNOS -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Enlaces externos</h4>
+        <p>
+            La aplicación puede incluir enlaces o referencias a sitios web de terceros,
+            como The Movie Database (TMDB).
+        </p>
+        <p>
+            Los autores no se responsabilizan del contenido, políticas o prácticas de dichos sitios externos.
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="privacy-footer">
+        © @DateTime.Now.Year · CinemaMasterTicketsMVC · Proyecto académico · Madrid
+    </div>
+
+</div>
+

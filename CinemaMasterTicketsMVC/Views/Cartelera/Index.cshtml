@@ -1,13 +1,13 @@
-﻿
-@model IEnumerable<CinemaMasterTicketsMVC.Models.Movie>
+﻿@model IEnumerable<CinemaMasterTicketsMVC.Models.Movie> // Recibe la lista de películas para mostrar
 
-@section Styles {
+@* Referencia al archivo de estilos *@
+@section Styles { 
     <link rel="stylesheet" href="~/css/getSessions.css" />
 }
 
 <div class="container pb-5 mt-4">
 <div class="row g-4">
-    @foreach (var movie in Model)
+    @foreach (var movie in Model)// Itera sobre cada película en la base de datos
     {
         <div class="col-12">
             <div class="card shadow-sm">
@@ -22,26 +22,17 @@
                         <div class="card-body">
                             <h4>@movie.Title</h4>
                             <p class="text-muted mb-1">
-                                @* @movie.Genre ·  *@@movie.DurationMinutes min
+                                @movie.DurationMinutes min
                             </p>
 
                             <div class="d-flex gap-2 mb-3">
                                 <div class="d-flex gap-2 mb-3">
-                                    @* <button class="btn btn-outline-primary btn-sm"
-                                            onclick="loadSessions(@movie.MovieId)">
-                                        Ver sesiones
-                                    </button>
-
-                                    <button class="btn btn-success btn-sm"
-                                            onclick="openSessionModal(@movie.MovieId)">
-                                        Añadir sesión
-                                    </button> *@
-                                    @* REFACTORIZADO: Clases para identificar y data-id para el valor *@
+                                    @* Bton parqa cargar sesiones usa un data-atribute para pasar el id a JS *@
                                     <button class="btn btn-outline-primary btn-sm btn-load-sessions"
                                             data-movie-id="@movie.MovieId">
                                         Ver sesiones
                                     </button>
-
+                                    @* Bton para añdir sesiones usa un data-atribute, para mediante JS se abra el modal para creae la sesion *@ 
                                     <button class="btn btn-success btn-sm btn-add-session"
                                             data-movie-id="@movie.MovieId">
                                         Añadir sesión
@@ -49,7 +40,7 @@
                                 </div>
 
                             </div>
-
+                            @* Aqui se creara mediante JS el html mediante una vista parcial de sesiones *@
                             <div id="sessions-@movie.MovieId"></div>
                         </div>
                     </div>
@@ -61,7 +52,11 @@
 </div>
 </div>
 
-@await Html.PartialAsync("_CreateSessionModal")
+@* @await Html.PartialAsync("_CreateSessionModal") *@
+@await Html.PartialAsync("_CreateSessionModal", new CinemaMasterTicketsMVC.Models.Session())
 @section Scripts {
+    @*  cargamos las librerías de validación de jQuery, luego nuestro script *@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/cartelera.js"></script>
 }

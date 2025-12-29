@@ -13,24 +13,29 @@ namespace CinemaMasterTicketsMVC.Controllers
         {
             _db = db;
         }
-
+        //Este metodo carga la pantalla principal de la cartelera y gesitona
+        //el estado de las sesiones
         public IActionResult Index()
         {
-
-            // limpiar sesiones pasadas
-            //Marcar sesiones pasadas como Finalizadas->ca,bia su estado
+            //Antes de mostrar la cartelera, buscamos sesiones que sigan como "Active"
+            // pero que su hora de inicio ya haya pasado.
             var toFinish = _db.Sessions
                 .Where(s => s.Status == "Active" && s.StartTime < DateTime.Now);
 
+
+            //LAs marcamos como finalizadas para que ya no se muestren en la cartelera
             foreach (var s in toFinish)
                 s.Status = "Finished";
             _db.SaveChanges();
 
+            //Cargamos las peliculas ordenadas por las mas recientes e incluimos sus sesiones
             var movies = _db.Movies
-                .Include(m => m.Sessions) //Cargar peliculas con sesiones
+                .Include(m => m.Sessions)
                 .OrderByDescending(m => m.AddedAt)
                 .ToList();
 
+
+            //Filtramos las sesiones de cada pelicula para mostrar solo las que estan activas
             foreach (var movie in movies)
             {
                 movie.Sessions = movie.Sessions
@@ -44,79 +49,40 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View(movies);
         }
 
-        //public IActionResult Index()
-        //{
-        //    // 1️⃣ Marcar sesiones pasadas como Finished
-        //    var now = DateTime.Now;
-
-        //    var toFinish = _db.Sessions
-        //        .Where(s => s.Status == "Active" && s.StartTime < now)
-        //        .ToList();
-
-        //    foreach (var s in toFinish)
-        //        s.Status = "Finished";
-
-        //    if (toFinish.Any())
-        //        _db.SaveChanges();
-
-        //    // 2️ Cargar SOLO películas (sin sesiones)
-        //    var movies = _db.Movies
-        //        .OrderByDescending(m => m.AddedAt)
-        //        .ToList();
-
-        //    // 3️ Salas para dropdown
-        //    ViewBag.Rooms = _db.Rooms.ToList();
-
-        //    return View(movies);
-        //}
-
-        //Obtener sesiones por pelicula
-
-        //[HttpGet]
-        //public async Task<IActionResult> GetSessions(int movieId)
-        //{
-        //    var sessions = await _db.Sessions
-        //        .Where(s => s.MovieId == movieId && s.Status == "Active")// REvisar esta filtrando tb sesiones finalizadas
-        //        .OrderBy(s => s.StartTime)
-        //        .ToListAsync();
-
-        //    return PartialView("_SessionsPartial", sessions);
-
-
-        //}
+        //Este metodo devuelve todas las sesiones de una pelicula especifica se llama desde JS
         [HttpGet]
         public async Task<IActionResult> GetSessions(int movieId)
         {
             var sessions = await _db.Sessions
-                .AsNoTracking() //CLAVE
+                .AsNoTracking() //mejora rendimiento para datos d lectura
                 .Where(s => s.MovieId == movieId && s.Status == "Active")
                 .OrderBy(s => s.StartTime)
                 .ToListAsync();
-
+            //Devolvemos la vista parcial para que js la inyecte sin recargar toda la pagina
             return PartialView("_SessionsPartial", sessions);
         }
 
 
 
-        //modificado 19/12/2025
+        
         //metodo controla que la sala este diponible en base a la duracion de la pelicula, si hay alguna sesion creada
         //en esa sala en la misma fecha y hora que se este asignando
         //la duracion en minutos se extrae desde la movie
         [HttpPost]
         public async Task<IActionResult> CreateSession([FromBody] Session session)
         {
+            //Validacion del modelo
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Obtener la película
+            // Obtener la película para saber cuanto dura en minutos
             var movie = await _db.Movies
                 .FirstOrDefaultAsync(m => m.MovieId == session.MovieId);
 
             if (movie == null)
                 return NotFound("La película no existe");
 
-            // Obtener la sala con sus sesiones
-
+            // Obtenemos la sala con sus sesiones
             var room = await _db.Rooms
                 .Include(r => r.Sessions)
                     .ThenInclude(s => s.Movie)
@@ -127,9 +93,6 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             // Duración en pelicula-> aqui se saca la duracion de la pelicula desde la base de datos
             TimeSpan duracion = TimeSpan.FromMinutes(movie.DurationMinutes);
-
-            // Duracion predeterminada-> PARA PRUEBAS
-            //TimeSpan duracion = TimeSpan.FromHours(3);
 
             // Validar disponibilidad
             if (!room.EstaDisponible(session.StartTime, duracion))
@@ -145,6 +108,8 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return Ok();
         }
+
+        //Metodo para editar una sesion existente controlando tambien solapamientos de sesiones
         [HttpPost]
         public async Task<IActionResult> UpdateSession([FromBody] Session session)
         {
@@ -167,7 +132,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             if (room == null)
                 return NotFound("Sala no encontrada");
 
-            // Excluir la sesión que estamos editando del chequeo
+            // Excluir la sesión que estamos editando del chequeo, por que si no el sistema dira que no
+            // esta disponible ya que choca consigo misma
             bool disponible = room.Sessions
                 .Where(s => s.Status == "Active" && s.SessionId != existing.SessionId && s.Movie != null)
                 .All(s =>
@@ -177,7 +143,7 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             if (!disponible)
                 return BadRequest("Sala no disponible");
-
+            //Actualizamos solo los campos permitidos
             existing.StartTime = session.StartTime;
             existing.RoomId = session.RoomId;
             existing.Price = session.Price;
@@ -186,7 +152,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             return Ok();
         }
 
-        //Eliminar sesiones que no tengan tickets vendidos
+        //Mtodo para eliminar sesiones que no tengan tickets vendidos
         [HttpPost]
         public async Task<IActionResult> DeleteSession(int sessionId)
         {
@@ -197,6 +163,8 @@ namespace CinemaMasterTicketsMVC.Controllers
             if (session == null)
                 return NotFound();
 
+            //Si hay tickets vendidos no se puede borrar la sesion ya que se dejaria tickets sin referencia 
+            //y romperiamos la estructura definida.
             if (session.Tickets.Any())
                 return BadRequest("No se puede borrar una sesión con tickets vendidos");
 
@@ -206,7 +174,9 @@ namespace CinemaMasterTicketsMVC.Controllers
             return Ok();
         }
 
-        //Cancelar sesión
+        //Cancelar sesión-> este metodo mantiene el registro pero la quita de la venta
+        //Al cabiar el estado los tickets vendidos quedan no quedan huerfanos sino quedan asociados
+        //a una sesion "Cancelled"
         [HttpPost]
         public async Task<IActionResult> CancelSession(int sessionId)
         {
@@ -220,32 +190,33 @@ namespace CinemaMasterTicketsMVC.Controllers
             return Ok();
         }
 
-        // Eliminar película (solo si no tiene sesiones)
+        // este metodo sirve para eliminar película solo si no tiene sesiones
         [HttpPost]
         public async Task<IActionResult> DeleteMovie(int movieId)
         {
             var movie = await _db.Movies
                 .Include(m => m.Sessions)
-                .ThenInclude(s => s.SessionSeats) // Incluir los asientos de la sesión
+                .ThenInclude(s => s.SessionSeats) //Incluimos los asientos de la sesión
                 .FirstOrDefaultAsync(m => m.MovieId == movieId);
 
             if (movie == null)
                 return NotFound();
 
-            // Si tiene sesiones activas (no finalizadas), no permitimos borrar
+            // Si tiene sesiones activas no finalizadas no permitimos borrar
             if (movie.Sessions.Any(s => s.Status == "Active"))
                 return BadRequest("La película tiene sesiones activas");
 
-            // LIMPIEZA DE DEPENDENCIAS:
+            // borramos los bloques de asientos de todas sus sesiones para que la base de datos no de error 
+            //en las claves foraneas
             foreach (var session in movie.Sessions)
             {
-                // Borrar los bloqueos de asientos de cada sesión
                 _db.SessionSeats.RemoveRange(session.SessionSeats);
             }
 
             // Borrar las sesiones
             _db.Sessions.RemoveRange(movie.Sessions);
 
+            //Borrar la pelicula
             _db.Movies.Remove(movie);
             await _db.SaveChangesAsync();
 
