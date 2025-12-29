@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace CinemaMasterTicketsMVC.Controllers
 {
@@ -30,29 +31,13 @@ namespace CinemaMasterTicketsMVC.Controllers
             _db = db;
             _configuration = configuration;
         }
+        //Este Action lleva al panel de control del Admin
         public IActionResult Home()
         {
             return View();
         }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    var model = new AdminUsersPanelViewModel
-        //    {
-        //        // Traemos empleados con su taquilla incluida
-        //        Employees = await _db.Employees
-        //    .Include(e => e.BoxOffice)
-        //    .OrderBy(e => e.Lastname)
-        //    .ToListAsync(),
-
-        //        // Traemos clientes
-        //        Customers = await _db.Customers
-        //    .OrderBy(c => c.LastName)
-        //    .ToListAsync()
-        //    };
-
-        //    return View(model);
-        //}
+        //Metodo que trae los empleados y los usuarios ACTIVOS
         public async Task<IActionResult> Index()
         {
             var model = new AdminUsersPanelViewModel
@@ -66,69 +51,44 @@ namespace CinemaMasterTicketsMVC.Controllers
 
                 // Traemos clientes
                 Customers = await _db.Customers
-        .Where(c => c.isActive)
+                .Where(c => c.isActive)
                 .OrderBy(c => c.LastName)
                 .ToListAsync()
-            };
+                };
 
             return View(model);
         }
 
-
-        public IActionResult Roles()
-        {
-            //todos los roles que haya en el roleManager
-            var roles = _roleManager!.Roles;
-            return View(roles);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> AddUserToRole(string userEmail, string roleName)
-        {
-            var user = await _userManager!.FindByEmailAsync(userEmail);
-
-            if (user != null && await _roleManager!.RoleExistsAsync(roleName))
-            {
-                await _userManager.AddToRoleAsync(user, roleName);
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
+//Metodo para crear un empleado
         public IActionResult CreateEmployee()
         {
-            var boxOficceDisplay = _db.BoxOffices.Select(b => new
-            {
-                id = b.BoxOfficeId,
-                value = b.BoxOfficeName
-            });
+            //Creamos el ViewModel con la lista de Lugares de trabajo y se la mandamos a la vista.
             var model = new CreateEmployeeBoxOficceViewModel
             {
-                BoxOffices = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(boxOficceDisplay, "id", "value")
+                BoxOffices = new SelectList(_db.BoxOffices, "BoxOfficeId", "BoxOfficeName")
             };
+
             return View(model);
         }
+
+        //Metodo para guardar un empleado creado que recibe el VM correspondiente con los datos rellenos
+        //para procesarlo en BBDD
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEmployee(CreateEmployeeBoxOficceViewModel vm)
         {
+            //Si el modelo no es valido, reconstruimos en select y redirigimos a la vista otra vez
             if (!ModelState.IsValid)
             {
-                var boxOficceDisplay = _db.BoxOffices.Select(b => new
-                {
-                    id = b.BoxOfficeId,
-                    value = b.BoxOfficeName
-                });
-                var model = new CreateEmployeeBoxOficceViewModel
-                {
-                    BoxOffices = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(boxOficceDisplay, "id", "value")
-                };
-                return View(model);
+                vm.BoxOffices = new SelectList(_db.BoxOffices, "BoxOfficeId", "BoxOfficeName");
+
+                return View(vm);
             }
 
+            //IMPORTANTE: Generamos una contraseña automatica, la cual será el apellido del empleado + 123!
+            //Esto solo ocurre con los perfiles de EMPLEADO
             var pass = vm.Employee!.Lastname + "123!";
-            // Crear Identity User
+            //Lo guardamos en la tabla Users de identity
             var user = new IdentityUser
             {
                 UserName = vm.Employee.Email,
@@ -138,6 +98,7 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             var result = await _userManager!.CreateAsync(user, pass);
 
+            //Si hay un error, mandamos el error
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -146,50 +107,16 @@ namespace CinemaMasterTicketsMVC.Controllers
                 return View(vm);
             }
 
-            //Asignar rol Employee
+            //Asignamos el rol de empleado
             await _userManager.AddToRoleAsync(user, "Employee");
-
+            //y lo guardamos en BBDD (nuestra tabla) en empleados
             _db.Employees.Add(vm.Employee);
             await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteEmployeeAjax(int id)
-        //{
-        //    // 1. Buscar al empleado
-        //    var employee = await _db.Employees.FindAsync(id);
-        //    if (employee == null)
-        //        return Json(new { success = false, message = "Empleado no encontrado." });
-
-        //    try
-        //    {
-        //        // 2. Borrar el usuario de Identity (basado en el Email)
-        //        var user = await _userManager!.FindByEmailAsync(employee.Email!);
-        //        if (user != null)
-        //        {
-        //            var result = await _userManager.DeleteAsync(user);
-        //            if (!result.Succeeded)
-        //            {
-        //                return Json(new { success = false, message = "Error al eliminar el usuario de acceso." });
-        //            }
-        //        }
-
-        //        // 3. Borrar de la base de datos de empleados
-        //        _db.Employees.Remove(employee);
-        //        await _db.SaveChangesAsync();
-
-        //        return Json(new { success = true, message = "Empleado eliminado correctamente." });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Loguear el error si es necesario
-        //        return Json(new { success = false, message = "Error interno: " + ex.Message });
-        //    }
-        //}
+       //
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEmployeeAjax(int id)
@@ -228,34 +155,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 return Json(new { success = false, message = "Error interno: " + ex.Message });
             }
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCustomerAjax(int id)
-        {
-            var customer = await _db.Customers.FindAsync(id);
-            if (customer == null)
-                return Json(new { success = false, message = "Cliente no encontrado" });
-
-            try
-            {
-                // Borrar de identity
-                var user = await _userManager!.FindByEmailAsync(customer.Email!);
-                if (user != null)
-                    await _userManager.DeleteAsync(user);
-
-                // Borrar de base de datos local
-                _db.Customers.Remove(customer);
-                await _db.SaveChangesAsync();
-
-                return Json(new { success = true, message = "Cliente eliminado correctamente" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Error en el servidor: " + ex.Message });
-            }
-        }
-
-
+        
         //Este metodo se encarga de mostrar el listado de peliculas disponibles desde la API externa 
         //de TheMovieDB
         public async Task<IActionResult> SelectFilmsAPI(int? pageNumber, string searchString)
@@ -397,32 +297,49 @@ namespace CinemaMasterTicketsMVC.Controllers
             return Ok(new { message = "Película añadida correctamente" });
         }
 
+        //Metodo que muestra todos los Addons
+        //Se ha modificado por un error a ultima hora. Se pasa con ViewBags por simpleza
         public async Task<IActionResult> GetAddons()
         {
-            // Cargamos los AddOns incluyendo la cuenta de cuántos tickets tienen asociados
-            var addons = await _db.AddOns
+            //Obtenemos todos los addons con sus tickets
+            var allAddons = await _db.AddOns
                 .Include(a => a.TicketAddOns)
                 .ToListAsync();
+            //Creamos tres viewBags para paser la informacion a la vista de si estan activos,
+            //inactivos o si tienen ventas a traves de consultas
+            ViewBag.Active = allAddons.Where(a => a.IsActive).ToList();
+            ViewBag.Inactive = allAddons.Where(a => !a.IsActive).ToList();
+            ViewBag.IdsWithSales = allAddons.Where(a => a.TicketAddOns.Any())
+                                            .Select(a => a.AddOnId)
+                                            .ToList();
 
-            return View(addons);
+            return View();
         }
+
+        //Este metodo POST se encarga de cambiar los estados de los AddOns de Activo a inactivo
+        //a traves del id del AddOn selecionado
         [HttpPost]
         [ValidateAntiForgeryToken] 
         public async Task<IActionResult> ToggleStatus(int id)
         {
+            //Buscamos el addOn por su ID
             var addon = await _db.AddOns.FindAsync(id);
+            //Si no lo encontramos devolvemos un mensaje de error por JSON
             if (addon == null) return Json(new { success = false, message = "AddOn no encontrado" });
 
+            //Bandera para cambiar el estado a su forma contraria
             addon.IsActive = !addon.IsActive;
-            _db.Update(addon); // Aseguramos que EF marque el cambio
+            _db.Update(addon); // Aseguramos que EF marque el cambio en la BBDD
             await _db.SaveChangesAsync();
-
+            //Retornamos el JSON al JS para que maneje el objeto y lo coloque en la tabla correspondiente
             return Json(new { success = true, newState = addon.IsActive });
         }
 
+
+        //Este metodo sirve para crear nuevos AddOns. Simplemente pasa un selectList con los tipos
+        //de addOns disponibles para que el usuario pueda escoger uno al crearlo.
         public IActionResult AddAddon()
         {
-            // Preparar dropdown de tipos
             ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
                                      .Cast<AddOnType>()
                                      .Select(a => new SelectListItem
@@ -434,11 +351,13 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View();
         }
 
+        //Metodo para guardar un AddOn creado en la pagina de crear Addon. Recibe un 
+        //objeto Addon con sus caracetrísticas listas para guardar.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAddon(AddOn addOn)
         {
-            // Preparar dropdown nuevamente en caso de error
+            // Preparamos dropdown nuevamente en caso de error
             ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
                                      .Cast<AddOnType>()
                                      .Select(a => new SelectListItem
@@ -446,50 +365,54 @@ namespace CinemaMasterTicketsMVC.Controllers
                                          Value = a.ToString(),
                                          Text = a.ToString()
                                      }).ToList();
-            // --- Validación de nombre duplicado ---
+            //Hacemos una comprobacion en la BBDD para saber si el addon existe ya con ese nombre
             bool existeNombre = _db.AddOns.Any(a => a.AddOnName!.ToLower() == addOn.AddOnName!.ToLower());
+            //Si existe, mostramos un error y se lo comunicamos al usuario
             if (existeNombre)
             {
                 ModelState.AddModelError("AddOnName", "Ya existe un AddOn con este nombre.");
             }
-
+            //Si el modelo está bien formado
             if (ModelState.IsValid)
             {
+                //pasamos a guardar la imagen, pero primero hay que construir su "nombre" o "ruta"
                 if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
                 {
-                    // Crear ruta de la imagen
+                    // Extraemos su extension,generamos un nombre único(para que no coincidan al crearse)
+                    //y creamos la ruta donde se va a guardar en la base de datos
                     var extension = Path.GetExtension(addOn.AddOnImageFile.FileName);
                     var fileName = Guid.NewGuid().ToString() + extension;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
 
-                    // Guardar archivo en wwwroot/img/addons
+                    // Guardamos el archivo en wwwroot/img/addons
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await addOn.AddOnImageFile.CopyToAsync(stream);
                     }
 
-                    // Guardar la ruta relativa en la base de datos
+                    // Guardamos la ruta relativa en la base de datos
                     addOn.AddOnImage = $"img/addons/{fileName}";
                 }
 
-                // Guardar en la base de datos
+                // Guardamos ya el objeto en la base de datos
                 _db.AddOns.Add(addOn);
                 await _db.SaveChangesAsync();
 
                 return RedirectToAction(nameof(GetAddons));
 
             }
-
+            //Si algo sale mal, retornamos a la misma vista devolviendo el objeto apra que lo muestre
             return View(addOn);
         }
 
-        
+        //Action para editar un AddOn por su ID
         public async Task<IActionResult> EditAddOn(int id)
         {
+            //Lo buscamos en la BBDD por el ID
             var addOn = await _db.AddOns.FindAsync(id);
             if (addOn == null)
                 return NotFound();
-
+            //Creamos un Select para poder elegir el tipo y lo pasamos por ViewBag
             ViewBag.AddOnTypes = Enum.GetValues(typeof(AddOnType))
                 .Cast<AddOnType>()
                 .Select(a => new SelectListItem
@@ -501,6 +424,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View(addOn);
         }
 
+        //Action para guardar el AddOn editado (parametros-> Id y Objeto AddOn)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddOn(int id, AddOn addOn)
@@ -516,30 +440,30 @@ namespace CinemaMasterTicketsMVC.Controllers
                     Text = a.ToString()
                 }).ToList();
 
-            // --- Validación de nombre duplicado (excluyendo el actual) ---
+            // Comprobamos si el nombre esta ya en la BBDD para que no haya duplicados
             bool existeNombre = _db.AddOns.Any(a => a.AddOnName!.ToLower() == addOn.AddOnName!.ToLower() && a.AddOnId != id);
             if (existeNombre)
             {
                 ModelState.AddModelError("AddOnName", "Otro producto ya utiliza este nombre.");
             }
-
+            //Si el modelo no esta bien formado, lo retornamos a la vista
             if (!ModelState.IsValid)
                 return View(addOn);
-
+            //Comprobamos tambien que el objeto a modificar exista en la BBDD
             var addOnDb = await _db.AddOns.FindAsync(id);
             if (addOnDb == null)
                 return NotFound();
 
-            // Actualizar campos
+            // Actualizamos los campos del de la BBDD con los del parametro
             addOnDb.AddOnName = addOn.AddOnName;
             addOnDb.Price = addOn.Price;
             addOnDb.Type = addOn.Type;
 
-            // Si se sube nueva imagen
+            // Si se sube una nueva imagen
             if (addOn.AddOnImageFile != null && addOn.AddOnImageFile.Length > 0)
             {
 
-                //Borrar imagen antigua de la carpeta
+                //Borramos la imagen antigua de la carpeta
                 if (!string.IsNullOrEmpty(addOnDb.AddOnImage))
                 {
                     var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", addOnDb.AddOnImage);
@@ -547,7 +471,7 @@ namespace CinemaMasterTicketsMVC.Controllers
                 }
 
 
-                // --- Uso de GUID para nombre único ---
+                // Volvemos a utilizar la logica de creacion del Path y el nombre de la imagen
                 var extension = Path.GetExtension(addOn.AddOnImageFile.FileName);
                 var fileName = Guid.NewGuid().ToString() + extension;
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/addons", fileName);
@@ -557,11 +481,13 @@ namespace CinemaMasterTicketsMVC.Controllers
 
                 addOnDb.AddOnImage = $"img/addons/{fileName}";
             }
-
+            //Guardamos en la base de datos
             await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(GetAddons));
         }
+
+        //Metodo paa borrar un Complemento (AddOn)
         public async Task<IActionResult> DeleteAddOn(int id)
         {
             // Usamos Include para traer la colección de tickets
@@ -571,22 +497,28 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             if (addOn == null)
                 return NotFound();
+            //Pasamos por ViewBag las comprobaciones de si tiene ventas y cuantas ventas tiene
+            ViewBag.TieneVentas = addOn.TicketAddOns.Any();
+            ViewBag.TotalVentas = addOn.TicketAddOns.Count;
 
             return View(addOn);
         }
 
-        // POST: Admin/DeleteAddOn/5
+        //Metodo para borrar un AddOn QUE NO TENGA VENTAS por ID
+        //INTERESANTE: ActionName nos ha permitido renombrar el metodo para que los botones de la vista
+        //nos permitan llamarlo de otra forma mas entendible y asi poder distinguir metodos correctamente
         [HttpPost, ActionName("DeleteAddOn")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //Traemos la lista de AddOns
             var addOn = await _db.AddOns
                 .Include(a => a.TicketAddOns)
                 .FirstOrDefaultAsync(m => m.AddOnId == id);
 
             if (addOn == null) return NotFound();
 
-            // --- DOBLE CONTROL DE SEGURIDAD ---
+            
             if (addOn.TicketAddOns.Any())
             {
                 // Si justo alguien compró uno, detenemos el borrado y mandamos error a la vista
@@ -606,6 +538,99 @@ namespace CinemaMasterTicketsMVC.Controllers
             await _db.SaveChangesAsync();
 
             return RedirectToAction(nameof(GetAddons));
+        }
+
+
+        //Action para mostrar datos de ventas, el cual recibe los parametros necesarios para las búsquedas y paginación
+        public async Task<IActionResult> SalesReport(int? searchId, DateTime? searchDate, decimal? searchPrice, string? searchUser, bool? searchBoxOffice, int? page)
+        {
+            //Tamaño de pagina y numeración de ellas
+            int pageSize = 3;
+            int pageNumber = page ?? 1;
+
+            //Creamos un nuevo ViewModel con los parametros recogidos en la búsqueda para la vista
+            var viewModel = new AdminSalesViewModel
+            {
+                SearchId = searchId,
+                SearchDate = searchDate,
+                SearchPrice = searchPrice,
+                SearchUser = searchUser,
+                SearchBoxOffice = searchBoxOffice
+            };
+
+            //Aunamos todos los componentes necesarios para la busqueda en una sola consulta con include(cargando todos los datos)
+            //y la hacemos iqueryable para no meterla en memoria aún y poder seguir modificandola.
+            var query = _db.Tickets
+                .Include(c => c.Session).ThenInclude(s => s!.Movie)
+                .Include(c => c.Session).ThenInclude(s => s!.Room)
+                .Include(c => c.Customer)
+                .Include(c => c.TicketSeats)
+                .Include(c => c.TicketAddOns).ThenInclude(z => z.AddOn)
+                .AsQueryable();
+
+            // Si alguno de los filtros ha sido rellenado por el Admin...
+            if (searchId.HasValue || searchDate.HasValue || searchPrice.HasValue || !string.IsNullOrEmpty(searchUser) || searchBoxOffice.HasValue)
+            {
+                //Marcamos la propiedad de busqueda a true para que active la busqueda en la vista (aparezcan componentes)
+                viewModel.SearchPerformed = true;
+                //Aplicamos los filtros en la consulta para cada caso
+                if (searchId.HasValue) query = query.Where(t => t.TicketId == searchId);
+                if (searchDate.HasValue) query = query.Where(t => t.PurchasedAt.HasValue
+                    && t.PurchasedAt.Value.Date == searchDate.Value.Date);
+                if (searchPrice.HasValue) query = query.Where(t => t.TotalPrice == searchPrice);
+                if (!string.IsNullOrEmpty(searchUser)) query = query.Where(t => t.Customer!.FirstName!.Contains(searchUser) || t.EmailToSend!.Contains(searchUser));
+                if (searchBoxOffice.HasValue) query = query.Where(t => t.SoldAtBoxOffice == searchBoxOffice.Value);
+            }
+
+            //Aqui ya SI vamos a la base de datos para aplicar la consulta con los filtros, ordenandola por dia 
+            var resultsList = await query.OrderByDescending(v => v.PurchasedAt).ToListAsync();
+
+            //Metemos la lista de tickets paginada en la propiedad FoundTicket del VM (La propiedad es una lista paginada)
+            viewModel.FoundTickets = resultsList.ToPagedList(pageNumber, pageSize);
+
+            // Consulta para traer la recaudacion por película (precio de asientos vendidos).
+            var movieTickets = await _db.Tickets
+                .Where(b => b.Session != null && b.Session.Movie != null)
+                .Select(c => new {
+                    Title = c.Session!.Movie!.Title,
+                    SeatsCount = c.TicketSeats.Count,
+                    SeatPrice = c.Session.Price
+                }).ToListAsync();
+
+            // Con la consulta de antes, simplemente agrupamos por titulo y en un VM de MovieSales metemos
+            //El titulo, El conteo de ventas y el total de ventas de asientos (precios)
+            viewModel.MovieSales = movieTickets
+                .GroupBy(x => x.Title)
+                .Select(g => new MovieSales
+                {
+                    MovieTitle = g.Key!,
+                    TicketsCount = g.Count(), // Número de operaciones/ventas
+                    TotalSeats = g.Sum(x => x.SeatsCount * x.SeatPrice) // Solo cogemos los asientos
+                })
+                .OrderByDescending(x => x.TotalSeats)
+                .ToList();
+
+            // Consulta para recoger las ventas de los complementos (Nombre y precio)
+            var addonsData = await _db.TicketAddOns
+                .Include(r => r.AddOn)
+                .Where(n => n.AddOn != null)
+                .Select(c => new 
+                { 
+                    Name = c.AddOn!.AddOnName,
+                    Price = c.AddOn.Price
+                }).ToListAsync();
+
+            //Con la consulta de antes, los ordenamos por nombre y seleccionamos en un VM de AddOnSales
+            //Nombre, conteo total de unidades y el precio total de estas
+            viewModel.AddOnSales = addonsData.GroupBy(x => x.Name)
+                .Select(g => new AddOnSales
+                {
+                    AddOnName = g.Key!,
+                    SoldUnits = g.Count(),
+                    TotalRevenue = g.Sum(x => x.Price)
+                }).OrderByDescending(x => x.SoldUnits).ToList();
+
+            return View(viewModel);
         }
     }
 }

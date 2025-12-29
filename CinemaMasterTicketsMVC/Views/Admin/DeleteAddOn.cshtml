@@ -3,36 +3,35 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/seatAddOn.css" />
 }
-
+@* Vista para borrar un AddOn *@
 <h2 class="text-danger movie-title">Eliminar Complemento</h2>
-
 <div asp-validation-summary="ModelOnly" class="alert custom-alert"></div>
 
-@{
-    bool tieneVentas = Model.TicketAddOns.Any();
-}
-
-@if (tieneVentas)
+@* Si tiene ventas mostramos un mensaje de error y evitamos el borrado *@
+@if (ViewBag.TieneVentas)
 {
     <div class="alert custom-alert flex-column align-items-start mb-4">
         <h4 class="text-danger"><i class="bi bi-exclamation-triangle"></i> ¡Acción Bloqueada!</h4>
         <p class="mb-0">
-            Este AddOn tiene <strong>@Model.TicketAddOns.Count</strong> ventas registradas.
+            Este AddOn tiene <strong>@ViewBag.TotalVentas</strong> ventas registradas.
             No se puede eliminar para mantener la integridad de los tickets.
         </p>
     </div>
 }
 else
 {
+    @* Si no tiene ventas, procedemos a borrar *@
+
     <p class="label-select fs-5">¿Estás seguro de que deseas eliminar permanentemente este producto?</p>
 }
 
+@* aqui mostramos los datos del AddOn a borrar *@
 <div class="addons-summary p-4">
     <div class="row align-items-center">
         <div class="col-auto">
             @if (!string.IsNullOrEmpty(Model.AddOnImage))
             {
-                <img src="~/@Model.AddOnImage" class="addon-img-thumbnail" style="width: 120px;" />
+                <img src="~/@Model.AddOnImage" class="addon-img-delete-view" />
             }
         </div>
         <div class="col">
@@ -41,19 +40,23 @@ else
         </div>
     </div>
 
+    @* Formulario para borrar los AddOns en el cual pasamos el id del addon al controller para borrarlo *@
     <form asp-action="DeleteAddOn" method="post" class="mt-4">
         <input type="hidden" asp-for="AddOnId" />
 
         <div class="d-flex gap-3 align-items-center">
-            @if (tieneVentas)
+            @if (ViewBag.TieneVentas)
             {
-                <button type="submit" class="btn btn-cancelar opacity-50" disabled>Eliminar</button>
+                @* Si tiene ventas, volvemos a evitar el borrado desactivando el boton *@
+
+                <button type="submit" class="btn btn-cancelar btn-disabled-custom" disabled>Eliminar</button>
                 <span class="text-warning small fst-italic">Usa "Desactivar" en la lista principal</span>
             }
             else
             {
                 <button type="submit" class="btn btn-cancelar">Confirmar Eliminación</button>
             }
+            @* Boton para volver atras*@
             <a asp-action="GetAddons" class="btn btn-continuar">Cancelar y Volver</a>
         </div>
     </form>

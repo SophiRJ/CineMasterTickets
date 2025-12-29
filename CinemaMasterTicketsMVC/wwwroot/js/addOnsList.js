@@ -14,7 +14,11 @@
         container.innerHTML = '';
         //Si no hay addons, saldrá este mensaje
         if (addons.length === 0) {
-            container.innerHTML = '<p>No hay complementos disponibles.</p>';
+            container.innerHTML = `
+            <div class="no-addons-message">
+                <i class="bi bi-info-circle"></i> 
+                <p>No hay complementos disponibles en esta categoría.</p>
+            </div>`;
             return;
         }
         //Creamos la tabla con sus atributos y sus cabeceras

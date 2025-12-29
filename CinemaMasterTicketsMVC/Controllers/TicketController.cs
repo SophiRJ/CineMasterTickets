@@ -221,7 +221,7 @@ namespace CinemaMasterTicketsMVC.Controllers
         public async Task<IActionResult> Payment()
         {
             // 1. Verificamos el Rol del usuario para la vista
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager!.GetUserAsync(User);
             bool isEmployee = false;
 
             if (user != null)
@@ -231,7 +231,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             }
 
             // 2. Pasamos esta info a la vista para filtrar los botones segun el rol que tenga
-            ViewBag.IsEmployee = isEmployee;
+            ViewBag.IsEmployee = user != null && await _db.Employees.AnyAsync(e => e.Email == user.Email);
 
             return View();
         }

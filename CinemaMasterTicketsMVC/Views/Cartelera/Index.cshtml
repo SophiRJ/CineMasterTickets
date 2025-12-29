@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="~/css/getSessions.css" />
 }
 
+<div class="container pb-5 mt-4">
 <div class="row g-4">
     @foreach (var movie in Model)// Itera sobre cada película en la base de datos
     {
@@ -46,7 +47,9 @@
                 </div>
             </div>
         </div>
+        
     }
+</div>
 </div>
 
 @* @await Html.PartialAsync("_CreateSessionModal") *@

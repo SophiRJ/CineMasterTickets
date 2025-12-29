@@ -1,0 +1,132 @@
+﻿/* ==========================================================================
+   ADMIN REPORTS - ESTILOS COMPLETOS 
+   ========================================================================== */
+
+/* Fondo general y reset de Bootstrap */
+body {
+    background-color: #0d0d0d !important;
+}
+
+.admin-reports-page {
+    background-color: #0d0d0d;
+    color: #ffffff !important;
+}
+
+/* Título Principal */
+.report-title {
+    color: #f5c518 !important;
+    text-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Cards Glassmorphism */
+.search-card, .table-card {
+    background: #1a1a1a !important;
+    border: 1px solid rgba(245, 197, 24, 0.3) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+    background: rgba(245, 197, 24, 0.1) !important;
+    color: #f5c518 !important;
+    border-bottom: 1px solid rgba(245, 197, 24, 0.2) !important;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 15px 20px;
+}
+
+/* --- BOTÓN DE FILTRAR  --- */
+.btn-search {
+    background-color: transparent !important;
+    border: 2px solid #f5c518 !important;
+    color: #f5c518 !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+    letter-spacing: 1px;
+}
+
+    .btn-search:hover {
+        background-color: #f5c518 !important;
+        color: #000 !important;
+        box-shadow: 0 0 20px rgba(245, 197, 24, 0.6);
+        transform: translateY(-2px);
+    }
+
+/* Botón Limpiar */
+.btn-outline-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+    .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+    }
+
+/* --- TABLAS Y CONTENIDO --- */
+.table {
+    background-color: transparent !important;
+    color: #fff !important;
+}
+
+    .table td, .table th {
+        background-color: transparent !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .table thead th {
+        color: #f5c518 !important;
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        border-bottom: 2px solid rgba(245, 197, 24, 0.4) !important;
+    }
+
+.col-price {
+    color: #4CAF50 !important;
+    font-weight: 800 !important;
+}
+
+/* Paginador */
+.movie-pagination .page-link {
+    background-color: #111 !important;
+    border: 1px solid rgba(245, 197, 24, 0.5) !important;
+    color: #f5c518 !important;
+}
+
+.movie-pagination .page-item.active .page-link {
+    background-color: #f5c518 !important;
+    color: #000 !important;
+    border-color: #f5c518 !important;
+}
+
+/* Inputs */
+.form-control, .form-select {
+    background-color: #000 !important;
+    border: 1px solid #444 !important;
+    color: #f5c518 !important;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: #f5c518 !important;
+        box-shadow: 0 0 10px rgba(245, 197, 24, 0.3);
+    }
+
+.btn-cancelar {
+    background-color: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    border: 2px solid #e50914;
+    color: #e50914;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.btn-cancelar:hover {
+    background-color: #e50914;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.8);
+}

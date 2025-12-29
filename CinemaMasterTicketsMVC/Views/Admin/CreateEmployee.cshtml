@@ -4,44 +4,47 @@
    
     <link rel="stylesheet" href="~/css/adminHome.css" />
 }
-
+@* Vista para generar un nuevo empleado *@
 @{
     ViewData["Title"] = "Crear Empleado";
 }
 
+
 <h2 class="text-light mb-4 movie-title">Nuevo Miembro del Staff</h2>
 
 <div class="addons-summary">
-    @* Efecto cristal y blur *@
+    @* Formulario para agregar el empleado *@
     <form asp-controller="Admin" asp-action="CreateEmployee" method="post">
 
+        @* Input para el nombre *@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label asp-for="Employee.Firstname" class="label-select">Nombre</label>
                 <input asp-for="Employee.Firstname" class="form-control form-select" placeholder="Escribe el nombre..." />
                 <span asp-validation-for="Employee.Firstname" class="text-danger small"></span>
             </div>
-
+            @* Input para el apellido *@
             <div class="col-md-6 mb-3">
                 <label asp-for="Employee.Lastname" class="label-select">Apellidos</label>
                 <input asp-for="Employee.Lastname" class="form-control form-select" placeholder="Escribe los apellidos..." />
                 <span asp-validation-for="Employee.Lastname" class="text-danger small"></span>
             </div>
         </div>
-
+        @* Input para el email *@
         <div class="mb-3">
             <label asp-for="Employee.Email" class="label-select">Correo Electrónico</label>
             <input asp-for="Employee.Email" class="form-control form-select" placeholder="ejemplo@cine.com" />
             <span asp-validation-for="Employee.Email" class="text-danger small"></span>
         </div>
 
+        @* Input para el DNI *@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label asp-for="Employee.DNI" class="label-select">DNI / Identificación</label>
                 <input asp-for="Employee.DNI" class="form-control form-select" placeholder="00000000X" />
                 <span asp-validation-for="Employee.DNI" class="text-danger small"></span>
             </div>
-
+            @* Select para asignarle una taquilla o puesto de trabajo *@
             <div class="col-md-6 mb-3">
                 <label asp-for="Employee.BoxOfficeId" class="label-select">Asignar Taquilla</label>
                 <select asp-for="Employee.BoxOfficeId"
@@ -55,6 +58,7 @@
 
         <hr class="border-secondary opacity-25 my-4">
 
+        @* Botones de continuar o volver *@
         <div class="d-flex gap-3 justify-content-end">
             <a asp-action="Index" class="btn btn-cancelar px-4 py-2">
                 <i class="fas fa-times me-2"></i>Cancelar
@@ -66,6 +70,7 @@
     </form>
 </div>
 
+@* Script que accede a la partial de las validaciones *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

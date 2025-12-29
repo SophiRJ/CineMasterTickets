@@ -233,7 +233,7 @@ namespace CinemaMasterTicketsMVC.Controllers
     public async Task<IActionResult> GetAddOnsByType(string type)
     {
         // Obtenemos todos los addons activos
-        var addons = await _db.AddOns.ToListAsync();
+        var addons = await _db.AddOns.Where(a => a.IsActive).ToListAsync();
 
         // Filtramos por tipo si no es "All" ni vacío
         if (!string.IsNullOrEmpty(type) && type != "All")

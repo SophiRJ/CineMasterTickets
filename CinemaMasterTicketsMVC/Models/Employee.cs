@@ -29,7 +29,7 @@ namespace CinemaMasterTicketsMVC.Models
         public string? Email { get; set; }
         [Required(ErrorMessage = "Debe asignar una taquilla al empleado")]
         public int BoxOfficeId { get; set; }
-       
+        
         public string? ProfileImage { get; set; } // Ruta en BD
         public bool isActive { get; set; } = true;
         [NotMapped]
@@ -43,7 +43,7 @@ namespace CinemaMasterTicketsMVC.Models
             .Where(t => t.PurchasedAt.HasValue && t.PurchasedAt.Value.Date == DateTime.Today)
             .OrderByDescending(t => t.PurchasedAt) ?? Enumerable.Empty<Ticket>();
 
-        // ---------------------
+        
 
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public BoxOffice? BoxOffice { get; set; }

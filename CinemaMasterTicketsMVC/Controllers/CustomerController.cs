@@ -153,7 +153,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             
         }
 
-        //Borrado definitivo-> borra al usuario del sistema tanto de identity y de la base de datos
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -165,24 +165,25 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             if (customer == null || user == null) return NotFound();
 
-            // primero borramos de identity-> que es el que gestiona el login
+            
             var result = await _userManager.DeleteAsync(user);
 
             if (result.Succeeded)
             {
-                // Si se borro bien de identity lo borramos de nuestra bd Customers
-                _db.Customers.Remove(customer);
+                
+                customer.isActive = false;
+
+                _db.Customers.Update(customer);
                 await _db.SaveChangesAsync();
 
-                // Al borrar su cuenta su cookie ya no vale, cerramos su sesion manualmente 
-                //para que el navegador sepa que ya no esta dentro
+                
                 await _signInManager.SignOutAsync();
 
-                //Redirigimos a home 
+                
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("Error"); //Si falla el darse de baja
+            return View("Error");
         }
     }
 

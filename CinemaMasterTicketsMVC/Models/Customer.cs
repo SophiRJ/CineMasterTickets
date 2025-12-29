@@ -32,13 +32,13 @@ namespace CinemaMasterTicketsMVC.Models
 
         public int FidelityPoints { get; set; }
 
-        //PROPIEDAD QUE NO SE USA
+        
         public bool isActive {  get; set; } = true;
 
         // ruta de la imagen (nullable)
         public string? ProfileImage { get; set; }
 
-        // no persistido (solo para subir)
+        // no persistido (solo para subir la imagen)
         [NotMapped]
         public IFormFile? ProfileImageFile { get; set; }
 

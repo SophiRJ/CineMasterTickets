@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CinemaMasterTicketsMVC.Data
 {
+    //Heredamos de IdentityDbContext 
     public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+        //Creación de los DBSets para las tablas de BBDD
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Row> Rows { get; set; }
@@ -24,12 +26,13 @@ namespace CinemaMasterTicketsMVC.Data
         public DbSet<AddOn> AddOns { get; set; }
         public DbSet<TicketAddOn> TicketAddOns { get; set; }
 
+        //Ahora definimos las relaciones entre los modelos para mayor refuerzo de la base de datos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // -----------------------------
-            // 1️⃣ Relaciones Uno-a-Muchos
+            //  Relaciones Uno-a-Muchos
             // -----------------------------
             modelBuilder.Entity<Room>()
                 .HasMany(r => r.Rows)
@@ -62,7 +65,7 @@ namespace CinemaMasterTicketsMVC.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // -----------------------------
-            // 2️⃣ Relaciones Muchos-a-Muchos
+            // Relaciones Muchos-a-Muchos
             // -----------------------------
 
             // TicketSeat
@@ -132,14 +135,15 @@ namespace CinemaMasterTicketsMVC.Data
                 .HasPrecision(18, 2);
 
             // -----------------------------
-            // 3️⃣ Índices únicos
+            // Índices únicos
             // -----------------------------
             modelBuilder.Entity<Seat>()
                 .HasIndex(s => new { s.RowId, s.Number })
                 .IsUnique();
 
             // -----------------------------
-            // 4️⃣ Seed de Rooms, Rows y Seats
+            // Seed de Rooms, Rows y Seats
+                //La aplicación lanzara por defecto 10 salas con sus butacas, y los puestos de trabajo predefinidos
             // -----------------------------
             var rooms = new List<Room>();
             for (int i = 1; i <= 10; i++)
@@ -186,7 +190,7 @@ namespace CinemaMasterTicketsMVC.Data
             modelBuilder.Entity<Seat>().HasData(seats);
 
             // -----------------------------
-            // 5️⃣ Seed de BoxOffices
+            // Seed de BoxOffices
             // -----------------------------
             var boxOffices = new List<BoxOffice>
                 {

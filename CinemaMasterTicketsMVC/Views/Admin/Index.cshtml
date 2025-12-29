@@ -57,11 +57,11 @@
                                     <div class="btn-group gap-1">
                                         @* Aqui situamos los botones de Editar, ver perfil y borrar empleados*@
                                         <a asp-action="Index" asp-controller="Employee" asp-route-id="@emp.EmployeeId"
-                                           class="btn btn-sm btn-outline-info" title="Ver Perfil"><i class="fas fa-eye"></i></a>
+                                        class="btn btn-sm btn-outline-info" title="Ver Perfil"><i class="fas fa-eye"></i></a>
                                         <a asp-action="Edit" asp-controller="Employee" asp-route-id="@emp.EmployeeId"
-                                           class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
+                                        class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
                                         <button type="button" class="btn-delete-item btn btn-sm btn-outline-danger"
-                                                data-id="@emp.EmployeeId" data-name="@emp.Firstname" data-type="Employee">
+                                        data-id="@emp.EmployeeId" data-name="@emp.Firstname" data-type="Employee">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -96,14 +96,13 @@
                             <tr id="row-customer-@cli.CustomerId">
                                 <td class="ps-4 text-white">@cli.FirstName @cli.LastName</td>
                                 <td class="text-white-50">@cli.Email</td>
-                                <td>
-                                    <span class="text-warning-points"><i class="fas fa-ticket-alt me-2"></i>@cli.FidelityPoints</span>
-                                </td>
+                                <td><span class="text-warning-points"><i class="fas fa-ticket-alt me-2"></i>@cli.FidelityPoints</span>
+                                    </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group gap-1">
                                         <a asp-action="Index" asp-controller="Customer" asp-route-id="@cli.CustomerId"
-                                           class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
-
+                                        class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
+                                        
                                     </div>
                                 </td>
                             </tr>
