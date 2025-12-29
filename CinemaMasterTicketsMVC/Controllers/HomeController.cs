@@ -38,8 +38,16 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             return View(model);
         }
+        //Aviso de privacidad
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+        //Terminos legales
+        public IActionResult Legal()
+        {
+            return View();
+        }
 
-
-        
     }
 }

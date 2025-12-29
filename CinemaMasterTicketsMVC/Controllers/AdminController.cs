@@ -35,20 +35,40 @@ namespace CinemaMasterTicketsMVC.Controllers
             return View();
         }
 
+        //public async Task<IActionResult> Index()
+        //{
+        //    var model = new AdminUsersPanelViewModel
+        //    {
+        //        // Traemos empleados con su taquilla incluida
+        //        Employees = await _db.Employees
+        //    .Include(e => e.BoxOffice)
+        //    .OrderBy(e => e.Lastname)
+        //    .ToListAsync(),
+
+        //        // Traemos clientes
+        //        Customers = await _db.Customers
+        //    .OrderBy(c => c.LastName)
+        //    .ToListAsync()
+        //    };
+
+        //    return View(model);
+        //}
         public async Task<IActionResult> Index()
         {
             var model = new AdminUsersPanelViewModel
             {
-                // Traemos empleados con su taquilla incluida
+
                 Employees = await _db.Employees
-            .Include(e => e.BoxOffice)
-            .OrderBy(e => e.Lastname)
-            .ToListAsync(),
+        .Include(e => e.BoxOffice)
+        .Where(e => e.isActive) // <-- Filtro fundamental para el borrado lógico
+        .OrderBy(e => e.Lastname)
+        .ToListAsync(),
 
                 // Traemos clientes
                 Customers = await _db.Customers
-            .OrderBy(c => c.LastName)
-            .ToListAsync()
+        .Where(c => c.isActive)
+                .OrderBy(c => c.LastName)
+                .ToListAsync()
             };
 
             return View(model);
@@ -135,42 +155,79 @@ namespace CinemaMasterTicketsMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteEmployeeAjax(int id)
+        //{
+        //    // 1. Buscar al empleado
+        //    var employee = await _db.Employees.FindAsync(id);
+        //    if (employee == null)
+        //        return Json(new { success = false, message = "Empleado no encontrado." });
+
+        //    try
+        //    {
+        //        // 2. Borrar el usuario de Identity (basado en el Email)
+        //        var user = await _userManager!.FindByEmailAsync(employee.Email!);
+        //        if (user != null)
+        //        {
+        //            var result = await _userManager.DeleteAsync(user);
+        //            if (!result.Succeeded)
+        //            {
+        //                return Json(new { success = false, message = "Error al eliminar el usuario de acceso." });
+        //            }
+        //        }
+
+        //        // 3. Borrar de la base de datos de empleados
+        //        _db.Employees.Remove(employee);
+        //        await _db.SaveChangesAsync();
+
+        //        return Json(new { success = true, message = "Empleado eliminado correctamente." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Loguear el error si es necesario
+        //        return Json(new { success = false, message = "Error interno: " + ex.Message });
+        //    }
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEmployeeAjax(int id)
         {
-            // 1. Buscar al empleado
+            // 1. Buscar al empleado incluyendo sus relaciones si fuera necesario
             var employee = await _db.Employees.FindAsync(id);
+
             if (employee == null)
                 return Json(new { success = false, message = "Empleado no encontrado." });
 
             try
             {
-                // 2. Borrar el usuario de Identity (basado en el Email)
+                // 2. Borrar el usuario de Identity (Seguridad)
+                // Buscamos por Email para eliminar su cuenta de acceso permanentemente
                 var user = await _userManager!.FindByEmailAsync(employee.Email!);
                 if (user != null)
                 {
                     var result = await _userManager.DeleteAsync(user);
                     if (!result.Succeeded)
                     {
-                        return Json(new { success = false, message = "Error al eliminar el usuario de acceso." });
+                        return Json(new { success = false, message = "Error al eliminar las credenciales de acceso." });
                     }
                 }
 
-                // 3. Borrar de la base de datos de empleados
-                _db.Employees.Remove(employee);
+                // 3. Borrado Lógico en la tabla de Empleados
+                // En lugar de _db.Employees.Remove(employee), cambiamos su estado
+                employee.isActive = false; // Asumiendo que tu modelo Employee tiene IsActive (si es isActive, cámbialo a minúscula)
+
+                _db.Employees.Update(employee);
                 await _db.SaveChangesAsync();
 
-                return Json(new { success = true, message = "Empleado eliminado correctamente." });
+                return Json(new { success = true, message = "Empleado desactivado y acceso eliminado correctamente." });
             }
             catch (Exception ex)
             {
-                // Loguear el error si es necesario
                 return Json(new { success = false, message = "Error interno: " + ex.Message });
             }
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCustomerAjax(int id)

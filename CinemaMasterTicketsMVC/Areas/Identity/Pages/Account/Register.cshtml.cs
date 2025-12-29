@@ -80,19 +80,19 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
+            [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+            [EmailAddress(ErrorMessage = "La dirección de correo electrónico no es válida.")]
+            [Display(Name = "Correo electrónico")]
             public string Email { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "La contraseña es obligatoria.")]
+            [StringLength(100, ErrorMessage = "La {0} debe tener entre {2} y {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Contraseña")]
             public string Password { get; set; }
 
             /// <summary>
@@ -100,19 +100,28 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar contraseña")]
+            [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
             public string ConfirmPassword { get; set; }
             // ===== DATOS CUSTOMER =====
-            [Required]
-            [StringLength(20, MinimumLength = 3)]
+            [Required(ErrorMessage = "El nombre es obligatorio.")]
+            [StringLength(20, MinimumLength = 3, ErrorMessage = "El nombre debe tener entre 3 y 20 caracteres.")]
+            [Display(Name = "Nombre")]
             public string FirstName { get; set; }
 
-            [Required]
-            [StringLength(20, MinimumLength = 3)]
+            [Required(ErrorMessage = "El apellido es obligatorio.")]
+            [StringLength(20, MinimumLength = 3, ErrorMessage = "El apellido debe tener entre 3 y 20 caracteres.")]
+            [Display(Name = "Apellidos")]
             public string LastName { get; set; }
 
+            [Display(Name = "Dirección")]
+            [RegularExpression(@"^(?![0-9]*$)[a-zA-Z0-9\s,.'#-]+$",
+                ErrorMessage = "La dirección no puede contener solo números.")]
             public string Address { get; set; }
+
+            [Display(Name = "Ciudad")]
+            [RegularExpression(@"^[a-zA-Z\sñÑáéíóúÁÉÍÓÚ]+$",
+                ErrorMessage = "La ciudad solo puede contener letras.")]
             public string City { get; set; }
         }
 
@@ -157,7 +166,7 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
                     _context.Customers.Add(customer);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("El usuario ha creado una nueva cuenta con contraseña.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -168,8 +177,8 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirma tu correo electrónico",
+                $"Por favor, confirma tu cuenta <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>haciendo clic aquí</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -199,9 +208,9 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"No se pudo crear una instancia de '{nameof(IdentityUser)}'. " +
+                $"Asegúrate de que '{nameof(IdentityUser)}' no sea una clase abstracta y tenga un constructor sin parámetros, o alternativamente " +
+                $"reemplaza la página de registro en /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
@@ -209,7 +218,7 @@ namespace CinemaMasterTicketsMVC.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("La interfaz de usuario predeterminada requiere un almacén de usuarios con soporte para correo electrónico.");
             }
             return (IUserEmailStore<IdentityUser>)_userStore;
         }

@@ -1,6 +1,7 @@
 ﻿@model Customer
 
 @section Styles {
+    @* Enlazamos el archivo de estilos *@
     <link rel="stylesheet" href="~/css/profile-index.css" />
 }
 
@@ -8,6 +9,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-5">
 
+            @* Mensaje de exito o aviso-> Se muestran cuando el controlador redirige tras una acción *@
             @if (TempData["Message"] != null)
             {
                 <div class="alert alert-warning alert-dismissible fade show mb-4 border-0 shadow" role="alert">
@@ -18,12 +20,14 @@
 
             <div class="card border-0 shadow-lg overflow-hidden cinema-profile-card">
 
+                @* Encabezado -> Parte visual del perfil con la lógica de imagen por defecto *@
                 <div class="cinema-profile-header">
                     <div class="position-relative d-inline-block">
+                        @* Si el cliente no tiene foto, usamos la imagen generica del sistema *@
                         <img src="~/@(Model.ProfileImage ?? "img/default-avatar.png")"
                              class="rounded-circle cinema-avatar shadow-lg" />
 
-                        @* Solo mostramos el botón de cámara si NO es admin *@
+                        @* Aqui se verifica el rol-> el Admin puede ver la foto, pero no cambiarla *@
                         @if (!User.IsInRole("Admin"))
                         {
                             <button type="button" class="btn btn-cinema-camera btn-sm rounded-circle position-absolute bottom-0 end-0"
@@ -35,19 +39,21 @@
                 </div>
 
                 <div class="card-body p-4 text-center">
+                    @* Datos personales-> Nombre y apellidos y etiqueta de Cliente Vip -> general a todos los clientes *@
                     <h2 class="fw-bold mb-1 cinema-name">@Model.FirstName @Model.LastName</h2>
                     <p class="text-uppercase fw-bold cinema-vip-tag mb-3">Cliente VIP</p>
 
+                    @*Sistema de fidelidad-> Muestra los puntos acumulados por compras anteriores *@
                     <div class="d-inline-block mb-4 cinema-points-badge">
                         <span class="h5 m-0"><i class="fas fa-ticket-alt me-2"></i>@Model.FidelityPoints Puntos</span>
                     </div>
 
                     <div class="mb-4">
-                        <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Correo Electrónico</small>
+                        <small class="cinema-label">Correo Electrónico</small>
                         <h6 class="mt-1">@Model.Email</h6>
                     </div>
 
-                    @* Formulario de foto solo para clientes *@
+                    @*Formulario oculto para la foto-> se activa al pulsar la camara mediante JavaScript (.click()) *@
                     @if (!User.IsInRole("Admin"))
                     {
                         <form asp-action="UploadPhoto" method="post" enctype="multipart/form-data" id="photoForm" class="d-none">
@@ -55,23 +61,25 @@
                         </form>
                     }
 
-                    @* BOTONES DINÁMICOS *@
+                    @* Botones de accion -> Cambian según quien este mirando la ficha el admin no puede editar al cliente por ejemplo *@
                     <div class="d-grid mb-4">
                         @if (User.IsInRole("Admin"))
                         {
+                            @* El Admin vuelve a su panel de gestión *@
                             <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-light rounded-pill py-2">
                                 <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
                             </a>
                         }
                         else
                         {
+                            @* El Cliente accede a su propia edición *@
                             <a asp-action="Edit" class="btn btn-outline-warning rounded-pill py-2">
                                 <i class="fas fa-edit me-2"></i>Editar Datos del Perfil
                             </a>
                         }
                     </div>
 
-                    @* ZONA DE PELIGRO: Solo visible para el Cliente *@
+                    @* Zona de peligro ->Sección crítica para darse de baja, solo para el dueño del perfil *@
                     @if (!User.IsInRole("Admin"))
                     {
                         <div class="cinema-danger-zone">
@@ -85,19 +93,18 @@
                                 </a>
                             </div>
 
-                            <p class="text-muted mt-3 mb-0" style="font-size: 0.7rem; font-style: italic;">
+                            <p class="text-muted mt-3 mb-0 cinema-label" style="text-transform: none; font-style: italic;">
                                 Atención: Al salir perderás tus <strong>@Model.FidelityPoints puntos</strong> y beneficios VIP.
                             </p>
                         </div>
                     }
                     else
                     {
-                        @* Nota opcional para el admin *@
+                        @* Nota aclaratoria para el Administrador *@
                         <p class="text-muted small mt-4 border-top pt-3">
                             <i class="fas fa-info-circle me-1"></i> Vista de administrador: los datos del cliente son de solo lectura.
                         </p>
                     }
-                    </div>
                 </div>
             </div>
         </div>

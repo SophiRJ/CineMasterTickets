@@ -14,7 +14,7 @@
                 <div class="card-body p-4">
                     <h4 class="text-danger">¿Seguro que quieres darte de baja, @Model.FirstName?</h4>
                     <p class="lead">Esta acción es irreversible. Si continúas, perderás:</p>
-
+                    @* Mostramos su lista de lo que perdera para convencerle a que se quede *@
                     <ul class="list-group list-group-flush mb-4">
                         <li class="list-group-item text-dark">
                             <strong>❌ Tus puntos acumulados:</strong> Actualmente tienes @Model.FidelityPoints puntos.
@@ -26,19 +26,22 @@
                             <strong>❌ Historial:</strong> No podrás consultar tus pedidos anteriores.
                         </li>
                     </ul>
-
+                    @* nota aclaratoria *@
                     <div class="alert alert-warning">
                         <p class="mb-0 small">Si deseas volver en el futuro, tendrás que realizar un nuevo registro desde cero.</p>
                     </div>
-
+                    @* Este formulario dispara la acción definitiva en el controlador 
+                     Apunta a la función "UnsubscribeConfirmed" *@
                     <form asp-action="UnsubscribeConfirmed"  method="post">
                         @* Es vital incluir el antiforgery token por seguridad *@
                         @Html.AntiForgeryToken()
 
                         <div class="d-flex justify-content-between mt-4">
+                            @* boton de arrepentimeinto -> si hace clic aqui, lo mandamos a salvo al Home *@
                             <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary">
                                 No, quiero quedarme
                             </a>
+                            @* Este boton es definitivo al ser submit envia el formulario y borra la cuenta *@
                             <button type="submit" class="btn btn-danger">
                                 Sí, eliminar mi cuenta definitivamente
                             </button>

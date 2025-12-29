@@ -1,6 +1,102 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
+@section Styles {
+    @* Enlazamos el archivo de estilos *@
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+<div class="privacy-page container py-5 text-light">
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <h1 class="privacy-title">Política de Privacidad</h1>
+
+    <!-- INTRODUCCIÓN -->
+    <div class="privacy-section">
+        <p>
+            Esta aplicación ha sido desarrollada con <strong>fines educativos y de portfolio académico</strong>.
+            Su objetivo es demostrar el funcionamiento técnico de una aplicación web basada en ASP.NET MVC,
+            autenticación de usuarios, gestión de sesiones y consumo de APIs externas.
+        </p>
+    </div>
+
+    <!-- REGISTRO DE USUARIOS -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Registro de usuarios</h4>
+        <p>
+            La aplicación permite el registro e inicio de sesión de usuarios mediante
+            <strong>ASP.NET Identity</strong>.
+        </p>
+        <ul>
+            <li>No deben utilizarse datos personales reales.</li>
+            <li>Las cuentas creadas tienen un carácter ficticio y demostrativo.</li>
+            <li>Los datos de usuario se almacenan únicamente con fines educativos.</li>
+            <li>La información podrá ser eliminada periódicamente sin previo aviso.</li>
+        </ul>
+    </div>
+
+    <!-- COOKIES -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Cookies y sesiones</h4>
+        <p>
+            Esta aplicación utiliza <strong>cookies técnicas</strong> necesarias para el correcto
+            funcionamiento del sistema de autenticación y la gestión de sesiones de usuario.
+        </p>
+        <ul>
+            <li>Las cookies se emplean exclusivamente para mantener la sesión activa.</li>
+            <li>No se utilizan cookies de seguimiento, analítica ni marketing.</li>
+            <li>No se realiza ningún tipo de perfilado de usuarios.</li>
+        </ul>
+    </div>
+
+    <!-- COMPRAS SIMULADAS -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Compras y transacciones</h4>
+        <p>
+            El sistema de compra disponible en la aplicación es <strong>completamente simulado</strong>.
+        </p>
+        <ul>
+            <li>No se realizan pagos reales.</li>
+            <li>No se solicitan ni almacenan datos bancarios.</li>
+            <li>Las reservas y compras no tienen validez comercial.</li>
+        </ul>
+    </div>
+
+    <!-- ORIGEN DE DATOS -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Origen de los datos</h4>
+        <p>
+            La información sobre películas, imágenes, títulos, descripciones y material audiovisual
+            se obtiene a través de la API pública de
+            <strong>The Movie Database (TMDB)</strong>.
+        </p>
+
+        <div class="privacy-note">
+            Este proyecto no está afiliado, patrocinado ni respaldado por TMDB.
+            Los datos se muestran únicamente con fines informativos y educativos,
+            conforme a los términos de uso de TMDB.
+        </div>
+    </div>
+
+    <!-- RESPONSABILIDAD -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Responsabilidad del usuario</h4>
+        <p>
+            El usuario es responsable de no introducir información personal real.
+            El desarrollador no se hace responsable del uso indebido de la aplicación
+            ni de los datos introducidos por los usuarios.
+        </p>
+    </div>
+
+    <!-- CONSERVACIÓN DE DATOS -->
+    <div class="privacy-section">
+        <h4 class="privacy-subtitle">Conservación de los datos</h4>
+        <p>
+            Los datos almacenados en la aplicación tienen carácter temporal y seran eliminados periódicamente como parte del mantenimiento del proyecto.
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="privacy-footer">
+        Última actualización: @DateTime.Now.Year
+    </div>
+
+</div>

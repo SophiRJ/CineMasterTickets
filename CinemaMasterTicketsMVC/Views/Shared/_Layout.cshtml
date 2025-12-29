@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow">
     <title>@ViewData["Title"] - CinemaMasterTicketsMVC</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="~/CinemaMasterTicketsMVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/popup-edu.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -24,27 +26,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Home">Admin</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Customer") )
-                             {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Perfil Cliente</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Employee") )
-                             {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Perfil Empleado</a>
-                            </li>
-                        }
-                    </ul>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -55,15 +37,62 @@
             @RenderBody()
         </main>
     </div>
-
+    
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - CinemaMasterTicketsMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="eduToast" class="toast addons-summary border-warning" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="10000">
+            <div class="toast-header bg-transparent border-0">
+                <i class="fas fa-graduation-cap text-warning me-2"></i>
+                <strong class="me-auto movie-title fs-6">AVISO PROYECTO</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-light small">
+                <p class="mb-2">
+                    Esta es una aplicación desarrollada con <strong>fines exclusivamente educativos y demostrativos</strong>.
+                </p>
+
+                <div class="mb-1">
+                    <i class="fas fa-user-shield text-warning me-1"></i>
+                    No introduzca datos personales reales ni información sensible.
+                </div>
+
+                <div class="mb-1">
+                    <i class="fas fa-database text-info me-1"></i>
+                    Los datos ingresados no se utilizan con fines comerciales ni de seguimiento.
+                </div>
+
+                <div class="mb-1">
+                    <i class="fas fa-trash-alt text-danger me-1"></i>
+                    La información almacenada es temporal y se elimina periódicamente.
+                </div>
+
+                <div class="mt-2 pt-2 border-top border-secondary opacity-75">
+                    <div class="mb-1">
+                        <i class="fas fa-film text-warning me-1"></i>
+                        La información de películas y series se obtiene desde la API pública de
+                        <strong>The Movie Database (TMDB)</strong>.
+                    </div>
+                    <div class="text-white-50">
+                        Este proyecto no está afiliado, respaldado ni certificado por TMDB.
+                        Los datos se muestran únicamente con fines informativos.
+                    </div>
+                </div>
+
+                <div class="mt-2 pt-2 border-top border-secondary opacity-50 text-center">
+                    <span class="text-white-50">Se cerrará automáticamente...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/popup-edu.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

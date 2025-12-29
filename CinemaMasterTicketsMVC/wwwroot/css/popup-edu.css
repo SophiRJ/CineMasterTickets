@@ -1,0 +1,98 @@
+﻿ /*popup-edu.css */
+/*#eduToast {
+    background: rgba(17, 17, 17, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(245, 197, 24, 0.6) !important;
+    box-shadow: 0 0 20px rgba(245, 197, 24, 0.2);
+    min-width: 300px;
+}
+
+    #eduToast .movie-title {
+        text-shadow: 0 0 5px rgba(245, 197, 24, 0.5);
+    }*/
+
+ /*Animación de entrada suave desde la derecha */
+/*.toast.showing {
+    animation: slideInRight 0.5s forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}*/
+/* popup-edu.css */
+
+/*#eduToast {
+    background: rgba(17, 17, 17, 0.95) !important;
+    backdrop-filter: blur(15px);*/  /*Efecto de cristal esmerilado */
+    /*border: 2px solid #f5c518 !important;*/ /* Color amarillo neón base */
+    /*box-shadow: 0 0 15px rgba(245, 197, 24, 0.4);
+    border-radius: 12px;*/
+     /*Aplicamos la animación de parpadeo */
+    /*animation: borde-neon 2s infinite ease-in-out;
+}*/
+
+/* Definición del parpadeo neón */
+/*@keyframes borde-neon {
+    0% {
+        border-color: rgba(245, 197, 24, 0.3) !important;
+        box-shadow: 0 0 5px rgba(245, 197, 24, 0.2);
+    }
+
+    50% {
+        border-color: rgba(245, 197, 24, 1) !important;
+        box-shadow: 0 0 20px rgba(245, 197, 24, 0.6);
+    }
+
+    100% {
+        border-color: rgba(245, 197, 24, 0.3) !important;
+        box-shadow: 0 0 5px rgba(245, 197, 24, 0.2);
+    }
+}
+
+ Estilo para el título dentro del Toast 
+#eduToast .movie-title {
+    color: #f5c518;
+    text-shadow: 0 0 8px rgba(245, 197, 24, 0.6);
+    letter-spacing: 1px;
+}*/
+/* popup-edu.css */
+
+#eduToast {
+    background: rgba(17, 17, 17, 0.95) !important;
+    backdrop-filter: blur(15px);
+    /* Borde inicial */
+    border: 2px solid #f5c518 !important;
+    border-radius: 12px;
+    /* Forzamos la animación con !important */
+    animation: parpadeo-neon 2s infinite !important;
+}
+
+/* Definición de la animación */
+@keyframes parpadeo-neon {
+    0% {
+        box-shadow: 0 0 5px rgba(245, 197, 24, 0.2);
+        border-color: rgba(245, 197, 24, 0.4) !important;
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(245, 197, 24, 0.8);
+        border-color: rgba(245, 197, 24, 1) !important;
+    }
+
+    100% {
+        box-shadow: 0 0 5px rgba(245, 197, 24, 0.2);
+        border-color: rgba(245, 197, 24, 0.4) !important;
+    }
+}
+
+/* Estilo del texto del título */
+#eduToast .movie-title {
+    color: #f5c518 !important;
+    text-shadow: 0 0 8px rgba(245, 197, 24, 0.5);
+}

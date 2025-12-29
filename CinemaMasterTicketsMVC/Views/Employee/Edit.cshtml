@@ -2,10 +2,12 @@
 @model CreateEmployeeBoxOficceViewModel
 @{
     ViewData["Title"] = "Editar Perfil";
+    // Guardamos en una variable si el usuario es Admin
     bool isAdmin = User.IsInRole("Admin");
 }
 
 @section Styles {
+    @* referencia a su archivo de estilos *@
     <link rel="stylesheet" href="~/css/profile-edit.css" />
 }
 
@@ -13,7 +15,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card border-0 shadow-lg cinema-edit-container">
-
+                @* El titulo del encabezado cambia segun quien esta viendo el perfil *@
                 <div class="card-header border-0 pt-4 pb-0 text-center cinema-card-header">
                     <h2 class="fw-bold cinema-title">
                         <i class="fas fa-user-edit me-2"></i>
@@ -27,10 +29,11 @@
 
                 <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
-                        @* ID y Email ocultos (Email por seguridad/referencia) *@
+                        @* ID y Email ocultos para enviarlos al servidor y este sepa a quien actualizar  *@
                         <input type="hidden" asp-for="Employee.EmployeeId" />
                         <input type="hidden" asp-for="Employee.Email" />
 
+                        @* Datos Personales *@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Employee.Firstname" class="form-label cinema-label">Nombre</label>
@@ -60,6 +63,8 @@
                             <span asp-validation-for="Employee.DNI" class="text-danger small"></span>
                         </div>
 
+                        @* en esta seccion se controla que solo el admin pueda modificar la taquilla donde trabaja 
+                        el empleado  *@
                         <div class="mb-4">
                             <label class="form-label cinema-label">Taquilla Asignada</label>
                             <div class="input-group cinema-input-group">
@@ -76,19 +81,19 @@
                                 }
                                 else
                                 {
-                                    @* El Empleado solo ve el dato, NO usamos el tag helper asp-items aquí para evitar el Null *@
+                                    @* El Empleado solo ve el dato no puede editar su lugar de trabajo*@
                                     <input type="text"
                                            class="form-control cinema-input opacity-75"
-                                           value="@(Model.BoxOffices?.FirstOrDefault(x => x.Value == Model.Employee.BoxOfficeId.ToString())?.Text ?? "No asignada")"
+                                           value="@(Model.BoxOffices?.FirstOrDefault(x => x.Value == Model.Employee!.BoxOfficeId.ToString())?.Text ?? "No asignada")"
                                            readonly />
 
-                                    @* Enviamos el ID oculto para que no se pierda al guardar *@
+                                    @* Enviamos el id oculto para que no se pierda al guardar *@
                                     <input type="hidden" asp-for="Employee.BoxOfficeId" />
                                 }
                             </div>
                             <span asp-validation-for="Employee.BoxOfficeId" class="text-danger small"></span>
                         </div>
-
+                       @*  Botones de envio y cancelacion *@
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-cinema-save py-2 shadow-sm rounded-pill">
                                 <i class="fas fa-save me-2"></i>Guardar Cambios
@@ -96,13 +101,14 @@
 
                             @if (isAdmin)
                             {
-                                @* Cambia "AdminController" por el nombre real de tu controlador de administración *@
+                                @* El admin regresa al listado general donde estan los empelados y clientes *@
                                 <a asp-controller="Admin" asp-action="Index" class="btn btn-cinema-cancel rounded-pill py-2 border-0">
                                     <i class="fas fa-arrow-left me-2"></i>Volver al Panel Admin
                                 </a>
                             }
                             else
                             {
+                                @* El empleado regresa a su perfil personal *@
                                 <a asp-action="Index" class="btn btn-cinema-cancel rounded-pill py-2 border-0">
                                     <i class="fas fa-times me-2"></i>Cancelar
                                 </a>

@@ -51,10 +51,12 @@
                 <div class="col-md-6 mb-3">
                     <label asp-for="Input.Address" class="label-select">Dirección</label>
                     <input asp-for="Input.Address" class="form-control" />
+                    <span asp-validation-for="Input.Address" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="Input.City" class="label-select">Ciudad</label>
                     <input asp-for="Input.City" class="form-control" />
+                    <span asp-validation-for="Input.City" class="text-danger small"></span>
                 </div>
             </div>
 

@@ -1,10 +1,9 @@
 ﻿/* ==========================================================================
-   ESTILOS DE AUTENTICACIÓN (LOGIN & REGISTRO) - TEMA CINE DARK
+   ESTILOS DE AUTENTICACIÓN (LOGIN & REGISTRO) 
    ========================================================================== */
 
 .auth-container {
     padding: 60px 15px;
-    /* Fondo radial para dar profundidad */
     background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
     min-height: calc(100vh - 56px);
     display: flex;
@@ -12,7 +11,6 @@
     align-items: center;
 }
 
-/* El contenedor principal con efecto Glassmorphism */
 .auth-box.addons-summary {
     width: 100%;
     max-width: 650px;
@@ -24,7 +22,6 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
 }
 
-/* Título estilo cartelera de cine */
 .movie-title {
     color: #f5c518;
     text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
@@ -32,7 +29,6 @@
     font-weight: 700;
 }
 
-/* Labels arriba del input con brillo amarillo */
 .label-select {
     color: #f5c518 !important;
     text-shadow: 0 0 10px rgba(245, 197, 24, 0.5);
@@ -44,13 +40,11 @@
     transition: all 0.3s ease;
 }
 
-/* Efecto de movimiento al pasar el ratón por el campo */
 .mb-3:hover .label-select,
 .col-md-6:hover .label-select {
     transform: translateX(8px);
 }
 
-/* Estilo de los campos de texto */
 .form-control {
     background-color: rgba(26, 26, 26, 0.9) !important;
     color: #fff !important;
@@ -67,7 +61,6 @@
         outline: none;
     }
 
-/* Botón de acción principal (Verde Neón) */
 .btn-continuar {
     border: 2px solid #4CAF50 !important;
     color: #4CAF50 !important;
@@ -85,7 +78,6 @@
         transform: translateY(-2px);
     }
 
-/* Alertas de error personalizadas */
 .custom-alert {
     background-color: rgba(229, 9, 20, 0.2) !important;
     border: 1px solid rgba(229, 9, 20, 0.6) !important;
@@ -95,7 +87,6 @@
     font-size: 0.9rem;
 }
 
-/* Estilo para links secundarios */
 .auth-box a {
     transition: color 0.3s ease;
 }
@@ -104,8 +95,67 @@
         color: #f5c518 !important;
     }
 
-/* Ajuste para el checkbox de 'Recordarme' */
 .form-check-input:checked {
     background-color: #f5c518;
     border-color: #f5c518;
+}
+/* ==========================================================================
+   ADICIONES PARA VISIBILIDAD Y LIMPIEZA DE VISTA
+   ========================================================================== */
+
+.btn-continuar {
+    background-color: rgba(76, 175, 80, 0.15) !important;
+    color: #4CAF50 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.icon-gold {
+    color: #f5c518;
+    opacity: 0.8;
+}
+
+.link-return {
+    color: #4CAF50 !important;
+    font-weight: 600;
+}
+
+    .link-return:hover {
+        color: #f5c518 !important;
+        text-shadow: 0 0 8px rgba(245, 197, 24, 0.4);
+    }
+.custom-alert i {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.alert-cinema-success {
+    background-color: rgba(76, 175, 80, 0.15) !important;
+    border: 1px solid rgba(76, 175, 80, 0.6) !important;
+    color: #4CAF50 !important;
+    border-radius: 10px;
+    padding: 15px !important;
+    font-size: 0.95rem;
+    text-align: center;
+    position: relative;
+}
+
+._StatusMessage_container, .alert-cinema-success, .custom-alert {
+    position: relative; 
+}
+
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%); 
+    padding: 0;
+    margin: 0;
+}
+
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
