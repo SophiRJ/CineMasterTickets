@@ -1,5 +1,5 @@
 ﻿@model CinemaMasterTicketsMVC.ViewModels.TicketViewModel
-
+@* Vista del PRE-TICKET o de la visualización previa del ticket antes de pagar *@
 @{
     ViewData["Title"] = "Resumen de Compra";
 }
@@ -12,7 +12,7 @@
         <h2>Resumen de Compra</h2>
     </div>
 
-    @* SECCIÓN: DATOS DEL COMPRADOR (Usando Model.Buyer) *@
+    @* Aquí mostramos los datos del comprador *@
     <div class="card-ticket card mb-3">
         <div class="card-body">
             <h5 class="section-title mb-3 border-bottom pb-2">Datos del Comprador</h5>
@@ -38,8 +38,7 @@
         </div>
     </div>
 
-    @* SECCIÓN: DETALLES DE LA PELÍCULA *@
-    @* SECCIÓN: DETALLES DE LA PELÍCULA CON PÓSTER *@
+    @* Sección para mostrar los detalles de la película*@
     <div class="card-ticket card mb-3">
         <div class="card-body">
             <div class="row align-items-center">
@@ -69,7 +68,7 @@
         </div>
     </div>
 
-    @* SECCIÓN: ADDONS *@
+    @* Sección para mostrar los AddOns si los hubiera *@
     @if (Model.Addons.Any())
     {
         <div class="card-ticket card mb-3">
@@ -106,7 +105,7 @@
         </div>
     </div>
 
-    @* --- NUEVA SECCIÓN DE GESTIÓN DE PUNTOS --- *@
+    @* Sección para gestionar los puntos del usuario por si quiere gastarlos *@
     @if (Model.Buyer.IsCustomer)
     {
         @if (Model.DescuentoPuntos > 0)
@@ -134,7 +133,7 @@
         }
     }
 
-    @* SECCIÓN: TOTALES *@
+    @* Sección de los totales de compra (cifras) *@
     <div class="total-section card shadow-sm">
         <div class="card-body">
             <div class="row text-end">
@@ -155,6 +154,7 @@
     </div>
 </div>
 
+@* Botones para pasar a la pasarela de pago o para volver atrás *@
 <div class="mt-3 text-center">
     <a asp-controller="Movie" asp-action="AddOns" class="btn btn-cancelar">Volver atras</a>
     <a asp-controller="Ticket" asp-action="Payment" class="btn btn-continuar">Proceder al pago</a>

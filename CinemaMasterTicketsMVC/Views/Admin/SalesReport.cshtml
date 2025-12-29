@@ -1,0 +1,173 @@
+﻿@using CinemaMasterTicketsMVC.ViewModels
+@using X.PagedList.Mvc.Core
+@model AdminSalesViewModel
+
+<div class="container mt-5 admin-reports-page">
+    <h2 class="text-center mb-4 report-title">REPORTE DE VENTAS Y TICKETS</h2>
+
+    <div class="card mb-5 search-card">
+        <div class="card-header text-warning fw-bold">Búsqueda avanzada de tickets</div>
+        <div class="card-body">
+            @* Formulario para la búsqueda de tickets *@
+            <form asp-action="SalesReport" method="get" class="row g-3">
+                <div class="col-md-2">
+                    @* Input para buscar por ID del ticket *@
+                    <label class="form-label small text-white-50">ID Ticket</label>
+                    <input type="number" name="searchId" value="@Model.SearchId" class="form-control" placeholder="Ej: 1025">
+                </div>
+                @* Input para buscar por fecha de venta del ticket *@
+                <div class="col-md-3">
+                    <label class="form-label small text-white-50">Fecha de Venta</label>
+                    <input type="date" name="searchDate" value="@(Model.SearchDate?.ToString("yyyy-MM-dd"))" class="form-control">
+                </div>
+                @* Input para buscar por precio del ticket *@
+                <div class="col-md-2">
+                    <label class="form-label small text-white-50">Precio Total</label>
+                    <input type="number" step="0.01" name="searchPrice" value="@Model.SearchPrice" class="form-control" placeholder="0.00">
+                </div>
+                @* Input para buscar por nombre del usuario del ticket *@
+                <div class="col-md-3">
+                    <label class="form-label small text-white-50">Usuario / Email</label>
+                    <input type="text" name="searchUser" value="@Model.SearchUser" class="form-control" placeholder="Nombre o email...">
+                </div>
+                @* Input para buscar por el lugar de venta del ticket *@
+                <div class="col-md-2">
+                    <label class="form-label small text-white-50">Punto de Venta</label>
+                    <select name="searchBoxOffice" class="form-select">
+                        <option value="">Todos</option>
+                        @* El select tendra las opciones de WEB y Taquilla (dependiendo de donde se haya hecho la venta *@
+                        <option value="true" selected="@(Model.SearchBoxOffice == true)">Taquilla</option>
+                        <option value="false" selected="@(Model.SearchBoxOffice == false)">Web / Online</option>
+                    </select>
+                </div>
+                <div class="col-12 text-end">
+                    <a asp-action="SalesReport" asp-controller="Admin" class="btn btn-outline-secondary me-2">Limpiar</a>
+                    <button type="submit" class="btn btn-search px-5">FILTRAR TICKETS</button>
+                </div>
+            </form>
+             @* Con esta bandera evitamos que nada mas cargar la pagina aparezca el mensaje de "Sin Resultados".
+                Solo cuando el usuario haya pulsado el boton de filtrar se activara la vista con los resultados y la paginación.
+                Si se pulsa el botón y no hay resultados, entonces aparecera el mensaje
+             *@
+            @if (Model.SearchPerformed)
+            {
+                <div class="mt-4">
+                    <h5 class="text-warning">Resultados (@Model!.FoundTickets!.Count)</h5>
+                    @if (Model.FoundTickets.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-dark table-striped align-middle mt-2 border border-secondary">
+                                <thead class="table-secondary text-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fecha</th>
+                                        <th>Película / Sesión</th>
+                                        <th>Usuario</th>
+                                        <th>Origen</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var t in Model.FoundTickets)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-warning">#@t.TicketId</td>
+                                            <td class="small">@t.PurchasedAt?.ToString("g")</td>
+                                            <td>
+                                                <div class="small fw-bold">@t.Session?.Movie?.Title</div>
+                                                <div class="text-white-50" style="font-size: 0.75rem;">
+                                                    Sala @t.Session?.Room?.RoomId | @t.Session?.StartTime.ToString("HH:mm")
+                                                </div>
+                                            </td>
+                                            <td class="small">@(t.Customer?.FirstName ?? t.EmailToSend ?? "Anónimo")</td>
+                                            <td>
+                                                <span class="badge @(t.SoldAtBoxOffice ? "bg-info" : "bg-primary")">
+                                                    @(t.SoldAtBoxOffice ? "Taquilla" : "Web")
+                                                </span>
+                                            </td>
+                                            <td class="text-end fw-bold text-success">@t.TotalPrice.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @* Paginador sencillo *@
+                        <div class="d-flex justify-content-center mt-4 movie-pagination">
+                            @Html.PagedListPager(Model.FoundTickets, page => Url.Action("SalesReport", new { 
+                                page = page, 
+                                searchId = Model.SearchId, 
+                                searchDate = Model.SearchDate?.ToString("yyyy-MM-dd"),
+                                searchPrice = Model.SearchPrice,
+                                searchUser = Model.SearchUser,
+                                searchBoxOffice = Model.SearchBoxOffice
+                            }), 
+                            new PagedListRenderOptions {
+                                LiElementClasses = new string[] { "page-item" },
+                                PageClasses = new string[] { "page-link" },
+                                UlElementClasses = new string[] { "pagination" }
+                            })
+                        </div>
+                    }
+                    else
+                    {
+                        @* Mensaje de error si no se encuentran resultados en la búsqueda *@
+                        <div class="alert alert-no-results">No se encontraron tickets con esos filtros.</div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    @* Tabla fija para las ventas de películas *@
+    <div class="row">
+        <div class="col-md-7 mb-4">
+            <div class="card table-card h-100">
+                <div class="card-header text-center"><i class="bi bi-film me-2"></i>Recaudación por película</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr><th>Película</th><th class="text-center">Tickets</th><th class="text-end">Total</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.MovieSales)
+                            {
+                                <tr><td>@m.MovieTitle</td><td class="text-center">@m.TicketsCount</td>
+                                    <td class="text-end col-price">@m.TotalSeats.ToString("C")</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @* Tabla fija para las ventas de complementos *@
+        <div class="col-md-5 mb-4">
+            <div class="card table-card h-100">
+                <div class="card-header text-center"><i class="bi bi-cart4 me-2"></i>Venta de Complementos</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr><th>Producto</th><th class="text-center">Uds</th><th class="text-end">Total</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in Model.AddOnSales)
+                            {
+                                <tr><td>@a.AddOnName</td><td class="text-center">@a.SoldUnits</td>
+                                    <td class="text-end col-price">@a.TotalRevenue.ToString("C")</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Home"
+           class="btn btn-cancelar">
+            Volver
+        </a>
+    </div>
+
+                        @section Styles {
+    <link rel="stylesheet" href="~/css/sales.css" />
+}

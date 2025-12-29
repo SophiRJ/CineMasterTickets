@@ -96,7 +96,7 @@
 
     /* REGISTER */
     .navbar .dropdown-item.register {
-        color: #4cd964; /* verde suave */
+        color: #4cd964; 
     }
 
         .navbar .dropdown-item.register:hover {
@@ -108,14 +108,14 @@
     .navbar .dropdown-item.logout {
         color: #e50914;
         font-weight: 600;
-        font-size: 0.85rem; /* más pequeño */
-        padding: 6px 12px; /* menos padding */
-        border-radius: 6px; /* bordes suaves */
+        font-size: 0.85rem; 
+        padding: 6px 12px; 
+        border-radius: 6px; 
         transition: all 0.3s ease;
     }
 
         .navbar .dropdown-item.logout:hover {
-            background-color: rgba(229, 9, 20, 0.3); /* hover más suave */
+            background-color: rgba(229, 9, 20, 0.3); 
             color: #fff;
             box-shadow: 0 0 8px rgba(229,9,20,0.5);
         }
@@ -130,4 +130,49 @@
 
 .navbar-toggler-icon {
     filter: invert(1);
+}
+
+/* 1. Configuramos el cuerpo para que ocupe todo el alto de la pantalla */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el cuerpo mida al menos el alto de la pantalla */
+}
+
+/* 2. El contenedor principal crecerá para ocupar el espacio sobrante */
+main, .main-content {
+    flex: 1 0 auto; 
+}
+
+/* 3. El footer se mantiene en su sitio al final */
+.footer-cinema {
+    flex-shrink: 0;
+}
+
+.nav-logo {
+    /* Ajusta el alto para que encaje en la navbar sin estirarla */
+    height: 45px;
+    width: auto;
+    /* Suaviza los bordes si la imagen es muy grande */
+    object-fit: contain;
+    /* Un pequeño margen si quieres separarlo del borde izquierdo */
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+    /* Efecto sutil al pasar el ratón */
+    .nav-logo:hover {
+        transform: scale(1.05);
+    }
+
+/* Asegura que en móviles no se vea gigantesco */
+@media (max-width: 576px) {
+    .nav-logo {
+        height: 30px;
+    }
 }

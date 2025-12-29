@@ -89,48 +89,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //SECCION SUSCRIBCION ->ISACTIVE-> ANULADA REVISAR EL MODELO
-
-        //public async Task<IActionResult> Activate()
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    var customer = await _db.Customers.FirstAsync(c => c.Email == user!.Email);
-
-        //    customer.isActive = true; // Volver a activar
-        //    await _db.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //public async Task<IActionResult> Deactivate()
-        //{
-        //    // 1. Obtener el usuario actual
-        //    var user = await _userManager.GetUserAsync(User);
-
-        //    //if (user == null)
-        //    //{
-        //    //    return Challenge(); // Redirige al login si la sesión expiró
-        //    //}
-
-        //    // 2. Buscar al cliente en la tabla local
-        //    var customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email == user.Email);
-
-        //    if (customer == null)
-        //    {
-        //        return NotFound("No se encontró el perfil de cliente.");
-        //    }
-
-        //    // 3. Cambiar estado a false
-        //    customer.isActive = false;
-
-        //    // 4. Guardar cambios
-        //    await _db.SaveChangesAsync();
-
-        //    // 5. Notificar al usuario (opcional: podrías usar TempData para un mensaje)
-        //    TempData["Message"] = "Te has dado de baja de las promociones con éxito.";
-
-        //    return RedirectToAction(nameof(Index));
-        //}
+        
 
         // GET: Customer/Edit
         public async Task<IActionResult> Edit()
@@ -183,7 +142,7 @@ namespace CinemaMasterTicketsMVC.Controllers
             
         }
 
-        //
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -195,23 +154,25 @@ namespace CinemaMasterTicketsMVC.Controllers
 
             if (customer == null || user == null) return NotFound();
 
-            // 1. Borrar de Identity
+            
             var result = await _userManager.DeleteAsync(user);
 
             if (result.Succeeded)
             {
-                // 2. Borrar de la tabla Customers
-                _db.Customers.Remove(customer);
+                
+                customer.isActive = false;
+
+                _db.Customers.Update(customer);
                 await _db.SaveChangesAsync();
 
-                // 3. ¡IMPORTANTE! Cerrar la sesión del cliente antes de redirigir
+                
                 await _signInManager.SignOutAsync();
 
-                // 4. Redirigir a Home
+                
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("Error"); //Si falla el darse de baja
+            return View("Error");
         }
     }
 

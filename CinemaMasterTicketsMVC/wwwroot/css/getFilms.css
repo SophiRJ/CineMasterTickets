@@ -96,11 +96,11 @@ button.btn-primary {
         top: 0;
         left: 0;
         right: 0;
-        height: 50%; /* solo cubre la mitad superior */
+        height: 50%;
         background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
         opacity: 0;
         transition: opacity 0.3s ease;
-        pointer-events: none; /* no bloquea botones */
+        pointer-events: none; 
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
     }

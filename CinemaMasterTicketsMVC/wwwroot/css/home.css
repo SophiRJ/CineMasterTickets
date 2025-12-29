@@ -8,7 +8,7 @@
     height: 500px;
     margin: 40px auto;
     position: relative;
-    /* IMPORTANTE: Permitir que el título se dibuje fuera */
+    /* IMPORTANTE: Permite que el título se dibuje fuera */
     overflow: visible !important;
 }
 
@@ -47,7 +47,7 @@
 .custom-caption {
     position: absolute;
     bottom: 60px;
-    left: -140px; /* AHORA SÍ sobresale */
+    left: -140px; /* Para que sobresalga el titulo (lo del 3D) */
     z-index: 200;
     text-align: left;
     transform: perspective(1000px) rotateY(15deg);
@@ -62,7 +62,6 @@
         text-transform: uppercase;
         margin: 0;
         line-height: 0.9;
-        /* Efecto relieve dorado */
         text-shadow: 2px 2px 0px #f5c518, 4px 4px 0px rgba(245, 197, 24, 0.4);
     }
 
@@ -106,7 +105,7 @@
     aspect-ratio: 2 / 3;
     overflow: hidden;
     clip-path: polygon( 15% 0%, 100% 0%, 100% 85%, 85% 100%, 0% 100%, 0% 15% );
-    border: 1px solid transparent; /* SIN BORDE EN REPOSO */
+    border: 1px solid transparent; 
     background: transparent;
     transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
@@ -120,7 +119,7 @@
 .movie-card-poster img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* CLAVE */
+    object-fit: cover;
     display: block;
     transition: transform 0.5s ease, filter 0.4s ease;
 }
@@ -343,3 +342,26 @@
     .custom-alert .btn-close:focus {
         box-shadow: none !important; 
     }
+
+.nav-logo {
+    /* Ajusta el alto para que encaje en la navbar sin estirarla */
+    height: 45px;
+    width: auto;
+    /* Suaviza los bordes si la imagen es muy grande */
+    object-fit: contain;
+    /* Un pequeño margen si quieres separarlo del borde izquierdo */
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+    /* Efecto sutil al pasar el ratón */
+    .nav-logo:hover {
+        transform: scale(1.05);
+    }
+
+/* Asegura que en móviles no se vea gigantesco */
+@media (max-width: 576px) {
+    .nav-logo {
+        height: 30px;
+    }
+}

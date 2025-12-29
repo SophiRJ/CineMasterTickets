@@ -4,7 +4,7 @@
     background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
 }
 
-/* Caja de login con estética de Addons */
+/* Caja de login */
 .login-container {
     background: rgba(17, 17, 17, 0.8);
     backdrop-filter: blur(10px);
@@ -16,7 +16,7 @@
     max-width: 450px;
 }
 
-    /* Título <h1> igual que el resto de tu web */
+    /* Título <h1> */
     .login-container h1 {
         color: #f5c518;
         text-align: center;
@@ -42,7 +42,7 @@
         opacity: 0.5;
     }
 
-/* Inputs flotantes con tu estilo de Selectores */
+/* Inputs flotantes*/
 .form-floating .form-control {
     background-color: rgba(26, 26, 26, 0.9) !important;
     border: 1px solid rgba(245, 197, 24, 0.3) !important;
@@ -59,7 +59,7 @@
     color: #888;
 }
 
-/* Botón principal usando tu estilo .btn-continuar */
+/* Botón principal */
 #login-submit {
     background-color: transparent !important;
     border: 2px solid #4CAF50 !important;
@@ -89,10 +89,10 @@
 
     .login-links p a:hover {
         text-shadow: 0 0 10px rgba(245, 197, 24, 0.8);
-        padding-left: 5px; /* Tu efecto de movimiento lateral */
+        padding-left: 5px; 
     }
 
-/* Alertas de error siguiendo tu estilo .custom-alert */
+/* Alertas de error */
 .text-danger.validation-summary-errors {
     background-color: rgba(229, 9, 20, 0.2);
     border: 2px solid rgba(229, 9, 20, 0.6);

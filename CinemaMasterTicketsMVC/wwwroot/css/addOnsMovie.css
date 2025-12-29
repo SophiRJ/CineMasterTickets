@@ -32,7 +32,7 @@
     padding: 30px;
     background: linear-gradient(to bottom, rgba(245, 197, 24, 0.1), transparent);
     /* ESQUINAS REDONDEADAS */
-    border-radius: 20px 20px 0 0; /* 20px arriba, 0 abajo */
+    border-radius: 20px 20px 0 0; 
     /* Aseguramos que el degradado respete el redondeado */
     overflow: hidden;
 }
@@ -279,4 +279,32 @@
     opacity: 0.1 !important;
     filter: grayscale(1);
 }
+
+/* ==========================================================================
+   MENSAJE SIN PRODUCTOS
+   ========================================================================== */
+.no-addons-message {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(245, 197, 24, 0.3); /* Borde punteado dorado suave */
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+    .no-addons-message p {
+        color: #b3b3b3; /* Gris claro para el texto */
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+    /* Opcional: Si usas Bootstrap Icons o FontAwesome para un icono */
+    .no-addons-message i {
+        display: block;
+        font-size: 2.5rem;
+        color: rgba(245, 197, 24, 0.5);
+        margin-bottom: 15px;
+    }
 

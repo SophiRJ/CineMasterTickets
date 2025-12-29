@@ -1,4 +1,4 @@
-﻿/* --- TU ESTILO ORIGINAL (Mantenido) --- */
+﻿/* --- TU ESTILO ORIGINAL --- */
 .ticket-visual {
     font-family: 'Courier New', Courier, monospace !important;
     color: #000 !important;
@@ -49,7 +49,7 @@
         opacity: 1;
     }
 
-/* --- AJUSTES ESPECÍFICOS PARA EL CANVAS DEL QR --- */
+/* --- AJUSTES PARA EL CANVAS DEL QR --- */
 #qrcode {
     text-align: center;
     margin-top: 15px;
@@ -61,7 +61,6 @@
         height: auto !important;
         display: block;
         margin: 0 auto;
-        /* Optimización para que los puntos del QR se vean nítidos al imprimir */
         image-rendering: pixelated;
     }
 
@@ -79,6 +78,7 @@
     }
 
 /* --- ESTILO PARA IMPRESIÓN --- */
+/* Aquí definimos los elementos que se van a poder imprimir en la pantalla y su forma o diseño */
 @media print {
     body {
         background: white !important;
@@ -105,7 +105,7 @@
     }
 
     #qrcode canvas {
-        width: 45mm !important; /* Tamaño perfecto para el PDF */
+        width: 45mm !important;
     }
 
     .educational-disclaimer {
@@ -119,36 +119,3 @@
     }
 }
 
-
-/* Estilos específicos para la impresión del ticket */
-/*@media print {
-    / Ocultar botones y elementos de navegación en el papel /
-    .btn, .card-footer, .text-center.mt-4, header, footer {
-        display: none !important;
-    }
-
-    / Ajustes de diseño para la impresora /
-    .container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-    }
-
-    / Asegurar que el cuerpo de la página no tenga márgenes raros al imprimir /
-    body {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-}*/
-
-/* Estilo para que el QR se vea bien en pantalla */
-/*#qrcode img {
-    margin: 0 auto;
-    display: block;
-}*/
