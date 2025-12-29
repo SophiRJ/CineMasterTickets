@@ -41,9 +41,10 @@
 
 @* Logica para mostrar el container de las pelis *@
 <div id="moviesContainer" class="movies-container">
-
+    
     @if (Model != null && Model.Any())
     {
+        
         @foreach (var movie in Model)
         {
             <div class="movie-card">
@@ -51,13 +52,24 @@
                 <img src="https://image.tmdb.org/t/p/w500@(movie.poster_path)" alt="@movie.title" />
                 <div class="movie-body">
                     <div class="movie-title">@movie.title</div>
-                    <button class="btn btn-primary"
+                    @* Como la lista es dinamica, debemos castearla para que la vista no se confunda ya que se 
+                        ha guardado como un objeto JValue, y no la interpreta correctamente sin el casteo
+                    *@ 
+                    @if ((bool)(movie.IsAlreadyInDb))
+                    {
+                        <button class="btn btn-secondary" disabled>Ya añadida</button>
+                    }
+                    else
+                    {
+                    <button id="btn-@movie.id"class="btn btn-primary"
                     @* En este OnClick es donde hacemos el AJAX con Newtonsoft para añadir la peli pulsada *@
                             onclick='addMovie(@Newtonsoft.Json.JsonConvert.SerializeObject(movie))'>
                         Añadir
                     </button>
+                    }
                 </div>
             </div>
+            
         }
     }
     else
@@ -74,6 +86,7 @@
         PageClasses = new string[] { "page-link" },
         UlElementClasses = new string[] { "pagination" }
     })
+</div>
 </div>
 
 @* Debido a la gran cantidad de JS que se van a generar, hemos decidido hacerlos bajo sus vistas, o en otros archivos independientes*@
@@ -103,9 +116,9 @@
                 //AbortSignal todo ok cambia los atributos del boton para que aparezca desactivado yield muestra mensaje
                 if (response.ok) {
                     alert("Película añadida con éxito: " + movie.title);
-                    const btn = document.getElementById(`btn-${movieId}`);
+                    const btn = document.getElementById(`btn-${movie.id}`);
                     if (btn) {
-                        btn.innerText = "Añadido"; 
+                        btn.innerText = "Ya añadida"; 
                         btn.classList.remove("btn-primary"); 
                         btn.classList.add("btn-secondary"); 
                         btn.disabled = true; 
