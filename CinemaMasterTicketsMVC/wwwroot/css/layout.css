@@ -170,6 +170,8 @@ main, .main-content {
         transform: scale(1.05);
     }
 
+
+
 /* Asegura que en móviles no se vea gigantesco */
 @media (max-width: 576px) {
     .nav-logo {

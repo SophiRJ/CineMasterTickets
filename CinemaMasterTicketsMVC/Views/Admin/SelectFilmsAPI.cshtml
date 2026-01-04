@@ -9,7 +9,7 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/getFilms.css" />
 }
-
+<div class="api-films-page">
 <h2 class="mb-4">Listado de películas (TMDB)</h2>
 
 @* Boton para ir a la cartelera y poder asignar sesiones a las peliculas seleccionadas *@
@@ -88,7 +88,7 @@
         UlElementClasses = new string[] { "pagination" }
     })
 </div>
-
+</div>
 @* Debido a la gran cantidad de JS que se van a generar, hemos decidido hacerlos bajo sus vistas, o en otros archivos independientes*@
 @section Scripts {
     <script>
