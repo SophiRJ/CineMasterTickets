@@ -1,6 +1,12 @@
-﻿
-/* ===== TÍTULO ===== */
-h2 {
+﻿/* ===== TÍTULO ===== */
+/*h2 {
+    color: #f5c518;*/ /* IMDb yellow */
+/*text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
+    font-weight: 700;
+    letter-spacing: 1px;
+}*/
+/* ===== TÍTULO (Solo en esta página) ===== */
+.api-films-page h2 {
     color: #f5c518; /* IMDb yellow */
     text-shadow: 0 0 12px rgba(245, 197, 24, 0.6);
     font-weight: 700;
@@ -8,7 +14,29 @@ h2 {
 }
 
 /* ===== BOTÓN IR A CARTELERA ===== */
-a.btn-secondary {
+
+/*a.btn-secondary {
+    background: linear-gradient(135deg, #e50914, #b20710);
+    border: none;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.7);
+    transition: all 0.3s ease;
+}*/
+/*.api-films-page a.btn-secondary {
+    background: linear-gradient(135deg, #e50914, #b20710);
+    border: none;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.7);
+    transition: all 0.3s ease;
+}
+    a.btn-secondary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(229, 9, 20, 1);
+    }*/
+/* ===== BOTÓN IR A CARTELERA ===== */
+.api-films-page a.btn-secondary {
     background: linear-gradient(135deg, #e50914, #b20710);
     border: none;
     font-weight: 600;
@@ -17,13 +45,25 @@ a.btn-secondary {
     transition: all 0.3s ease;
 }
 
-    a.btn-secondary:hover {
+    .api-films-page a.btn-secondary:hover {
         transform: scale(1.05);
         box-shadow: 0 0 25px rgba(229, 9, 20, 1);
+        color: #fff; /* Asegura que el texto siga blanco */
     }
-
 /* ===== BUSCADOR ===== */
-form {
+.api-films-page form {
+    background-color: rgba(20, 20, 20, 0.85);
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+.api-films-page .form-label {
+    color: #f5c518;
+    font-weight: 600;
+}
+/* ===== BUSCADOR ===== */
+/*form {
     background-color: rgba(20, 20, 20, 0.85);
     padding: 16px 20px;
     border-radius: 12px;
@@ -33,7 +73,7 @@ form {
 .form-label {
     color: #f5c518;
     font-weight: 600;
-}
+}*/
 
 .form-control {
     background-color: #111;
@@ -53,7 +93,16 @@ form {
     }
 
 /* ===== BOTÓN BUSCAR ===== */
-button.btn-primary {
+/*button.btn-primary {
+    background: linear-gradient(135deg, #f5c518, #d4aa11);
+    border: none;
+    color: #000;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}*/
+/* ===== BOTÓN BUSCAR ===== */
+
+.api-films-page button.btn-primary {
     background: linear-gradient(135deg, #f5c518, #d4aa11);
     border: none;
     color: #000;
@@ -61,10 +110,21 @@ button.btn-primary {
     transition: all 0.3s ease;
 }
 
-    button.btn-primary:hover {
+    .api-films-page button.btn-primary:hover {
         background: #f5c518;
         box-shadow: 0 0 15px rgba(245, 197, 24, 0.9);
+        color: #000;
     }
+/*.api-films-page button.btn-primary {
+    background: linear-gradient(135deg, #f5c518, #d4aa11);
+    border: none;
+    color: #000;
+    font-weight: 700;
+}*/
+/* button.btn-primary:hover {
+        background: #f5c518;
+        box-shadow: 0 0 15px rgba(245, 197, 24, 0.9);
+    }*/
 
 /* ===== CONTENEDOR DE PELÍCULAS ===== */
 .movies-container {
@@ -100,7 +160,7 @@ button.btn-primary {
         background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
         opacity: 0;
         transition: opacity 0.3s ease;
-        pointer-events: none; 
+        pointer-events: none;
         border-top-left-radius: 14px;
         border-top-right-radius: 14px;
     }
