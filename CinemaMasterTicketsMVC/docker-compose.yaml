@@ -1,20 +1,20 @@
-services:
-  # --- CONTENEDOR DE BASE DE DATOS ---
-  database_container:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: database_host
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=SqlPassword2025!
-      - MSSQL_PID=Developer
-    ports:
-      - "1433:1433"
-    volumes:
-      - sql_data:/var/opt/mssql
-    networks:
-      - cinema-vnet
+services: #Esta es la seccion donde definimos los contenedores que tendra nuestra aplicacion
+  # Contenedor de la base de datos
+  database_container: # este es el nombre logico del servicio
+    image: mcr.microsoft.com/mssql/server:2022-latest # Esta es la imagen docker que usaremos
+    container_name: database_host # Nombre del contenedor cuando se ejecuta
+    environment: #Variaables de entorno para configurar SqlServer
+      - ACCEPT_EULA=Y #Esto es obligatorio aceptamos los terminos de licencia de Microsoft, si no el contenedor no arranca
+      - MSSQL_SA_PASSWORD=SqlPassword2025! #contraseña del usuario SA o el administrador de SQL server
+      - MSSQL_PID=Developer #En esta linea se define el tipo de licencia, en este caso es developer
+    ports: #Puertos que usara el contenedor
+      - "1433:1433" #Aqui el 1433 del pc se conectara al 1433 del contenedor 
+    volumes: #Define volumenes persistentes o datos que no se pierden
+      - sql_data:/var/opt/mssql 
+    networks: #networks define a que red Docker pertenece el contenedor
+      - cinema-vnet #red virtual
 
-  # --- CONTENEDOR DE TU APP MVC ---
+  # Contenedor de la app mvc
   web_container:
     build:
       context: ./
@@ -28,15 +28,15 @@ services:
       - AdminSettings__Password=Admin123!
       - MovieApi__ApiKey= #Pega aqui tu clave personal para usar la API de TMDB
     ports:
-      - "8080:80"
+      - "8080:80" #puertos de la aplicacion web 8080 es el puerto del ordenador y el 80 es el puerto dentro del contenedor
     depends_on:
-      - database_container
+      - database_container #aqui se define la depedencia entre los dos servicios, el web container se arranca despues de la base de datos
     networks:
-      - cinema-vnet
+      - cinema-vnet #red del contenedor se conecta a la misma red de la base de datos para la comunicacion
 
-networks:
+networks: #aqui se definen redes docker personalizadas
   cinema-vnet:
-    driver: bridge
+    driver: bridge #red privada esto quiere decir que los contenedores se ven entre si por nombre
 
-volumes:
-  sql_data:
+volumes: #Datos persistentes 
+  sql_data: #volumen donde se guardan los datos y persiste aunque se borren los contenedores
