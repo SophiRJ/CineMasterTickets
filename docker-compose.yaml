@@ -25,9 +25,9 @@ services: #Esta es la seccion donde definimos los contenedores que tendra nuestr
       - ASPNETCORE_URLS=http://0.0.0.0:80 # Esto le dice que escuche conexiones desde fuera del contenedor en el puerto 80
       # cadena de conexion, se incluye el nombre del contenedor de la bd, el puerto sql, y las credenciales definidas arriba
       - ConnectionStrings__DefaultConnection=Server=database_host,1433;Database=CinemaMasterTicketsMVC;User Id=sa;Password=SqlPassword2025!;TrustServerCertificate=True
-      - AdminSettings__Email=admin@site.com #email de usuari admin -> modificamos estas variables en azure por seguridad
-      - AdminSettings__Password=Admin123! #contraseña de usuario admin
-      - MovieApi__ApiKey=e30c1ae43fe34f0a90b23ecb086b8571 #api key para consumir datos de TMDB
+      - AdminSettings__Email=admin@site.com
+      - AdminSettings__Password=Admin123!
+      - MovieApi__ApiKey= #Pega aqui tu clave personal para usar la API de TMDB
     ports:
       - "8080:80" #puertos de la aplicacion web 8080 es el puerto del ordenador y el 80 es el puerto dentro del contenedor
     depends_on:

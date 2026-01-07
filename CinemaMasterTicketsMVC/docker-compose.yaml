@@ -5,7 +5,7 @@ services: #Esta es la seccion donde definimos los contenedores que tendra nuestr
     container_name: database_host # Nombre del contenedor cuando se ejecuta
     environment: #Variaables de entorno para configurar SqlServer
       - ACCEPT_EULA=Y #Esto es obligatorio aceptamos los terminos de licencia de Microsoft, si no el contenedor no arranca
-      - MSSQL_SA_PASSWORD=SqlPassword2025! #contraseña del usuario SA o el administrador de SQL server
+      - MSSQL_SA_PASSWORD=SqlPassword2025! #contraseÃ±a del usuario SA o el administrador de SQL server
       - MSSQL_PID=Developer #En esta linea se define el tipo de licencia, en este caso es developer
     ports: #Puertos que usara el contenedor
       - "1433:1433" #Aqui el 1433 del pc se conectara al 1433 del contenedor 
@@ -16,18 +16,17 @@ services: #Esta es la seccion donde definimos los contenedores que tendra nuestr
 
   # Contenedor de la app mvc
   web_container:
-    build: #con esto indicamos que no vamos a usar una imagen prehecha si no que se va a construir
-      context: ./ #ruta que marca el directorio actual del proyecto-> es la carpeta desde donde Docker puede acceder a archivos
-      dockerfile: ./Dockerfile # El dockerfile es el archivo donde se encuentran las instrucciones para construir la imagen
-    container_name: cinema_master # nombre del contenedor de la app cuando se ejecuta
-    environment: #variables de entorno que usara la app dentro del contenedor
-      - ASPNETCORE_ENVIRONMENT=Development # Esto indica que la app corre en modo desarrollo
-      - ASPNETCORE_URLS=http://0.0.0.0:80 # Esto le dice que escuche conexiones desde fuera del contenedor en el puerto 80
-       # cadena de conexion, se incluye el nombre del contenedor de la bd, el puerto sql, y las credenciales definidas arriba
-      - ConnectionStrings__DefaultConnection=Server=database_host,1433;Database=CinemaMasterTicketsMVC;User Id=sa;Password=SqlPassword2025!;TrustServerCertificate=True 
-      - AdminSettings__Email=admin@site.com #email de usuari admin -> modificamos estas variables en azure por seguridad
-      - AdminSettings__Password=Admin123! #contraseña de usuario admin
-      - MovieApi__ApiKey=e30c1ae43fe34f0a90b23ecb086b8571  #api key para consumir datos de TMDB
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: cinema_master
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+      - ConnectionStrings__DefaultConnection=Server=database_host,1433;Database=CinemaMasterTicketsMVC;User Id=sa;Password=SqlPassword2025!;TrustServerCertificate=True
+      - AdminSettings__Email=admin@site.com
+      - AdminSettings__Password=Admin123!
+      - MovieApi__ApiKey= #Pega aqui tu clave personal para usar la API de TMDB
     ports:
       - "8080:80" #puertos de la aplicacion web 8080 es el puerto del ordenador y el 80 es el puerto dentro del contenedor
     depends_on:
