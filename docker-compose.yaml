@@ -26,7 +26,7 @@ services:
       - ConnectionStrings__DefaultConnection=Server=database_host,1433;Database=CinemaMasterTicketsMVC;User Id=sa;Password=SqlPassword2025!;TrustServerCertificate=True
       - AdminSettings__Email=admin@site.com
       - AdminSettings__Password=Admin123!
-      - MovieApi__ApiKey=e30c1ae43fe34f0a90b23ecb086b8571
+      - MovieApi__ApiKey= #Pega aqui tu clave personal para usar la API de TMDB
     ports:
       - "8080:80"
     depends_on:
